@@ -17,17 +17,17 @@ const Documentation: React.FC<DocumentationProps> = ({ id = "docs"}) => {
   const documents: Document[] = [
     {
       id: 1,
-      image: "/assets/documentation/arhitecture.jpg",
+      image: "/assets/Documentation/arhitecture.jpg",
       title: "Техническое задание"
     },
     {
       id: 2,
-      image: "/assets/documentation/Orlovka.pdf-image-000.jpg",
+      image: "/assets/Documentation/Orlovka.pdf-image-000.jpg",
       title: "Коммерческое предложение"
     },
     {
       id: 3,
-      image: "/assets/documentation/Orlovka.pdf-image-002.jpg",
+      image: "/assets/Documentation/Orlovka.pdf-image-002.jpg",
       title: "Договор"
     }
   ];
