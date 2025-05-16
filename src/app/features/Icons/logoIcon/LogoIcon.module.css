@@ -1,0 +1,33 @@
+/* Базовые стили иконки */
+.icon {
+  width: 100%;
+  height: 100%;
+  transition: transform var(--transition-normal);
+  z-index: 0;
+}
+
+/* Стили для иконки в хедере */
+.headerIcon {
+  color: var(--light-text-color); /* Белый цвет или другой для хедера */
+  cursor: pointer;
+}
+
+.headerIcon:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .headerIcon {
+    display: none; /* Скрываем только в хедере на мобильных */
+  }
+}
+
+/* Стили для иконки в меню */
+.menuIcon {
+  color: #000; /* Черный цвет для меню */
+  display: block !important; /* Всегда отображаем в меню */
+}
+
+.menuIcon:hover {
+  transform: none; /* Отключаем трансформацию для меню */
+}

@@ -1,0 +1,53 @@
+/* Базовые стили */
+.hero {
+  position: relative;
+  overflow: hidden;
+  --gradient-height: 100px;
+  --gradient-height-mobile: 40px;
+  height: 100vh;
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
+
+.imageContainer {
+  height: 100%;
+  padding: 0;
+  position: relative;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  position: relative;
+}
+
+/* Градиентный оверлей */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  height: var(--gradient-height);
+  background: linear-gradient(
+    0deg,
+    rgba(227,230,221,1) 0%,
+    rgba(255,255,255,0) 100%
+  );
+  z-index: 2;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+  .hero {
+    --gradient-height: var(--gradient-height-mobile);
+    height: calc(100vh - var(--header-height-mobile));
+    padding-bottom: 20px;
+  }
+
+  .hero::after {
+    bottom: 20px;
+  }
+}

@@ -1,26 +1,105 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ===== РАЗМЕРЫ ШАПКИ ===== */
+  --header-height: 80px;       /* Высота шапки на десктопе */
+  --header-height-mobile: 60px; /* Высота шапки на мобильных устройствах */
+  
+  /* ===== РАЗМЕРЫ ИКОНОК ===== */
+  --icon-size: 35px;           /* Стандартный размер иконок (соц. сети, кнопки) */
+  --icon-size-small: 24px;     /* Малый размер иконок (в шапке, футере) */
+  --icon-size-mobile: 14px;    /* Размер иконок на мобильных устройствах */
+
+  /* ===== ЦВЕТОВАЯ ПАЛИТРА ===== */
+  --primary-color: #81886d;    /* Основной цвет (шапка, футер, кнопки) */
+  --light-text-color: #e3e6dd; /* Светлый текст (на темном фоне) */
+  --service-content: #666;     /* Цвет текста в карточках услуг */
+  --light-text-transparent: rgba(227, 230, 221, 0.8); /* Полупрозрачный светлый текст */
+  --light-text-muted: rgba(227, 230, 221, 0.6);      /* Приглушенный светлый текст */
+  --shadow-dark: rgba(0, 0, 0, 0.5);                 /* Цвет теней */
+  --border-color: rgba(227, 230, 221, 0.2);          /* Цвет границ */
+  --modal-bg: #4e5343;         /* Фон модального окна */
+  --checkbox-border: #4e5343;  /* Цвет рамки чекбокса */
+  --checkbox-checked: #292c23; /* Цвет выбранного чекбокса */
+
+  /* ===== РАЗМЕРЫ И ОТСТУПЫ ===== */
+  --base-spacing: 1rem;        /* Базовый отступ между элементами */
+  --footer-height: 80px;       /* Высота футера */
+  --padding-horizontal: 60px;  /* Горизонтальные отступы на десктопе */
+  --padding-horizontal-mobile: 10px; /* Горизонтальные отступы на мобильных */
+  --gap-large: 20px;          /* Большой отступ между элементами */
+  --gap-large-mobile: 20px;   /* Большой отступ на мобильных */
+  --border-radius: 8px;       /* Скругление углов элементов */
+  
+  /* ===== ТЕНИ ===== */
+  --shadow-bottom: 0 2px 10px var(--shadow-dark);    /* Тень снизу (шапка) */
+  --shadow-top: 0 -2px 10px var(--shadow-dark);      /* Тень сверху (футер) */
+  --box-shadow: 0 4px 8px var(--shadow-dark);        /* Стандартная тень для карточек */
+  
+  /* ===== АНИМАЦИИ ===== */
+  --transition-fast: 0.2s;    /* Быстрая анимация (ховер эффекты) */
+  --transition-normal: 0.3s;  /* Стандартная анимация (переходы) */
+
+  /* ===== ШРИФТЫ ===== */
+  --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; /* Основной шрифт */
+  --font-secondary: 'Cormorant Garamond', Georgia, 'Times New Roman', Times, serif; /* Дополнительный шрифт (заголовки) */
+  --font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Системные шрифты */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Базовые стили */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  font-size: 100%;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary), var(--font-system);
+  line-height: 1.6;
+  color: #fff;
+  background-color: var(--bg-light);
+  overflow-x: hidden;
+  background-color: var(--light-text-color);
+}
+
+h2 {
+  color: var(--primary-color);
+  font-family: var(--font-secondary), var(--font-system);
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+/* Запрещаем выделение текста при кликах */
+button {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Гарантируем, что события не всплывают */
+[data-menu-button] {
+  touch-action: manipulation;
+}
+@media (min-width: 600px) {
+  h2 {
+    font-size: calc(2rem + (3 - 2) * ((100vw - 600px) / (1200 - 600)));
+  }
+}
+
+@media (min-width: 1200px) {
+  h2 {
+    font-size: 3rem;
+  }
 }

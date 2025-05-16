@@ -1,0 +1,6 @@
+.icon {
+  width: 100%;
+  height: 100%;
+  color: inherit; /* Берет цвет от родителя */
+  transition: inherit; /* Наследует transition от родителя */
+}

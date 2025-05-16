@@ -1,0 +1,162 @@
+/* Базовые стили */
+.aboutSection {
+    min-height: calc(100vh - var(--header-height));
+    box-sizing: border-box;
+    scroll-margin-top: var(--header-height);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0 var(--padding-horizontal) 60px;
+  }
+  
+  .container {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .aboutContent {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: stretch; /* Колонки одинаковой высоты */
+    min-height: calc(100vh - var(--header-height));
+    width: 100%;
+  }
+  
+  .aboutImageWrapper {
+    position: relative;
+    height: 100%;
+  }
+  
+  .aboutImage {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: calc(100vh - var(--header-height));
+    overflow: hidden;
+    height: calc(100vh - var(--header-height)); /* Важно для fill */
+  }
+  
+  .aboutPhoto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+  
+  .aboutImage:hover .aboutPhoto {
+    transform: scale(1.03);
+  }
+  
+  .imageOverlayText {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: var(--font-primary);
+    font-family: var(--font-secondary);
+    padding: 30px;
+    text-align: center;
+  }
+  
+  .imageOverlayText h3 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--light-text-color);
+  }
+  
+  .imageOverlayText p {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    color: var(--light-text-color);
+  }
+  
+  .aboutText {
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    min-height: calc(100vh - var(--header-height)); /* Добавлено */
+    overflow: hidden; /* Предотвращаем выход текста за границы */
+  }
+  
+  .aboutParagraph {
+    font-size: clamp(14px, calc((100vh - var(--header-height)) * 0.04), 20px);
+    line-height: 1.8;
+    margin-bottom: 25px;
+    color: #333;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  /* Мобильные стили */
+  @media (max-width: 768px) {
+    .aboutSection {
+      flex-direction: row;
+      padding: 0 20px 20px;
+    }
+  
+    .aboutContent {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: auto;
+    }
+  
+    .imageOverlayText {
+      padding: 15px;
+    }
+    
+    .imageOverlayText h3 {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+    
+    .imageOverlayText p {
+      font-size: 1rem;
+    }
+  
+    .aboutText {
+      padding: 0;
+    }
+    
+    .aboutParagraph {
+      font-size: min(1rem, calc((100vh - var(--header-height)) * 0.03));
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+  
+    .aboutImageWrapper {
+      padding: 0px;
+    }
+  }
+  
+  /* Планшетные стили */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .imageOverlayText h3 {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+    }
+    
+    .imageOverlayText p {
+      font-size: 1.2rem;
+    }
+  
+    .aboutText {
+      padding: 0 20px;
+    }
+  
+    .aboutParagraph {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+  }

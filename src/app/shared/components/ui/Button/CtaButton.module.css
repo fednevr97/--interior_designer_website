@@ -1,0 +1,35 @@
+.ctaButton {
+    background-color: transparent;
+    color: var(--light-text-color);
+    border: 1px solid;
+    padding: 12px 24px;
+    font-weight: 400;
+    cursor: pointer;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    transition: transform var(--transition-normal), color var(--transition-normal);
+  }
+  
+  .ctaButton:hover {
+    transform: scale(1.1);
+    color: #fff;
+  }
+  
+  /* Мобильные устройства */
+  @media (max-width: 768px) {
+    .ctaButton {
+      width: 100px;
+      font-size: 10px;
+      padding: 0 2px;
+    }
+  }
+  
+  /* Планшеты */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .ctaButton {
+      width: 120px;
+    }
+  }
