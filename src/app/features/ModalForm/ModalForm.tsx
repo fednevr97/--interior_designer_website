@@ -51,9 +51,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const { name, value, type } = e.target;
     
     if (type === 'checkbox') {
+      // Если кликаем на уже выбранный чекбокс - снимаем выбор
       setFormData(prev => ({
         ...prev,
-        type: value
+        type: prev.type === value ? '' : value
       }));
     } else {
       setFormData(prev => ({
@@ -62,7 +63,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       }));
     }
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);

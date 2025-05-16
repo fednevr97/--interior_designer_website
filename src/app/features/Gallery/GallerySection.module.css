@@ -103,6 +103,7 @@
     .galleryTitle {
         padding-left: 20px;
     }
+
 }
 
 /* Адаптивность для телефонов */
@@ -113,10 +114,6 @@
 
     .gallery-item {
         flex: 0 0 100%;
-    }
-    
-    .gallery-base {
-        gap: 0;
     }
 
     .galleryTitle {

@@ -11,6 +11,7 @@ interface ModalProps {
   onNext?: () => void;
   canGoPrev?: boolean;
   canGoNext?: boolean;
+  onClick?: (e: React.MouseEvent) => void; // Добавлено свойство onClick
 }
 
 const Modal: React.FC<ModalProps> = ({ 
@@ -20,7 +21,8 @@ const Modal: React.FC<ModalProps> = ({
   onPrev, 
   onNext, 
   canGoPrev = true, 
-  canGoNext = true 
+  canGoNext = true,
+  onClick
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -55,20 +57,20 @@ const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div 
+    <div className={styles.modalOverlay} onClick={onClick}>
+       <div 
         className={styles.modalContent} 
         onClick={e => e.stopPropagation()}
         ref={contentRef}
       >
-        <button className={styles.closeButton} onClick={onClose} aria-label="Закрыть">
+          <button className={styles.closeButton} onClick={onClose} aria-label="Закрыть">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-        </button>
-        {onPrev && onNext && (
-          <>
-            <button 
+          </button>
+          {onPrev && onNext && (
+            <>
+              <button 
               className={`${styles.navButton} ${styles.prevButton}`} 
               onClick={onPrev}
               disabled={!canGoPrev}
@@ -77,8 +79,8 @@ const Modal: React.FC<ModalProps> = ({
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </button>
-            <button 
+              </button>
+              <button 
               className={`${styles.navButton} ${styles.nextButton}`} 
               onClick={onNext}
               disabled={!canGoNext}
@@ -87,14 +89,12 @@ const Modal: React.FC<ModalProps> = ({
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 6L15 12L9 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </button>
-          </>
-        )}
-    <div className={styles.modalContent}>
-      <div className={styles.imageContainer}>
-        {children}
-      </div>
-    </div>
+              </button>
+            </>
+          )}
+        <div className={styles.imageContainer}>
+          {children}
+        </div>
       </div>
     </div>
   );

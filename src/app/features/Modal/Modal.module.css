@@ -14,30 +14,23 @@
 
 .modalContent {
   position: relative;
-  max-width: 90vw;
+  display: inline-block; /* Меняем на inline-flex */
   max-height: 90vh;
-  width: auto;
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .imageContainer {
+  display: inline-block; /* Меняем на inline-block */
   position: relative;
-  max-width: 100%;
   max-height: 80vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.imageContainer > * {
-  max-width: 100%;
+.imageContainer > *,
+.modalImage {
   max-height: 80vh;
   width: auto;
   height: auto;
-  object-fit: contain;
+  display: block; /* Важно для корректного отображения */
+  margin: 0 auto;
 }
 
 .closeButton {
@@ -75,7 +68,7 @@
 }
 
 .navButton:disabled {
-  opacity: 0.3;
+  opacity: 0;
   cursor: not-allowed;
 }
 
@@ -100,10 +93,18 @@
   .navButton {
     display: none;
   }
+
+  .closeButton {
+    display: none;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .navButton {
+    display: none;
+  }
+
+  .closeButton {
     display: none;
   }
 }
