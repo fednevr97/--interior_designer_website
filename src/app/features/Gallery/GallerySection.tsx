@@ -189,7 +189,8 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   // Стиль для анимации свайпа в модальном окне
   const modalImageStyle = {
     transform: isModalDragging ? `translateX(${modalTranslateX}px)` : 'none',
-    transition: isModalDragging ? 'none' : 'transform 0.3s ease'
+    transition: isModalDragging ? 'none' : 'transform 0.3s ease',
+
   };
 
   return (
@@ -253,41 +254,40 @@ const GallerySection: React.FC<GallerySectionProps> = ({
       </div>
 
       <Modal 
-        isOpen={!!selectedImage} 
-        onClose={() => setSelectedImage(null)}
-        onPrev={handlePrevImage}
-        onNext={handleNextImage}
-        canGoPrev={selectedImageIndex > 0}
-        canGoNext={selectedImageIndex < items.length - 1}
-        onClick={handleModalClick} // Передаем handleModalClick
+      isOpen={!!selectedImage} 
+      onClose={() => setSelectedImage(null)}
+      onPrev={handlePrevImage}
+      onNext={handleNextImage}
+      canGoPrev={selectedImageIndex > 0}
+      canGoNext={selectedImageIndex < items.length - 1}
+      onClick={handleModalClick}
+    >
+      <div 
+        ref={modalContentRef}
+        className={styles.modalContent}
       >
         <div 
-          ref={modalContentRef}
-          className={styles.modalContent}
+          ref={modalImageRef}
+          style={modalImageStyle}
+          onTouchStart={handleModalTouchStart}
+          onTouchMove={handleModalTouchMove}
+          onTouchEnd={handleModalTouchEnd}
+          className={styles.imageContainer}
         >
-          <div 
-            ref={modalImageRef}
-            style={modalImageStyle}
-            onTouchStart={handleModalTouchStart}
-            onTouchMove={handleModalTouchMove}
-            onTouchEnd={handleModalTouchEnd}
-            className={styles.imageContainer}
-          >
-            {selectedImage && (
-              <Image
-                src={selectedImage}
-                alt="Увеличенное изображение"
-                width={1200}
-                height={800}
-                className={styles.modalImage}
-                priority
-              />
-            )}
-          </div>
+          {selectedImage && (
+            <Image
+              src={selectedImage}
+              alt="Увеличенное изображение"
+              width={1200}
+              height={800}
+              className={styles.modalImage}
+              priority
+            />
+          )}
         </div>
-      </Modal>
-    </section>
-  );
-};
+      </div>
+    </Modal>
+  </section>
+)};
 
 export default GallerySection;

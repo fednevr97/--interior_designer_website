@@ -4,24 +4,58 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 20px;
+  touch-action: pan-y;
+  will-change: opacity;
+}
+
+.modalOverlay.closing {
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .modalContent {
   position: relative;
-  display: inline-block; /* Меняем на inline-flex */
+  background-color: transparent;
+  border-radius: 12px;
+  /* overflow: hidden; */
+  max-width: 90%;
   max-height: 90vh;
+  width: auto;
+  height: auto;
+  will-change: transform;
+}
+
+.closeButton {
+  position: absolute;
+  top: -4vw;
+  right: -9vw;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+
+.closeButton:hover {
+  transform: scale(1.1);
 }
 
 .imageContainer {
-  display: inline-block; /* Меняем на inline-block */
-  position: relative;
-  max-height: 80vh;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .imageContainer > *,
@@ -33,23 +67,11 @@
   margin: 0 auto;
 }
 
-.closeButton {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 10;
-}
-
 .navButton {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.0);
+  background-color: rgba(0, 0, 0, 1);
   color: white;
   border: none;
   width: 80px;
@@ -60,6 +82,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.navButton:active {
+  transform: translateY(-50%) scale(0.9);
 }
 
 .navButton svg {
@@ -68,16 +96,16 @@
 }
 
 .navButton:disabled {
-  opacity: 0;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .prevButton {
-  left: 10vw;
+  left: -10vw;
 }
 
 .nextButton {
-  right: 10vw;
+  right: -10vw;
 }
 
 @media (max-width: 768px) {
