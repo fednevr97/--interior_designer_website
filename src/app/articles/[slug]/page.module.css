@@ -1,0 +1,85 @@
+  /* Общие стили для контейнеров */
+.articleContainer, .articlesPage {
+    margin: 0 auto;
+    padding: 100px 60px 70px 60px;
+  }
+  
+  .articleContent {
+    margin: 0 auto;
+  }
+  
+  /* Стили для страницы отдельной статьи */
+  .articleImageContainer {
+    position: relative;
+    height: 24rem;
+    margin-bottom: 2rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+
+  }
+  
+  .articleImage {
+    object-fit: contain;
+  }
+  
+  .articleHeader {
+    margin-bottom: 2rem;
+  }
+  
+  .articleTitle {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .articleDate {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .articleBody {
+    line-height: 1.6;
+    color: #374151;
+  }
+  
+  .articleBody h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem;
+    color: #111827;
+  }
+  
+  .articleBody h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem;
+  }
+  
+  .articleBody p {
+    margin: 1rem 0;
+  }
+  
+  .articleBody ul, .articleBody ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .articleBody ul {
+    list-style-type: disc;
+  }
+  
+  .articleBody ol {
+    list-style-type: decimal;
+  }
+  
+  .articleBody li {
+    margin: 0.5rem 0;
+  }
+  
+  .articleBody a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  
+  .articleBody a:hover {
+    text-decoration: underline;
+  }

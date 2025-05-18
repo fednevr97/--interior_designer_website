@@ -27,8 +27,8 @@ const Header: React.FC<HeaderProps> = ({
 
   const menuItems = [
     { id: '1', href: '/', label: 'Главная' },
-    { id: '2', href: '#about', label: 'О нас' },
-    { id: '3', href: '#services', label: 'Услуги' },
+    { id: '2', href: '/#about', label: 'О нас' },
+    { id: '3', href: '/#services', label: 'Услуги' },
     { id: '4', href: '/portfolio', label: 'Портфолио' },
     { id: '5', href: '#contacts', label: 'Контакты' },
     { id: '6', href: '/articles', label: 'Полезные статьи' },

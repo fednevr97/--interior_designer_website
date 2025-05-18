@@ -1,9 +1,97 @@
-.articlesPage {
-    padding-top: var(--header-height);
-}
-
-@media (max-width: 768px) {
-    .articlesPage {
-        padding-top: var(--header-height-mobile);
+/* Общие стили для контейнеров */
+.articleContainer, .articlesPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .articleContent {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* Стили для страницы списка статей */
+  .articlesTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #111827;
+  }
+  
+  .articlesGrid {
+    display: grid;
+    gap: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .articlesGrid {
+      grid-template-columns: repeat(2, 1fr);
     }
-}
+  }
+  
+  @media (min-width: 1024px) {
+    .articlesGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .articleCard {
+    transition: transform 0.2s ease;
+  }
+  
+  .articleCard:hover {
+    transform: translateY(-0.25rem);
+  }
+  
+  .articleLink {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .articleCardImageContainer {
+    position: relative;
+    height: 16rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .articleCardImage {
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .articleCard:hover .articleCardImage {
+    transform: scale(1.05);
+  }
+  
+  .articleCardTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #111827;
+    transition: color 0.2s ease;
+  }
+  
+  .articleCard:hover .articleCardTitle {
+    color: #2563eb;
+  }
+  
+  .articleCardExcerpt {
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;  
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .articleCardDate {
+    color: #9ca3af;
+    font-size: 0.875rem;
+  }
