@@ -1,53 +1,73 @@
-import { remark } from 'remark';
-import html from 'remark-html';
-import matter from 'gray-matter';
-import fs from 'fs/promises';
-import path from 'path';
-import remarkImages from 'remark-images';
+import { promises as fs } from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
+import { remark } from 'remark'
+import html from 'remark-html'
 
-const articlesDir = path.join(process.cwd(), 'content/articles');
+const articlesDirectory = path.join(process.cwd(), 'content/articles/')
 
-interface Article {
-  slug: string;
+export async function getArticleBySlug(slug: string): Promise<{
   meta: {
-    title: string;
-    date: string;
-    excerpt: string;
-    coverImage: string;
-  };
-  content: string;
+    title: string
+    excerpt: string
+    coverImage: string
+    date: string
+  }
+  content: string
+  slug: string
+} | null> {
+  const fullPath = path.join(articlesDirectory, `${slug}.md`)
+  try {
+    const fileContents = await fs.readFile(fullPath, 'utf8')
+    const { data, content } = matter(fileContents)
+
+    const processedContent = await remark()
+      .use(html)
+      .process(content)
+    const contentHtml = processedContent.toString()
+
+    return {
+      meta: {
+        title: data.title || '',
+        excerpt: data.excerpt || '',
+        coverImage: data.coverImage || '',
+        date: data.date || '',
+      },
+      content: contentHtml,
+      slug,
+    }
+  } catch {
+    return null
+  }
 }
 
-export async function getAllArticles(): Promise<Article[]> {
-  const filenames = await fs.readdir(articlesDir);
+export async function getAllArticles(): Promise<Array<{
+  meta: {
+    title: string
+    excerpt: string
+    coverImage: string
+    date: string
+  }
+  slug: string
+}>> {
+  const files = await fs.readdir(articlesDirectory)
   
-  return Promise.all(
-    filenames.map(async (filename) => {
-      const slug = filename.replace(/\.md$/, '');
-      return getArticleBySlug(slug);
+  const articles = await Promise.all(
+    files.map(async (filename) => {
+      const slug = filename.replace(/\.md$/, '')
+      const article = await getArticleBySlug(slug)
+      if (!article) {
+        throw new Error(`Article ${slug} is broken or missing`)
+      }
+      return {
+        meta: article.meta,
+        slug: article.slug
+      }
     })
-  );
-}
+  )
 
-export async function getArticleBySlug(slug: string): Promise<Article> {
-  const filePath = path.join(articlesDir, `${slug}.md`);
-  const fileContent = await fs.readFile(filePath, 'utf8');
-  const { data, content } = matter(fileContent);
-
-  // Обработка Markdown с изображениями
-  const processedContent = await remark()
-    .use(html)
-    .use(remarkImages)
-    .process(content);
-
-  return {
-    slug,
-    meta: {
-      title: data.title,
-      date: data.date,
-      excerpt: data.excerpt || '',
-      coverImage: data.coverImage || `/images/articles/${slug}/cover.jpg`
-    },
-    content: processedContent.toString()
-  };
+  // Сортировка по дате (новые сначала)
+  return articles.sort((a, b) => 
+    new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime()
+  )
 }

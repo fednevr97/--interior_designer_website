@@ -2,14 +2,23 @@ import { getArticleBySlug, getAllArticles } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import styles from './page.module.css';
+import { Metadata } from 'next';
+
+type PageProps = {
+  params: { slug: string }
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
 
 export async function generateStaticParams() {
   const articles = await getAllArticles();
   return articles.map(article => ({ slug: article.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const article = await getArticleBySlug(params.slug);
+export async function generateMetadata(
+  { params }: PageProps
+): Promise<Metadata> {
+  const article = await getArticleBySlug(params.slug)
+  if (!article) return {}
   
   return {
     title: `${article.meta.title} | Полезные статьи`,
@@ -17,15 +26,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       images: [article.meta.coverImage],
     },
-  };
+  }
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = await getArticleBySlug(params.slug);
-  if (!article) return notFound();
+export default async function ArticlePage({ params }: PageProps) {
+  const article = await getArticleBySlug(params.slug)
+  if (!article) return notFound()
 
   return (
-
     // В компоненте ArticlePage:
     <article className={styles.articleContainer}>
       <div className={styles.articleContent}>
