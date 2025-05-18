@@ -1,4 +1,5 @@
 .footer {
+    flex-shrink: 0; /* Не сжимается */
     position: relative;
     width: 100%;
     color: var(--light-text-color);

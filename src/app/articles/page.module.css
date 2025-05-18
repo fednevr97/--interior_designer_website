@@ -1,0 +1,9 @@
+.articlesPage {
+    padding-top: var(--header-height);
+}
+
+@media (max-width: 768px) {
+    .articlesPage {
+        padding-top: var(--header-height-mobile);
+    }
+}

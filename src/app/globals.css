@@ -71,6 +71,13 @@ body {
   background-color: var(--bg-light);
   overflow-x: hidden;
   background-color: var(--light-text-color);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 100% высоты viewport */
+}
+
+main {
+  flex: 1 0 auto; /* Растягивается на всё доступное пространство */
 }
 
 h2 {
@@ -79,9 +86,6 @@ h2 {
   font-size: 2rem;
 }
 
-h2 {
-  font-size: 2rem;
-}
 /* Запрещаем выделение текста при кликах */
 button {
   user-select: none;

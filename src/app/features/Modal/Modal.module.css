@@ -22,7 +22,6 @@
   position: relative;
   background-color: transparent;
   border-radius: 12px;
-  /* overflow: hidden; */
   max-width: 90%;
   max-height: 90vh;
   width: auto;
@@ -101,11 +100,11 @@
 }
 
 .prevButton {
-  left: -10vw;
+  left: -30px;
 }
 
 .nextButton {
-  right: -10vw;
+  right: -30px;
 }
 
 @media (max-width: 768px) {

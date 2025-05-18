@@ -1,0 +1,9 @@
+.documentationPage {
+    padding-top: var(--header-height);
+}
+
+@media (max-width: 768px) {
+    .documentationPage {
+        padding-top: var(--header-height-mobile);
+    }
+}

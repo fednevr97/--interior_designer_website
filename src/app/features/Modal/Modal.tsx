@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Modal.module.css';
 
 interface ModalProps {
@@ -30,6 +30,14 @@ const Modal: React.FC<ModalProps> = ({
   const [dragOffset, setDragOffset] = useState(0);
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
+  
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 300);
+  }, [onClose]); // Стабилизированная версия
 
   useEffect(() => {
     if (isOpen) {
@@ -59,7 +67,7 @@ const Modal: React.FC<ModalProps> = ({
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]); // Все зависимости на месте
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
@@ -67,7 +75,8 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isOpen) return;
+    if (!isOpen) 
+      return;
     
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - touchStartY.current;
@@ -99,14 +108,6 @@ const Modal: React.FC<ModalProps> = ({
       // Анимация возврата
       setDragOffset(0);
     }
-  };
-
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      onClose();
-      setIsClosing(false);
-    }, 300);
   };
 
   const getTransformStyle = () => {

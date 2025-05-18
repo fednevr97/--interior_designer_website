@@ -39,6 +39,8 @@
 import type { Metadata } from "next";
 import { Montserrat, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import Footer from "./features/Footer/Footer";
+import Header from "./features/Header/Header";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -168,7 +170,7 @@ export default function RootLayout({
             "priceRange": "$$$"
           })}
         </script>
-
+        <Header />
         <main className="min-h-screen">
           {children}
           {/* Блок для хлебных крошек */}
@@ -176,6 +178,7 @@ export default function RootLayout({
             {/* Добавьте компонент Breadcrumbs */}
           </nav>
         </main>
+        <Footer />
       </body>
     </html>
   );

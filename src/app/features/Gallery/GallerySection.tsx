@@ -5,11 +5,14 @@ import NavButton from '../../shared/components/ui/NavButton/NavButton';
 import Image from 'next/image';
 import Modal from '../Modal/Modal';
 import styles from './GallerySection.module.css';
+import { useRouter } from 'next/navigation'; // Изменили импорт
 
-interface GalleryItem {
-  id: number;
+export interface GalleryItem {
+  id: number; // Теперь только number
   image: string;
   title: string;
+  category?: string;
+  folder?: string;
 }
 
 interface GallerySectionProps {
@@ -23,12 +26,16 @@ interface GallerySectionProps {
   itemHeight?: string;
   mobileItemHeight?: string;
   gapPercent?: number;
+  titleLink?: string;
+  displayMode?: 'slider' | 'grid'; // Добавляем новый пропс
+  gridColumns?: number; // Количество колонок в сетке
 }
 
 const GallerySection: React.FC<GallerySectionProps> = ({
   id,
   title,
   items,
+  titleLink,
   defaultVisibleItems = 4,
   tabletVisibleItems = 3,
   mobileVisibleItems = 1,
@@ -36,6 +43,8 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   itemHeight = '650px',
   mobileItemHeight = 'calc(100vh - var(--header-height-mobile) - 20px)',
   gapPercent = 2,
+  displayMode = 'slider', // По умолчанию слайдер
+  gridColumns = 3, // По умолчанию 3 колонки
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems);
@@ -50,6 +59,12 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   const [modalTranslateX, setModalTranslateX] = useState<number>(0);
   const [isModalDragging, setIsModalDragging] = useState<boolean>(false);
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const handleTitleClick = () => {
+    if (titleLink) {
+      router.push(titleLink);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -196,7 +211,17 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   return (
     <section id={id} className={styles['gallery-section']} aria-labelledby={`${id}-title`}>
       <div className={styles.container}>
-        <h2 id={`${id}-title`} className={styles.galleryTitle}>{title}</h2>
+      <h2 
+          id={`${id}-title`}
+          className={styles.galleryTitle}
+          onClick={titleLink ? handleTitleClick : undefined}
+          style={{ 
+            cursor: titleLink ? 'pointer' : 'default',
+          }}
+        >
+          {title}
+        </h2>
+        {displayMode === 'slider' ? (
         <div className={styles['gallery-wrapper']}>
           <NavButton 
             variant="arrow-left" 
@@ -250,7 +275,29 @@ const GallerySection: React.FC<GallerySectionProps> = ({
             onClick={goRight}
             disabled={!canGoRight}
           />
-        </div>
+        </div>        ) : (
+          // Режим сетки
+          <div className={styles.gridContainer} style={{ '--grid-columns': gridColumns } as React.CSSProperties}>
+            {items.map((item) => (
+              <article 
+                key={item.id}
+                className={styles.gridItem}
+                onClick={() => handleImageClick(item.image, items.findIndex(i => i.id === item.id))}
+              >
+                <div className={styles.imageWrapper}>
+                  <Image 
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className={styles.gridImage}
+                  />
+                </div>
+                <h3>{item.title}</h3>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
 
       <Modal 

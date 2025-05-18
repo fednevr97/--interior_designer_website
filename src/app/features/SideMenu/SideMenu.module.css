@@ -178,7 +178,7 @@
   /* Адаптивность */
   @media (max-width: 768px) {
     .side-menu {
-      width: 100%;
+      width: 80vw;
     }
 
     .header__logo-text {
