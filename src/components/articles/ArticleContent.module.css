@@ -1,0 +1,103 @@
+/* src/components/articles/ArticleContent.module.css */
+.container {
+    padding: var(--header-height) 0;
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+  
+  .header {
+    margin-bottom: 2rem;
+    padding-top: var(--header-height);
+  }
+  
+  .imageContainer {
+    position: relative;
+    height: 16rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .image {
+    object-fit: cover;
+  }
+  
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .tag {
+    font-size: 0.875rem;
+    background-color: var(--primary-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+  }
+  
+  .title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #261f1f;
+
+  }
+  
+  .date {
+    color: #000000;
+  }
+  
+  .content {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: var(--primary-color);
+  }
+  
+  .content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 2rem 0 1rem;
+  }
+  
+  .content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+  
+  .content :global(ul), .content :global(ol) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  
+  .content :global(blockquote) {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: #4b5563;
+  }
+  
+  .content :global(code) {
+    background-color: #f3f4f6;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+  }
+  
+  .content :global(pre) {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  
+  .content :global(pre code) {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+  }
