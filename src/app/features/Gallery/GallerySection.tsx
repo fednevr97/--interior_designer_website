@@ -339,14 +339,19 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                   flexShrink: 0
                 }}
               >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={1200}
-                  height={800}
-                  className={styles.modalImage}
-                  priority
-                />
+<Image
+  src={item.image}
+  alt={item.title}
+  width={1200}
+  height={800}
+  className={styles.modalImage}
+  priority
+  style={{
+    maxWidth: '100%',
+    maxHeight: '80dvh',
+    objectFit: 'contain'
+  }}
+/>
               </div>
             ))}
           </div>
