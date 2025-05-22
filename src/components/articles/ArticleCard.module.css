@@ -4,12 +4,12 @@
     overflow: hidden;
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
+    transition: transform var(--transition-normal);
     text-decoration: none; /* Добавляем это свойство */
   }
   
   .card:hover {
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
   }
   
   .imageContainer {
@@ -38,6 +38,7 @@
     background-color: #f3f4f6;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
+    color: black;
   }
   
   .title {
@@ -51,6 +52,7 @@
     color: #4b5563;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-bottom: 1rem;

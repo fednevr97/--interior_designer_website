@@ -101,3 +101,11 @@
     padding: 0;
     color: inherit;
   }
+
+  @media (max-width: 768px) {
+    .container {
+        padding: var(--header-height-mobile) 10px;
+        max-width: 48rem;
+        margin: 0 auto;
+      }
+  }

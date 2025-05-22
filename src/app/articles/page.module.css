@@ -10,6 +10,8 @@
   margin-bottom: 2rem;
   text-align: center;
   color: #1f2937;
+  font-family: var(--font-secondary);
+  color: var(--primary-color);
 }
 
 .grid {
