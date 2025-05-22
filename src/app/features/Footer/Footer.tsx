@@ -2,14 +2,29 @@ import React from 'react';
 import styles from './Footer.module.css';
 import VK from '../Icons/VK/VK';
 import Telegram from '../Icons/Telegram/Telegram';
-import Instagram from '../Icons/Instagram/Instagram';
 
 const Footer = () => {
+  const address = "Севастополь, ул. Токарева, 3";
+  const yandexMapsUrl = `https://yandex.ru/maps/?text=${encodeURIComponent(address)}`;
+
   return (
     <footer id="contacts" className={styles.footer} role="contentinfo">
       <div className={styles.container}>
         <div className={styles.footer__content}>
           <ul className={styles.footer__infoList}>
+            <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_address}`}>
+              <span className={styles.footer__infoLabel}>Адрес:</span>
+              <a 
+                href={yandexMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.footer__infoLink}
+                aria-label="Открыть адрес на Яндекс.Картах"
+              >
+                {address}
+              </a>
+            </li>
+            {/* Остальные элементы остаются без изменений */}
             <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_email}`}>
               <span className={styles.footer__infoLabel}>Email:</span>
               <a href="mailto:example@example.com" className={styles.footer__infoLink}>
@@ -24,9 +39,6 @@ const Footer = () => {
                 </a>
                 <a href="#" aria-label="Telegram">
                   <Telegram aria-hidden="true" />
-                </a>
-                <a href="#" aria-label="Instagram">
-                  <Instagram aria-hidden="true" />
                 </a>
               </div>
             </li>

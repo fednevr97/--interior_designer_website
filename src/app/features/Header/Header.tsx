@@ -9,7 +9,6 @@ import CtaButton from '../../shared/components/ui/Button/CtaButton';
 import SideMenu from '../SideMenu/SideMenu';
 import VK from '../Icons/VK/VK';
 import Telegram from '../Icons/Telegram/Telegram';
-import Instagram from '../Icons/Instagram/Instagram';
 import Modal from '../ModalForm/ModalForm';
 
 interface HeaderProps {
@@ -27,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const menuItems = [
     { id: '1', href: '/', label: 'Главная' },
-    { id: '2', href: '/#about', label: 'О нас' },
+    { id: '2', href: '/#about', label: 'Обо мне' },
     { id: '3', href: '/#services', label: 'Услуги' },
     { id: '4', href: '/portfolio', label: 'Портфолио' },
     { id: '5', href: '#contacts', label: 'Контакты' },
@@ -37,7 +36,6 @@ const Header: React.FC<HeaderProps> = ({
   const socialLinks = [
     { id: '1', url: '#', label: 'ВКонтакте', icon: <VK /> },
     { id: '2', url: '#', label: 'Telegram', icon: <Telegram /> },
-    { id: '3', url: '#', label: 'Instagram', icon: <Instagram /> },
   ];
 
   return (
@@ -86,6 +84,7 @@ const Header: React.FC<HeaderProps> = ({
         menuItems={menuItems}
         phone={phone}
         socialLinks={socialLinks}
+        address="г. Севастополь, ул. Токарева, 3"
       />
 
       <Modal 

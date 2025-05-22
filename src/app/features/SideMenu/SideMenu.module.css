@@ -172,7 +172,14 @@
 
   .side-menu__item-phone {
     display: flex;
-    justify-content: center; /* Выравнивание по центру */
+  }
+
+  .side-menu__address {
+    font-style: normal;
+    color: #000;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 1.4;
   }
 
   /* Адаптивность */

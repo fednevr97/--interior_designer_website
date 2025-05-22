@@ -29,6 +29,7 @@ interface SideMenuProps {
   menuItems: MenuItem[];
   phone: string;
   socialLinks: SocialLink[];
+  address: string;
 }
 
 const SideMenu: React.FC<SideMenuProps> = ({ 
@@ -37,7 +38,8 @@ const SideMenu: React.FC<SideMenuProps> = ({
   logo, 
   menuItems, 
   phone, 
-  socialLinks 
+  socialLinks,
+  address
 }) => {
   // Закрытие по ESC
   useEffect(() => {
@@ -134,6 +136,11 @@ const SideMenu: React.FC<SideMenuProps> = ({
               >
                 {phone}
               </a>
+            </li>
+            <li>
+              <address className={styles['side-menu__address']}>
+                {address}
+              </address>
             </li>
 
             {/* Соцсети */}
