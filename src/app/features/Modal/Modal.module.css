@@ -23,7 +23,7 @@
   background-color: transparent;
   border-radius: 12px;
   max-width: 90%;
-  max-height: 90dvh;
+  max-height: 90vh;
   width: auto;
   height: auto;
   will-change: transform;
@@ -59,7 +59,7 @@
 
 .imageContainer > *,
 .modalImage {
-  max-height: 80dvh;
+  max-height: 80vh;
   width: auto;
   height: auto;
   display: block; /* Важно для корректного отображения */
@@ -110,11 +110,11 @@
 @media (max-width: 768px) {
   .modalContent {
     max-width: 95vw;
-    max-height: 95dvh;
+    max-height: 95vh;
   }
   
   .imageContainer {
-    max-height: 85dvh;
+    max-height: 85vh;
   }
   
   .navButton {
