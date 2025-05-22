@@ -30,7 +30,7 @@
     width: 100%;
     gap: 20px;
     padding: 10px 0;
-    height: calc(90dvh - var(--header-height, 80px)); /* Вычитаем высоту шапки */
+    height: calc(90svh - var(--header-height, 80px)); /* Вычитаем высоту шапки */
   }
 
   .services-carousel::-webkit-scrollbar {

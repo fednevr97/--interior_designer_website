@@ -75,7 +75,7 @@ body {
   background-color: var(--light-text-color);
   display: flex;
   flex-direction: column;
-  height: 100dvh; /* 100% высоты viewport */
+  height: 100svh; /* 100% высоты viewport */
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: auto;
 }
