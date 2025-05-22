@@ -42,7 +42,7 @@ const Footer = () => {
                 </a>
               </div>
             </li>
-            <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_}`}>
+            <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_phone}`}>
               <span className={styles.footer__infoLabel}>Телефон:</span>
               <a href="tel:+7(978)-662-37-81" className={styles.footer__infoLink}>
                 +7 (978) 662 37 81

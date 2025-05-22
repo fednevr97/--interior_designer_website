@@ -46,7 +46,6 @@
     overflow: hidden;
     box-shadow: 0 5px 15px var(--shadow-color);
     transition: transform var(--transition-normal);
-    cursor: pointer;
     display: flex; /* Добавляем flex */
     flex-direction: column; /* Вертикальное расположение */
   }
@@ -93,15 +92,6 @@
   .service-price {
     font-weight: bold;
     color: var(--primary-color);
-  }
-  
-  /* Анимации */
-  .service-item:hover {
-    transform: translateY(-5px);
-  }
-  
-  .service-item:hover .service-image img {
-    transform: scale(1.05);
   }
   
   .servicesTitle {
