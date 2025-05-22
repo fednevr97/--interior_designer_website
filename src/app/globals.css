@@ -72,12 +72,12 @@ body {
   font-family: var(--font-primary), var(--font-system);
   line-height: 1.6;
   color: #fff;
-  background-color: var(--bg-light);
-  overflow-x: hidden;
   background-color: var(--light-text-color);
   display: flex;
   flex-direction: column;
-  min-height: 100dvh; /* 100% высоты viewport */
+  height: 100dvh; /* 100% высоты viewport */
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: auto;
 }
 
 main {
