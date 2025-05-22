@@ -3,7 +3,7 @@
     position: relative;
     width: 100%;
     color: var(--light-text-color);
-    height: var(--footer-height);
+    background-color: var(--primary-color);
   }
   
   .container {
@@ -12,18 +12,16 @@
   }
   
   .footer__infoList {
-    height: var(--footer-height);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     align-items: center;
-    background-color: var(--primary-color);
     box-shadow: var(--shadow-top);
     width: 100%;
     list-style: none;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    padding: 0 60px;
+    padding: 20px 60px 0 60px;
   }
   
   .footer__infoItem {
@@ -31,6 +29,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 0;
+    height: 100%;
   }
   
   .footer__infoItem_email {

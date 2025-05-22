@@ -34,8 +34,8 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   const socialLinks = [
-    { id: '1', url: '#', label: 'ВКонтакте', icon: <VK /> },
-    { id: '2', url: '#', label: 'Telegram', icon: <Telegram /> },
+    { id: '1', url: 'https://vk.ru/id14565500', label: 'ВКонтакте', icon: <VK /> },
+    { id: '2', url: 'https://t.me/dariy1988', label: 'Telegram', icon: <Telegram /> },
   ];
 
   return (

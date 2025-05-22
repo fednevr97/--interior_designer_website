@@ -34,13 +34,14 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    "name": "Студия дизайна [Имя]",
+    "name": "Дизайнер интерьера Шептицкая Дарья",
     "url": "https://вашсайт.ru",
   };
 
   return (
     <html lang="ru" className="scroll-smooth">
       <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
         <Script
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID`}

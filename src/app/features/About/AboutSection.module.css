@@ -1,6 +1,6 @@
 /* Базовые стили */
 .aboutSection {
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
     box-sizing: border-box;
     scroll-margin-top: var(--header-height);
     display: flex;
@@ -20,7 +20,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     align-items: stretch; /* Колонки одинаковой высоты */
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
     width: 100%;
   }
   
@@ -37,9 +37,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: calc(100vh - var(--header-height));
+    max-height: calc(100dvh - var(--header-height));
     overflow: hidden;
-    height: calc(100vh - var(--header-height)); /* Важно для fill */
+    height: calc(100dvh - var(--header-height)); /* Важно для fill */
   }
   
   .aboutPhoto {
@@ -83,12 +83,12 @@
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    min-height: calc(100vh - var(--header-height)); /* Добавлено */
+    min-height: calc(100dvh - var(--header-height)); /* Добавлено */
     overflow: hidden; /* Предотвращаем выход текста за границы */
   }
   
   .aboutParagraph {
-    font-size: clamp(14px, calc((100vh - var(--header-height)) * 0.04), 20px);
+    font-size: clamp(14px, calc((100dvh - var(--header-height)) * 0.04), 20px);
     line-height: 1.8;
     margin-bottom: 25px;
     color: #333;
@@ -129,7 +129,7 @@
     }
     
     .aboutParagraph {
-      font-size: min(1rem, calc((100vh - var(--header-height)) * 0.03));
+      font-size: min(1rem, calc((100dvh - var(--header-height)) * 0.03));
       line-height: 1.5;
       margin-bottom: 15px;
     }

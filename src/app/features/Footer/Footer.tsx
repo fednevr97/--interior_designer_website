@@ -34,15 +34,15 @@ const Footer = () => {
             <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_socialMedia}`}>
               <span className={styles.footer__infoLabel}>Соцсети:</span>
               <div className={styles.footer__socialLinks} role="group" aria-label="Социальные сети">
-                <a href="#" aria-label="ВКонтакте">
+                <a href="https://vk.ru/id14565500" target='_blank' aria-label="ВКонтакте">
                   <VK aria-hidden="true" />
                 </a>
-                <a href="#" aria-label="Telegram">
+                <a href="https://t.me/dariy1988" target='_blank' aria-label="Telegram">
                   <Telegram aria-hidden="true" />
                 </a>
               </div>
             </li>
-            <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_phone}`}>
+            <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_}`}>
               <span className={styles.footer__infoLabel}>Телефон:</span>
               <a href="tel:+7(978)-662-37-81" className={styles.footer__infoLink}>
                 +7 (978) 662 37 81
