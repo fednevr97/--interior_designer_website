@@ -5,17 +5,19 @@ import Footer from "./features/Footer/Footer";
 import Header from "./features/Header/Header";
 import Script from "next/script";
 
+// Оптимизация шрифтов
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin", "cyrillic"],
   weight: ["400", "600", "700"],
+  display: 'swap', // Добавлено для оптимизации отображения
 });
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin", "cyrillic"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600"], // Убраны лишние начертания
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -24,6 +26,7 @@ export const metadata: Metadata = {
     template: "%s | Студия дизайна [Имя]"
   },
   description: "Авторские дизайн-проекты интерьеров под ключ",
+  metadataBase: new URL('https://вашсайт.ru'), // Добавлено для canonical URL
 };
 
 export default function RootLayout({
@@ -41,30 +44,49 @@ export default function RootLayout({
   return (
     <html lang="ru" className="scroll-smooth">
       <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Предзагрузка критических ресурсов */}
+        <link rel="preload" href="/fonts/Montserrat.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/Cormorant_Garamond.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        
+        {/* Асинхронная загрузка аналитики */}
         <Script
           strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID`}
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
         />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'GA_MEASUREMENT_ID');
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+              page_path: window.location.pathname,
+              transport_type: 'beacon',
+              anonymize_ip: true
+            });
           `}
         </Script>
       </head>
-      <body className={`${montserrat.variable} ${cormorant.variable} antialiased`}>
+      <body className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased`}>
+        {/* JSON-LD для SEO */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          className="hidden" // Скрываем от видимого интерфейса
         />
+        
+        {/* Основная структура страницы */}
         <Header />
         <main className="min-h-screen">
           {children}
         </main>
         <Footer />
+
+        {/* Отложенная загрузка не критичных скриптов */}
+        <Script 
+          src="https://cdn.example.com/non-critical.js" 
+          strategy="lazyOnload" 
+        />
       </body>
     </html>
   );

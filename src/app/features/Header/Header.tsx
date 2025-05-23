@@ -64,9 +64,19 @@ const Header: React.FC<HeaderProps> = ({
                 </Link>
               </li>
               <li className={`${styles.header__menuItem} ${styles.header__contacts}`}>
-                <a href={`tel:${phone.replace(/\D/g, '')}`} className={styles.header__phone} aria-label="Позвонить">
-                  {phone}
-                </a>
+              <a 
+            href={`tel:${phone.replace(/\D/g, '')}`} 
+            className={styles.header__phone} 
+            aria-label="Позвонить"
+            style={{
+              fontFamily: 'system-ui, -apple-system, sans-serif', // Используем системный шрифт
+              fontWeight: 700,
+              textDecoration: 'none',
+              color: 'inherit'
+            }}
+          >
+            {phone}
+          </a>
                 <CtaButton onClick={() => setIsModalOpen(true)}/>
               </li>
             </ul>
