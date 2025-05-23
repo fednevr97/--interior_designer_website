@@ -2,25 +2,26 @@
   "name": "web-design",
   "version": "0.1.0",
   "private": true,
-  "browserslist": ["defaults", "not IE 11"],
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
     "next": "^15.1.8",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "^7.6.0",
-    "remark": "^15.0.1",
-    "remark-html": "^16.0.1",
-    "remark-images": "^4.1.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.1.8",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.5",

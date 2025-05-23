@@ -1,11 +1,12 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   reactStrictMode: true,
   compress: true,
   productionBrowserSourceMaps: false,
 
   experimental: {
-    optimizePackageImports: ['react-icons', 'lodash-es', 'date-fns'],
+    optimizePackageImports: ['react-icons', 'lodash', 'date-fns'],
     disableOptimizedLoading: true, // Отключает автоматический preload CSS
   },
 
