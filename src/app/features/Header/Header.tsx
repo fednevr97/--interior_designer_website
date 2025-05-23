@@ -68,12 +68,6 @@ const Header: React.FC<HeaderProps> = ({
             href={`tel:${phone.replace(/\D/g, '')}`} 
             className={styles.header__phone} 
             aria-label="Позвонить"
-            style={{
-              fontFamily: 'system-ui, -apple-system, sans-serif', // Используем системный шрифт
-              fontWeight: 700,
-              textDecoration: 'none',
-              color: 'inherit'
-            }}
           >
             {phone}
           </a>

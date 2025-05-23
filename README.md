@@ -35,8 +35,4 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-1 Разбивка всей верстки на компоненты
-2 Верстка дополнительных страниц
-3 Верстка Модального окна
 
-Сделать сео оптимизацию (в частоности в лайаут)
