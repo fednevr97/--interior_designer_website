@@ -45,9 +45,6 @@ export default function RootLayout({
     <html lang="ru" className="scroll-smooth">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Предзагрузка критических ресурсов */}
-        <link rel="preload" href="/fonts/Montserrat.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/Cormorant_Garamond.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         
         {/* Асинхронная загрузка аналитики */}
         <Script
@@ -81,12 +78,6 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-
-        {/* Отложенная загрузка не критичных скриптов */}
-        <Script 
-          src="https://cdn.example.com/non-critical.js" 
-          strategy="lazyOnload" 
-        />
       </body>
     </html>
   );
