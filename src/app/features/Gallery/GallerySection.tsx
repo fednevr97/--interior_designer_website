@@ -228,7 +228,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
       <article 
         key={item.id} 
         className={styles['gallery-item']} 
-        role="listitem"
+        role="group"
         style={{
           height: visibleItems === mobileVisibleItems ? mobileItemHeight : itemHeight
         }}

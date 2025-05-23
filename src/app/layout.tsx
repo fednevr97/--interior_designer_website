@@ -3,7 +3,7 @@ import { Montserrat, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Footer from "./features/Footer/Footer";
 import Header from "./features/Header/Header";
-import Script from "next/script";
+// import Script from "next/script";
 
 // Оптимизация шрифтов
 const montserrat = Montserrat({
@@ -47,7 +47,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
         {/* Асинхронная загрузка аналитики */}
-        <Script
+        {/* <Script
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
         />
@@ -62,7 +62,7 @@ export default function RootLayout({
               anonymize_ip: true
             });
           `}
-        </Script>
+        </Script> */}
       </head>
       <body className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased`}>
         {/* JSON-LD для SEO */}
