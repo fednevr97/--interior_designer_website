@@ -13,6 +13,7 @@ const nextConfig = {
     optimizeFonts: true, // из next.config.ts
     optimizeCss: true, // из next.config.ts
     legacyBrowsers: false, // отключаем полифиллы
+    disableOptimizedLoading: true,
   },
 
   compiler: {

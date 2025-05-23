@@ -3,7 +3,6 @@ import { Montserrat, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Footer from "./features/Footer/Footer";
 import Header from "./features/Header/Header";
-// import Script from "next/script";
 
 // Оптимизация шрифтов
 const montserrat = Montserrat({
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | Студия дизайна [Имя]"
   },
   description: "Авторские дизайн-проекты интерьеров под ключ",
-  metadataBase: new URL('https://вашсайт.ru'), // Добавлено для canonical URL
+  metadataBase: new URL('https://interior-designer-website-git-main-ruslans-projects-3bb2167d.vercel.app/'), // Добавлено для canonical URL
 };
 
 export default function RootLayout({
@@ -38,31 +37,13 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "Дизайнер интерьера Шептицкая Дарья",
-    "url": "https://вашсайт.ru",
+    "url": "https://interior-designer-website-git-main-ruslans-projects-3bb2167d.vercel.app/",
   };
 
   return (
     <html lang="ru" className="scroll-smooth">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-        {/* Асинхронная загрузка аналитики */}
-        {/* <Script
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-              page_path: window.location.pathname,
-              transport_type: 'beacon',
-              anonymize_ip: true
-            });
-          `}
-        </Script> */}
       </head>
       <body className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased`}>
         {/* JSON-LD для SEO */}
