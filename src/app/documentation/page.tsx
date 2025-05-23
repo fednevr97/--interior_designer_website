@@ -8,7 +8,6 @@ export default async function DocumentationPage() {
 
   return (
     <div className={styles.documentationPage}>
-      
       <GallerySection
         id="documentation"
         title="Образцы проектной документации"

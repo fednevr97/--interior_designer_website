@@ -1,7 +1,6 @@
 /* src/app/articles/page.module.css */
 .container {
   margin: 0 auto;
-  padding: var(--header-height) 60px;
 }
 
 .title {

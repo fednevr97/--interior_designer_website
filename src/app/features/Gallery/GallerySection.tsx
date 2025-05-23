@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import NavButton from '../../shared/components/ui/NavButton/NavButton';
 import Image from 'next/image';
 import Modal from '../Modal/Modal';
@@ -62,103 +62,112 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   const [modalStartX, setModalStartX] = useState(0);
   const router = useRouter();
 
-  const handleTitleClick = () => {
+  // Мемоизированный обработчик клика по заголовку
+  const handleTitleClick = useCallback(() => {
     if (titleLink) {
       router.push(titleLink);
     }
-  };
+  }, [titleLink, router]);
+
+  // Мемоизированный обработчик ресайза
+  const handleResize = useCallback(() => {
+    if (window.innerWidth <= 768) {
+      setVisibleItems(mobileVisibleItems);
+    } else if (window.innerWidth <= 1023) {
+      setVisibleItems(tabletVisibleItems);
+    } else {
+      setVisibleItems(defaultVisibleItems);
+    }
+    setCurrentIndex(0);
+    setTranslateX(0);
+  }, [defaultVisibleItems, tabletVisibleItems, mobileVisibleItems]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setVisibleItems(mobileVisibleItems);
-      } else if (window.innerWidth <= 1023) {
-        setVisibleItems(tabletVisibleItems);
-      } else {
-        setVisibleItems(defaultVisibleItems);
-      }
-      setCurrentIndex(0);
-      setTranslateX(0);
-    };
-
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [defaultVisibleItems, tabletVisibleItems, mobileVisibleItems]);
+  }, [handleResize]);
 
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < items.length - visibleItems;
+  // Мемоизированные значения для навигации
+  const canGoLeft = useMemo(() => currentIndex > 0, [currentIndex]);
+  const canGoRight = useMemo(() => currentIndex < items.length - visibleItems, [currentIndex, items.length, visibleItems]);
 
-  const goLeft = () => {
+  // Мемоизированные обработчики навигации
+  const goLeft = useCallback(() => {
     if (canGoLeft) {
       setCurrentIndex(prev => prev - 1);
     }
-  };
+  }, [canGoLeft]);
 
-  const goRight = () => {
+  const goRight = useCallback(() => {
     if (canGoRight) {
       setCurrentIndex(prev => prev + 1);
     }
-  };
+  }, [canGoRight]);
 
-  const getTransform = () => {
+  // Мемоизированное вычисление transform
+  const getTransform = useCallback(() => {
     if (isDragging) {
       return `translateX(calc(-${currentIndex * (100 / visibleItems + (gapPercent / visibleItems))}% + ${translateX}px))`;
     }
     const itemWidthPercent = 100 / visibleItems;
     const itemWithGap = itemWidthPercent + (gapPercent / visibleItems);
     return `translateX(-${currentIndex * itemWithGap}%)`;
-  };
+  }, [isDragging, currentIndex, visibleItems, gapPercent, translateX]);
 
-  const getSizes = () => {
+  // Мемоизированное вычисление sizes для Image
+  const getSizes = useCallback(() => {
     switch(visibleItems) {
       case 1: return "100vw";
       case 2: return "(max-width: 768px) 100vw, 50vw";
       case 3: return "(max-width: 768px) 100vw, 33vw";
       default: return "(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 25vw";
     }
-  };
+  }, [visibleItems]);
 
-  const handleImageClick = (image: string, index: number) => {
+  // Мемоизированный обработчик клика по изображению
+  const handleImageClick = useCallback((image: string, index: number) => {
     if (!isDragging) {
       setSelectedImage(image);
       setSelectedImageIndex(index);
       setModalCurrentIndex(index);
     }
-  };
+  }, [isDragging]);
 
-  const handlePrevImage = () => {
+  // Мемоизированные обработчики навигации в модальном окне
+  const handlePrevImage = useCallback(() => {
     if (selectedImageIndex > 0) {
       const newIndex = selectedImageIndex - 1;
       setSelectedImageIndex(newIndex);
       setSelectedImage(items[newIndex].image);
       setModalCurrentIndex(newIndex);
     }
-  };
+  }, [selectedImageIndex, items]);
 
-  const handleNextImage = () => {
+  const handleNextImage = useCallback(() => {
     if (selectedImageIndex < items.length - 1) {
       const newIndex = selectedImageIndex + 1;
       setSelectedImageIndex(newIndex);
       setSelectedImage(items[newIndex].image);
       setModalCurrentIndex(newIndex);
     }
-  };
+  }, [selectedImageIndex, items]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  // Мемоизированные обработчики touch событий
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (visibleItems >= items.length) return;
     setIsDragging(true);
     setStartX(e.touches[0].clientX);
-  };
+  }, [visibleItems, items.length]);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isDragging || visibleItems >= items.length) return;
     const currentX = e.touches[0].clientX;
     const diff = currentX - startX;
     setTranslateX(diff);
-  };
+  }, [isDragging, visibleItems, items.length, startX]);
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     if (!isDragging || visibleItems >= items.length) return;
     setIsDragging(false);
 
@@ -169,22 +178,23 @@ const GallerySection: React.FC<GallerySectionProps> = ({
       goRight();
     }
     setTranslateX(0);
-  };
+  }, [isDragging, visibleItems, items.length, translateX, canGoLeft, canGoRight, goLeft, goRight]);
 
-  const handleModalTouchStart = (e: React.TouchEvent) => {
+  // Мемоизированные обработчики touch событий для модального окна
+  const handleModalTouchStart = useCallback((e: React.TouchEvent) => {
     setIsModalDragging(true);
     setModalStartX(e.touches[0].clientX);
     setModalTranslateX(0);
-  };
+  }, []);
 
-  const handleModalTouchMove = (e: React.TouchEvent) => {
+  const handleModalTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isModalDragging) return;
     const currentX = e.touches[0].clientX;
     const diff = currentX - modalStartX;
     setModalTranslateX(diff);
-  };
+  }, [isModalDragging, modalStartX]);
 
-  const handleModalTouchEnd = () => {
+  const handleModalTouchEnd = useCallback(() => {
     if (!isModalDragging) return;
     setIsModalDragging(false);
 
@@ -195,20 +205,102 @@ const GallerySection: React.FC<GallerySectionProps> = ({
       handleNextImage();
     }
     setModalTranslateX(0);
-  };
+  }, [isModalDragging, modalTranslateX, handlePrevImage, handleNextImage]);
 
-  const handleModalClick = (e: React.MouseEvent) => {
+  // Мемоизированный обработчик клика по модальному окну
+  const handleModalClick = useCallback((e: React.MouseEvent) => {
     if (modalContentRef.current && !modalContentRef.current.contains(e.target as Node)) {
       setSelectedImage(null);
     }
-  };
+  }, []);
 
-  const getModalTransform = () => {
+  // Мемоизированное вычисление transform для модального окна
+  const getModalTransform = useCallback(() => {
     if (isModalDragging) {
       return `translateX(calc(-${modalCurrentIndex * (100 / items.length)}% + ${modalTranslateX}px))`;
     }
     return `translateX(-${modalCurrentIndex * (100 / items.length)}%)`;
-  };
+  }, [isModalDragging, modalCurrentIndex, items.length, modalTranslateX]);
+
+  // Мемоизированный рендер элементов галереи
+  const renderGalleryItems = useMemo(() => (
+    items.map((item, index) => (
+      <article 
+        key={item.id} 
+        className={styles['gallery-item']} 
+        role="listitem"
+        style={{
+          height: visibleItems === mobileVisibleItems ? mobileItemHeight : itemHeight
+        }}
+      >
+        <div 
+          className={styles.imageWrapper} 
+          onClick={() => handleImageClick(item.image, index)}
+        >
+          <Image 
+            src={item.image} 
+            alt={item.title} 
+            loading="lazy"
+            fill  
+            sizes={getSizes()}
+          />
+        </div>
+        <h3>{item.title}</h3>
+      </article>
+    ))
+  ), [items, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, handleImageClick, getSizes]);
+
+  // Мемоизированный рендер grid элементов
+  const renderGridItems = useMemo(() => (
+    items.map((item) => (
+      <article 
+        key={item.id}
+        className={styles.gridItem}
+        onClick={() => handleImageClick(item.image, items.findIndex(i => i.id === item.id))}
+      >
+        <div className={styles.imageWrapper}>
+          <Image 
+            src={item.image}
+            alt={item.title}
+            fill
+            sizes="(max-width: 768px) 50vw, 33vw"
+            className={styles.gridImage}
+          />
+        </div>
+        <h3>{item.title}</h3>
+      </article>
+    ))
+  ), [items, handleImageClick]);
+
+  // Мемоизированный рендер модальных изображений
+  const renderModalImages = useMemo(() => (
+    items.map((item, index) => (
+      <div 
+        key={item.id}
+        className={styles.modalImageWrapper}
+        style={{
+          width: `${100 / items.length}%`,
+          opacity: selectedImageIndex === index ? 1 : 0.5,
+          transition: 'opacity 0.3s ease',
+          flexShrink: 0
+        }}
+      >
+        <Image
+          src={item.image}
+          alt={item.title}
+          width={1200}
+          height={800}
+          className={styles.modalImage}
+          priority
+          style={{
+            maxWidth: '100%',
+            maxHeight: '80dvh',
+            objectFit: 'contain'
+          }}
+        />
+      </div>
+    ))
+  ), [items, selectedImageIndex]);
 
   return (
     <section id={id} className={styles['gallery-section']} aria-labelledby={`${id}-title`}>
@@ -245,30 +337,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
               >
-                {items.map((item, index) => (
-                  <article 
-                    key={item.id} 
-                    className={styles['gallery-item']} 
-                    role="listitem"
-                    style={{
-                      height: visibleItems === mobileVisibleItems ? mobileItemHeight : itemHeight
-                    }}
-                  >
-                    <div 
-                      className={styles.imageWrapper} 
-                      onClick={() => handleImageClick(item.image, index)}
-                    >
-                      <Image 
-                        src={item.image} 
-                        alt={item.title} 
-                        loading="lazy"
-                        fill  
-                        sizes={getSizes()}
-                      />
-                    </div>
-                    <h3>{item.title}</h3>
-                  </article>
-                ))}
+                {renderGalleryItems}
               </div>
             </div>
             <NavButton 
@@ -280,24 +349,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           </div>
         ) : (
           <div className={styles.gridContainer} style={{ '--grid-columns': gridColumns } as React.CSSProperties}>
-            {items.map((item) => (
-              <article 
-                key={item.id}
-                className={styles.gridItem}
-                onClick={() => handleImageClick(item.image, items.findIndex(i => i.id === item.id))}
-              >
-                <div className={styles.imageWrapper}>
-                  <Image 
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                    className={styles.gridImage}
-                  />
-                </div>
-                <h3>{item.title}</h3>
-              </article>
-            ))}
+            {renderGridItems}
           </div>
         )}
       </div>
@@ -328,32 +380,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               display: 'flex'
             }}
           >
-            {items.map((item, index) => (
-              <div 
-                key={item.id}
-                className={styles.modalImageWrapper}
-                style={{
-                  width: `${100 / items.length}%`,
-                  opacity: selectedImageIndex === index ? 1 : 0.5,
-                  transition: 'opacity 0.3s ease',
-                  flexShrink: 0
-                }}
-              >
-<Image
-  src={item.image}
-  alt={item.title}
-  width={1200}
-  height={800}
-  className={styles.modalImage}
-  priority
-  style={{
-    maxWidth: '100%',
-    maxHeight: '80dvh',
-    objectFit: 'contain'
-  }}
-/>
-              </div>
-            ))}
+            {renderModalImages}
           </div>
         </div>
       </Modal>
@@ -361,4 +388,4 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   );
 };
 
-export default GallerySection;
+export default React.memo(GallerySection);

@@ -97,6 +97,19 @@ h1 {
   padding-left: 0;
 }
 
+.min-h-screen {
+  padding: var(--header-height) 0 60px 0;
+  transition: padding 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* Боковые паддинги только для элементов кроме первого */
+.min-h-screen > *:not(:first-child) {
+  padding-left: 60px;
+  padding-right: 60px;
+}
 /* Запрещаем выделение текста при кликах */
 button {
   user-select: none;
@@ -116,5 +129,21 @@ button {
 @media (min-width: 1200px) {
   h2 {
     font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .min-h-screen {
+    padding: var(--header-height-mobile) 0 60px 0;
+    transition: padding 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+  }
+
+  .min-h-screen > *:not(:first-child) {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }

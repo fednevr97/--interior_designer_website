@@ -1,7 +1,6 @@
 /* Основные стили */
 .services-section {
     background-color: var(--light-text-color);
-    padding: 0 60px 60px;
   }
   
   .container {
@@ -133,10 +132,6 @@
     .servicesTitle {
       padding-left: 0;
       text-align: center;
-    }
-
-    .services-section {
-        padding: 0 20px 20px;
     }
 
     .service-item {

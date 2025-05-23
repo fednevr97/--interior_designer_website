@@ -1,7 +1,6 @@
 /* Стили для галереи */
 .gallery-section {
     margin: 0;
-    padding: 0 60px 60px;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -86,12 +85,6 @@
     padding-left: 20px;
 }
 
-/* .modalImage {
-    max-width: 100%;
-    max-height: 80dvh;
-    object-fit: contain;
-} */
-
 .imageWrapper {
     position: relative;
     height: 100%;
@@ -166,9 +159,6 @@
 
 /* Адаптивность для телефонов */
 @media (max-width: 768px) {
-    .gallery-section {
-        padding: 0 20px 20px;
-    }
 
     .gallery-item {
         flex: 0 0 100%;

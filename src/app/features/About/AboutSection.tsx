@@ -1,24 +1,65 @@
-import React from 'react';
+'use client'
+
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import styles from './AboutSection.module.css';
 
 interface AboutSectionProps {
   id?: string;
+  className?: string;
 }
 
-const AboutSection: React.FC<AboutSectionProps> = ({ id }) => {
+const ABOUT_TEXT = [
+  "Приветствую Вас на моем сайте!",
+  `Меня зовут Дарья. Я - дизайнер интерьера, который верит, что каждый проект — это не просто работа, а творческое путешествие, где Ваши мечты становятся реальностью. С каждым новым проектом я стремлюсь создать пространство, которое отражает индивидуальность и стиль своих владельцев.`,
+  `Мой подход включает:
+  • Профессионализм. Я обладаю многолетним опытом и регулярно обновляю свои знания.
+  • Ответственность. Каждое решение принимается с учетом Ваших потребностей.
+  • Упорство. Я работаю над каждой деталью, чтобы добиться идеального результата.`,
+  `Если Вы готовы сделать шаг в мир вдохновения и гармонии, я буду рада помочь Вам реализовать Ваши идеи. Давайте вместе создадим уникальный интерьер!`
+];
+
+const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Миниатюра для blur-эффекта (можно заменить на реальный base64)
+  const blurDataURL = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiIC8+PC9zdmc+';
+  const paragraphs = useMemo(() => (
+    ABOUT_TEXT.map((text, index) => (
+      <p key={`para-${index}`} className={styles.aboutParagraph}>
+        {text.split('\n').map((line, i) => (
+          <React.Fragment key={`line-${i}`}>
+            {line}
+            {i < text.split('\n').length - 1 && <br />}
+          </React.Fragment>
+        ))}
+      </p>
+    ))
+  ), []);
+
   return (
-    <section id={id || "about"} className={styles.aboutSection} aria-labelledby="about-title">
+    <section 
+      id={id || "about"} 
+      className={`${styles.aboutSection} ${className || ''}`}
+      aria-labelledby="about-title"
+    >
       <div className={styles.container}>
         <div className={styles.aboutContent}>
           <div className={styles.aboutImageWrapper}>
-            <div className={styles.aboutImage}>
+            {!isLoaded && <div className={styles.skeleton} />}
+            
+            <div className={`${styles.aboutImage} ${!isLoaded ? styles.hidden : ''}`}>
               <Image
                 src="/assets/Photo.jpg"
                 alt="Фото Шептицкая Дарья"
                 fill
+                priority={false} // Убрали priority для избежания preload-предупреждения
+                quality={85}
                 className={styles.aboutPhoto}
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                onLoad={() => setIsLoaded(true)}
+                placeholder="blur"
+                blurDataURL={blurDataURL}
               />
               <div className={styles.imageOverlayText}>
                 <h3 id="about-title">Шептицкая Дарья</h3>
@@ -27,28 +68,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id }) => {
             </div>
           </div>
           <div className={styles.aboutText}>
-            <p className={styles.aboutParagraph}>Приветствую Вас на моем сайте!</p>
-            <p className={styles.aboutParagraph}>
-              Меня зовут Дарья. Я - дизайнер интерьера, который верит, что каждый проект — это не
-              просто работа, а творческое путешествие, где Ваши мечты становятся реальностью. С
-              каждым новым проектом я стремлюсь создать пространство, которое отражает
-              индивидуальность и стиль своих владельцев.
-            </p>
-            <p className={styles.aboutParagraph}>
-              Мой подход включает: <br />
-              - Профессионализм. Я обладаю многолетним опытом и регулярно
-              обновляю свои знания, чтобы быть в курсе последних трендов и технологий. <br />
-              - Ответственность. Каждое решение я принимаю с учетом Ваших потребностей и пожеланий,
-              ведь для меня важен результат, который будет радовать Вас долгие годы. <br />
-              - Упорство. Я настойчиво работаю над каждой деталью, чтобы добиться идеального результата, потому
-              что верю, что качественный дизайн способен изменить пространство и улучшить качество
-              жизни.
-            </p>
-            <p className={styles.aboutParagraph}>
-              Если Вы готовы сделать шаг в мир вдохновения и гармонии, я буду рада помочь Вам
-              реализовать Ваши идеи. Давайте вместе создадим уникальный интерьер, в котором будет
-              комфортно и приятно находиться!
-            </p>
+            {paragraphs}
           </div>
         </div>
       </div>
@@ -56,4 +76,4 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id }) => {
   );
 };
 
-export default AboutSection;
+export default React.memo(AboutSection);

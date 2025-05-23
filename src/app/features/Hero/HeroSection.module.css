@@ -1,26 +1,44 @@
-/* Базовые стили */
+/* Основные стили */
 .hero {
   position: relative;
   overflow: hidden;
   --gradient-height: 100px;
   --gradient-height-mobile: 40px;
-  height: 100svh;
+  height: 100dvh;
   padding-bottom: 60px;
   box-sizing: border-box;
+  contain: layout paint;
 }
 
 .imageContainer {
-  height: 100%;
-  padding: 0;
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .heroImage {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
   object-position: center;
-  position: relative;
+  will-change: transform;
+  transition: opacity 0.4s ease-out;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+/* Скелетон для загрузки */
+.skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* Градиентный оверлей */
@@ -37,13 +55,14 @@
     rgba(255,255,255,0) 100%
   );
   z-index: 2;
+  pointer-events: none;
 }
 
 /* Мобильные стили */
 @media (max-width: 768px) {
   .hero {
     --gradient-height: var(--gradient-height-mobile);
-    height: calc(100svh - var(--header-height-mobile));
+    height: calc(100dvh - var(--header-height-mobile));
     padding-bottom: 20px;
   }
 
