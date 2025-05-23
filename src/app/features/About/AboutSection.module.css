@@ -49,10 +49,6 @@
     transition: transform var(--transition-normal);
   }
   
-  .aboutImage:hover .aboutPhoto {
-    transform: scale(1.03);
-  }
-  
   .imageOverlayText {
     position: absolute;
     bottom: 0;

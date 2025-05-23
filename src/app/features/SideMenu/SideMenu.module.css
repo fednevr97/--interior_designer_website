@@ -174,14 +174,6 @@
     display: flex;
   }
 
-  .side-menu__address {
-    font-style: normal;
-    color: #000;
-    font-size: 1rem;
-    text-align: center;
-    line-height: 1.4;
-  }
-
   /* Адаптивность */
   @media (max-width: 768px) {
     .side-menu {

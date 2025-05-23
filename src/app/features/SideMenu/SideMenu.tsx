@@ -39,7 +39,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
   menuItems, 
   phone, 
   socialLinks,
-  address
+
 }) => {
   // Закрытие по ESC
   useEffect(() => {
@@ -76,6 +76,9 @@ const SideMenu: React.FC<SideMenuProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
+
+  const address = "Севастополь, ул. Токарева, 3";
+  const yandexMapsUrl = `https://yandex.ru/maps/?text=${encodeURIComponent(address)}`;
 
   return (
     <aside 
@@ -137,10 +140,16 @@ const SideMenu: React.FC<SideMenuProps> = ({
                 {phone}
               </a>
             </li>
-            <li>
-              <address className={styles['side-menu__address']}>
+            <li className={styles['side-menu__item']}>
+              <a 
+                href={yandexMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles['side-menu__link']}
+                aria-label="Открыть адрес на Яндекс.Картах"
+              >
                 {address}
-              </address>
+              </a>
             </li>
 
             {/* Соцсети */}
