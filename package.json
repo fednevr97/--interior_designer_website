@@ -14,6 +14,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
+    "critters": "^0.0.23",
     "gray-matter": "^4.0.3",
     "next": "^15.1.8",
     "react": "^19.0.0",
