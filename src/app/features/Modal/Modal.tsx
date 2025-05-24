@@ -26,9 +26,11 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null); // Реф для работы с изображением
+  const imageRef = useRef<HTMLDivElement>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  const touchStartY = useRef(0);
+  const touchStartTime = useRef(0);
 
   // Состояния для масштабирования
   const [scale, setScale] = useState(1);
@@ -39,20 +41,19 @@ const Modal: React.FC<ModalProps> = ({
     setTimeout(() => {
       onClose();
       setIsClosing(false);
-      setScale(1); // Сброс масштаба при закрытии
+      setScale(1);
     }, 300);
   }, [onClose]);
 
-  // Сброс масштаба при навигации между изображениями
   const handlePrev = useCallback(() => {
-    setScale(1); // Сбрасываем масштаб
-    setLastDistance(0); // Сбрасываем расстояние
+    setScale(1);
+    setLastDistance(0);
     onPrev?.();
   }, [onPrev]);
 
   const handleNext = useCallback(() => {
-    setScale(1); // Сбрасываем масштаб
-    setLastDistance(0); // Сбрасываем расстояние
+    setScale(1);
+    setLastDistance(0);
     onNext?.();
   }, [onNext]);
 
@@ -61,7 +62,7 @@ const Modal: React.FC<ModalProps> = ({
       document.body.style.overflow = 'hidden';
       setIsClosing(false);
       setDragOffset(0);
-      setScale(1); // Сброс масштаба при открытии
+      setScale(1);
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -71,14 +72,32 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        handleClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isOpen, handleClose]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      // Начинаем отслеживать расстояние между двумя пальцами
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
       setLastDistance(distance);
+    } else if (e.touches.length === 1) {
+      touchStartY.current = e.touches[0].clientY;
+      touchStartTime.current = Date.now();
     }
   };
 
@@ -91,16 +110,44 @@ const Modal: React.FC<ModalProps> = ({
 
       if (lastDistance) {
         const scaleChange = distance / lastDistance;
-        setScale((prevScale) => Math.min(Math.max(prevScale * scaleChange, 1), 3)); // Ограничиваем масштаб от 1 до 3
+        setScale((prevScale) => Math.min(Math.max(prevScale * scaleChange, 1), 3));
       }
 
       setLastDistance(distance);
+    } else if (e.touches.length === 1) {
+      const currentY = e.touches[0].clientY;
+      const deltaY = currentY - touchStartY.current;
+
+      if (deltaY > 0 && (contentRef.current?.scrollTop === 0 || deltaY > 10)) {
+        e.preventDefault();
+        setDragOffset(deltaY);
+      } else if (
+        deltaY < 0 &&
+        contentRef.current &&
+        contentRef.current.scrollHeight - contentRef.current.scrollTop <=
+          contentRef.current.clientHeight + 10
+      ) {
+        e.preventDefault();
+        setDragOffset(deltaY);
+      }
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length < 2) {
       setLastDistance(0);
+    }
+
+    if (!isOpen) return;
+
+    const deltaTime = Date.now() - touchStartTime.current;
+    const velocity = Math.abs(dragOffset) / deltaTime;
+    const shouldClose = Math.abs(dragOffset) > 100 || velocity > 0.3;
+
+    if (shouldClose) {
+      handleClose();
+    } else {
+      setDragOffset(0);
     }
   };
 
@@ -215,7 +262,7 @@ const Modal: React.FC<ModalProps> = ({
           className={styles.imageContainer}
           style={{
             transform: `scale(${scale})`,
-            transformOrigin: 'center center', // Фиксируем центр масштабирования
+            transformOrigin: 'center center',
             transition: 'transform 0.2s ease-out',
           }}
         >
