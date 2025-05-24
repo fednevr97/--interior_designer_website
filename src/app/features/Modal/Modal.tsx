@@ -35,20 +35,34 @@ const Modal: React.FC<ModalProps> = ({
   // Для масштабирования
   const [scale, setScale] = useState(1);
   const [lastDistance, setLastDistance] = useState(0);
+  const [centerPoint, setCenterPoint] = useState({ x: 0, y: 0 });
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
+      setScale(1); // Reset scale when closing
     }, 300);
   }, [onClose]);
+
+  // Reset scale when navigating between images
+  const handlePrev = useCallback(() => {
+    setScale(1);
+    onPrev?.();
+  }, [onPrev]);
+
+  const handleNext = useCallback(() => {
+    setScale(1);
+    onNext?.();
+  }, [onNext]);
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       setIsClosing(false);
       setDragOffset(0);
+      setScale(1); // Reset scale when opening
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -76,6 +90,19 @@ const Modal: React.FC<ModalProps> = ({
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
+      // Calculate center point between two fingers
+      const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      
+      // Get position relative to the image container
+      const rect = imageRef.current?.getBoundingClientRect();
+      if (rect) {
+        setCenterPoint({
+          x: (centerX - rect.left - rect.width / 2) / scale,
+          y: (centerY - rect.top - rect.height / 2) / scale
+        });
+      }
+
       // Начинаем отслеживать расстояние между двумя пальцами
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
@@ -201,7 +228,7 @@ const Modal: React.FC<ModalProps> = ({
           <>
             <button
               className={`${styles.navButton} ${styles.prevButton}`}
-              onClick={onPrev}
+              onClick={handlePrev}
               disabled={!canGoPrev}
               aria-label="Предыдущее изображение"
             >
@@ -223,7 +250,7 @@ const Modal: React.FC<ModalProps> = ({
             </button>
             <button
               className={`${styles.navButton} ${styles.nextButton}`}
-              onClick={onNext}
+              onClick={handleNext}
               disabled={!canGoNext}
               aria-label="Следующее изображение"
             >
@@ -250,6 +277,7 @@ const Modal: React.FC<ModalProps> = ({
           className={styles.imageContainer}
           style={{
             transform: `scale(${scale})`,
+            transformOrigin: `${centerPoint.x * scale + 50}% ${centerPoint.y * scale + 50}%`,
             transition: 'transform 0.2s ease-out',
           }}
         >
