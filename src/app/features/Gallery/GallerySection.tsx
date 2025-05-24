@@ -224,12 +224,12 @@ const GallerySection: React.FC<GallerySectionProps> = ({
 
  // Мемоизированный рендер элементов галереи
 const renderGalleryItems = useMemo(() => (
-  <ul className={styles['gallery-list']}>
+  <ul className={styles['gallery-list']} role="list">
     {items.map((item, index) => (
       <li 
         key={item.id} 
         className={styles['gallery-item']} 
-        role="group"
+        role="listitem"
         style={{
           height: visibleItems === mobileVisibleItems ? mobileItemHeight : itemHeight
         }}
@@ -254,9 +254,10 @@ const renderGalleryItems = useMemo(() => (
 
 // Мемоизированный рендер grid элементов
 const renderGridItems = useMemo(() => (
-  <ul className={styles.gridList}>
+  <ul className={styles.gridList} role="list">
     {items.map((item) => (
       <li
+        role="listitem"
         key={item.id}
         className={styles.gridItem}
         onClick={() => handleImageClick(item.image, items.findIndex(i => i.id === item.id))}
