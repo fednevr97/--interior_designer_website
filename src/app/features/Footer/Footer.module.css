@@ -61,12 +61,6 @@
     cursor: pointer;
   }
 
-  .footer__infoLink:hover {
-    transition: transform var(--transition-normal), color var(--transition-normal);
-    transform: scale(1.1);
-    color: #fff;
-  }
-  
   .footer__socialLinks {
     display: flex;
     gap: 20px;
@@ -84,11 +78,6 @@
     height: var(--icon-size);
     fill: currentColor;
     transition: all var(--transition-fast);
-  }
-  
-  .footer__socialLinks svg:hover {
-    fill: #fff;
-    transform: scale(1.1);
   }
   
   .footer__copyright {
@@ -151,3 +140,19 @@
       font-size: 10px;
     }
   }
+
+  /* Отключаем hover эффекты на мобильных устройствах */
+@media (min-width: 1024px) {
+  
+  .footer__infoLink:hover {
+    transition: transform var(--transition-normal), color var(--transition-normal);
+    transform: scale(1.1);
+    color: #fff;
+  }
+
+  .footer__socialLinks svg:hover {
+    fill: #fff;
+    transform: scale(1.1);
+  }
+  
+}

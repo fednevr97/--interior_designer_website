@@ -70,7 +70,7 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
                       src={service.image} 
                       alt={service.title} 
                       fill
-                      priority={index === 0} // Добавляем priority только для первого изображения
+                      priority={index === 0 || index === 1 || index === 2} // Добавляем priority только для первого изображения
                       sizes={getSizes()}
                       className={styles['service-img']}
                       style={{

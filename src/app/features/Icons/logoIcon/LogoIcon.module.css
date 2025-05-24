@@ -12,10 +12,6 @@
   cursor: pointer;
 }
 
-.headerIcon:hover {
-  transform: scale(1.05);
-}
-
 @media (max-width: 768px) {
   .headerIcon {
     display: none; /* Скрываем только в хедере на мобильных */
@@ -28,6 +24,11 @@
   display: block !important; /* Всегда отображаем в меню */
 }
 
-.menuIcon:hover {
-  transform: none; /* Отключаем трансформацию для меню */
+
+
+@media (min-width: 1024px) {
+
+  .headerIcon:hover {
+    transform: scale(1.05);
+  }
 }

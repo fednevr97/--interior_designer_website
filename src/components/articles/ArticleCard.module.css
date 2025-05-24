@@ -8,10 +8,6 @@
     text-decoration: none; /* Добавляем это свойство */
   }
   
-  .card:hover {
-    transform: scale(1.05);
-  }
-  
   .imageContainer {
     position: relative;
     height: 12rem;
@@ -62,4 +58,17 @@
   .date {
     font-size: 0.875rem;
     color: #6b7280;
+  }
+
+  @media (min-width: 1024px) {
+
+    .ctaButton:hover {
+      transform: scale(1.1);
+      color: #fff;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
   }

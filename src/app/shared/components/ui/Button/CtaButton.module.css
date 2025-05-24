@@ -13,11 +13,6 @@
     transition: transform var(--transition-normal), color var(--transition-normal);
   }
   
-  .ctaButton:hover {
-    transform: scale(1.1);
-    color: #fff;
-  }
-  
   /* Мобильные устройства */
   @media (max-width: 768px) {
     .ctaButton {
@@ -32,4 +27,13 @@
     .ctaButton {
       width: 120px;
     }
+  }
+
+  @media (min-width: 1024px) {
+
+    .ctaButton:hover {
+      transform: scale(1.1);
+      color: #fff;
+    }
+
   }

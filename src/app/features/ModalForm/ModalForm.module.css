@@ -49,10 +49,6 @@
     transition: all 0.3s ease;
   }
   
-  .modal__close:hover {
-    transform: scale(1.2);
-  }
-  
   .modal__title {
     margin-bottom: 20px;
     text-align: center;
@@ -128,10 +124,6 @@
     transform: rotate(45deg);
   }
   
-  .modal__checkboxLabel:hover .modal__checkboxCustom {
-    border-color: #292c23;
-  }
-  
   .modal__inputGroup {
     display: flex;
     flex-direction: column;
@@ -172,10 +164,6 @@
     transition: all 0.3s ease;
   }
   
-  .modal__submit:hover {
-    transform: scale(1.05);
-  }
-  
   /* Десктопные стили */
   @media (min-width: 768px) {
     .modal__content {
@@ -198,5 +186,20 @@
   
     .modal__submit {
       width: 225px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+
+    .modal__close:hover {
+      transform: scale(1.2);
+    }
+
+    .modal__checkboxLabel:hover .modal__checkboxCustom {
+      border-color: #292c23;
+    }
+
+    .modal__submit:hover {
+      transform: scale(1.05);
     }
   }

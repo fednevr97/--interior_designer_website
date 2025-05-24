@@ -14,15 +14,6 @@
     margin: 0 5px;
 }
 
-.nav-btn:hover {
-    background-color: #6b715c;
-    transform: translateY(-50%) scale(1.1); /* Сохраняем translateY при наведении */
-}
-
-.nav-btn:active {
-    transform: translateY(-50%) scale(0.95); /* Сохраняем translateY при наведении */
-}
-
 .nav-btn svg {
     width: var(--icon-size-small);
     height: var(--icon-size-small);
@@ -59,5 +50,16 @@
     .nav-btn-prev,
     .nav-btn-next {
         display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .nav-btn:hover {
+        background-color: #6b715c;
+        transform: translateY(-50%) scale(1.1); /* Сохраняем translateY при наведении */
+    }
+
+    .nav-btn:active {
+        transform: translateY(-50%) scale(0.95); /* Сохраняем translateY при наведении */
     }
 }

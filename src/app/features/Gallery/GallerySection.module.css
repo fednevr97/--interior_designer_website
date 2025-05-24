@@ -56,10 +56,6 @@
     cursor: pointer;
 }
 
-.gallery-item:hover {
-    transform: scale(1.05);
-}
-
 .gallery-item > div {
     border-radius: 8px;
     overflow: hidden;
@@ -95,7 +91,7 @@
 }
 
 /* Стили для сетки */
-.gridContainer {
+.gridList {
     display: grid;
     grid-template-columns: repeat(var(--grid-columns), 1fr);
     gap: 20px;
@@ -109,10 +105,6 @@
     aspect-ratio: 1 / 1;
     transition: transform 0.3s ease;
     cursor: pointer;
-  }
-  
-  .gridItem:hover {
-    transform: scale(1.03);
   }
   
   .gridImage {
@@ -156,7 +148,7 @@
         padding-left: 20px;
     }
 
-    .gridContainer {
+    .gridList {
         --grid-columns: 2;
     }
 }
@@ -177,7 +169,19 @@
         text-align: center;
     }
 
-    .gridContainer {
+    .gridList {
         --grid-columns: 1;
     }
+}
+
+@media (min-width: 1024px) {
+    
+    .gallery-item:hover {
+        transform: scale(1.05);
+    }
+    
+    .gridItem:hover {
+        transform: scale(1.03);
+    }
+
 }

@@ -76,7 +76,7 @@ body {
   background-color: var(--light-text-color);
   display: flex;
   flex-direction: column;
-  height: 100svh; /* 100% высоты viewport */
+  height: 100dvh; /* 100% высоты viewport */
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: auto;
 }
@@ -111,16 +111,7 @@ h1 {
   padding-left: 60px;
   padding-right: 60px;
 }
-/* Запрещаем выделение текста при кликах */
-button {
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
 
-/* Гарантируем, что события не всплывают */
-[data-menu-button] {
-  touch-action: manipulation;
-}
 @media (min-width: 600px) {
   h2 {
     font-size: calc(2rem + (3 - 2) * ((100vw - 600px) / (1200 - 600)));
