@@ -26,6 +26,10 @@
 }
 
 .gallery-base {
+    width: 100%;
+}
+
+.gallery-list {
     display: flex;
     scroll-snap-type: x mandatory;
     padding: 1rem 0;
@@ -35,7 +39,7 @@
     gap: 2%;
 }
 
-.gallery-base::-webkit-scrollbar,
+.gallery-list::-webkit-scrollbar,
 .gallery-container::-webkit-scrollbar {
     display: none;
 }

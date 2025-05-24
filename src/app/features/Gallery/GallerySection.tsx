@@ -222,8 +222,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     return `translateX(-${modalCurrentIndex * (100 / items.length)}%)`;
   }, [isModalDragging, modalCurrentIndex, items.length, modalTranslateX]);
 
-  // Мемоизированный рендер элементов галереи
-// Мемоизированный рендер элементов галереи
+ // Мемоизированный рендер элементов галереи
 const renderGalleryItems = useMemo(() => (
   <ul className={styles['gallery-list']}>
     {items.map((item, index) => (
