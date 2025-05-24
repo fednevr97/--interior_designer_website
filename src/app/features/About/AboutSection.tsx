@@ -50,7 +50,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
             
             <div className={`${styles.aboutImage} ${!isLoaded ? styles.hidden : ''}`}>
               <Image
-                src="/assets/Photo.jpg"
+                src="/assets/Photo.webp"
                 alt="Фото Шептицкая Дарья"
                 fill
                 priority={false} // Убрали priority для избежания preload-предупреждения
