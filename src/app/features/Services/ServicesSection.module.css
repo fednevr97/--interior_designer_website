@@ -29,8 +29,7 @@
     width: 100%;
     gap: 20px;
     padding: 10px 0;
-    /* height: calc(90dvh - var(--header-height, 80px)); Вычитаем высоту шапки */
-    height: calc((100vw * 16 / 9) - var(--header-height));
+    height: calc(90dvh - var(--header-height, 80px)); 
   }
 
   .services-carousel::-webkit-scrollbar {
@@ -150,5 +149,9 @@
     
     .service-content p {
       font-size: 0.7rem;
+    }
+
+    .services-carousel {
+      height: calc((100vw * 16 / 9) - var(--header-height-mobile));
     }
   }
