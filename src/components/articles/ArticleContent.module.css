@@ -1,12 +1,12 @@
 /* src/components/articles/ArticleContent.module.css */
 .container {
-    max-width: 48rem;
     margin: 0 auto;
+    padding: 0 60px; 
   }
   
   .header {
     margin-bottom: 2rem;
-    padding-top: var(--header-height);
+    padding-top: 10px;
   }
   
   .imageContainer {
@@ -105,5 +105,6 @@
     .container {
         max-width: 48rem;
         margin: 0 auto;
+        padding: 0 20px; 
       }
   }
