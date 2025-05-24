@@ -223,9 +223,11 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   }, [isModalDragging, modalCurrentIndex, items.length, modalTranslateX]);
 
   // Мемоизированный рендер элементов галереи
-  const renderGalleryItems = useMemo(() => (
-    items.map((item, index) => (
-      <article 
+// Мемоизированный рендер элементов галереи
+const renderGalleryItems = useMemo(() => (
+  <ul className={styles['gallery-list']}>
+    {items.map((item, index) => (
+      <li 
         key={item.id} 
         className={styles['gallery-item']} 
         role="group"
@@ -246,14 +248,16 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           />
         </div>
         <h3>{item.title}</h3>
-      </article>
-    ))
-  ), [items, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, handleImageClick, getSizes]);
+      </li>
+    ))}
+  </ul>
+), [items, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, handleImageClick, getSizes]);
 
-  // Мемоизированный рендер grid элементов
-  const renderGridItems = useMemo(() => (
-    items.map((item) => (
-      <article 
+// Мемоизированный рендер grid элементов
+const renderGridItems = useMemo(() => (
+  <ul className={styles.gridList}>
+    {items.map((item) => (
+      <li
         key={item.id}
         className={styles.gridItem}
         onClick={() => handleImageClick(item.image, items.findIndex(i => i.id === item.id))}
@@ -268,9 +272,10 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           />
         </div>
         <h3>{item.title}</h3>
-      </article>
-    ))
-  ), [items, handleImageClick]);
+      </li>
+    ))}
+  </ul>
+), [items, handleImageClick]);
 
   // Мемоизированный рендер модальных изображений
   const renderModalImages = useMemo(() => (
