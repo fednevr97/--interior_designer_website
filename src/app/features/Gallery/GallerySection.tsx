@@ -171,7 +171,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     if (!isDragging || visibleItems >= items.length) return;
     setIsDragging(false);
 
-    const threshold = 50;
+    const threshold = 70;
     if (translateX > threshold && canGoLeft) {
       goLeft();
     } else if (translateX < -threshold && canGoRight) {
