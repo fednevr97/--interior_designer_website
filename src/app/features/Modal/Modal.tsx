@@ -29,8 +29,6 @@ const Modal: React.FC<ModalProps> = ({
   const imageRef = useRef<HTMLDivElement>(null); // Реф для работы с изображением
   const [isClosing, setIsClosing] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
-  const touchStartY = useRef(0);
-  const touchStartTime = useRef(0);
 
   // Состояния для масштабирования
   const [scale, setScale] = useState(1);
@@ -48,11 +46,13 @@ const Modal: React.FC<ModalProps> = ({
   // Сброс масштаба при навигации между изображениями
   const handlePrev = useCallback(() => {
     setScale(1); // Сбрасываем масштаб
+    setLastDistance(0); // Сбрасываем расстояние
     onPrev?.();
   }, [onPrev]);
 
   const handleNext = useCallback(() => {
     setScale(1); // Сбрасываем масштаб
+    setLastDistance(0); // Сбрасываем расстояние
     onNext?.();
   }, [onNext]);
 
@@ -71,22 +71,6 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
-        handleClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscKey);
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-    };
-  }, [isOpen, handleClose]);
-
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       // Начинаем отслеживать расстояние между двумя пальцами
@@ -95,9 +79,6 @@ const Modal: React.FC<ModalProps> = ({
         e.touches[0].clientY - e.touches[1].clientY
       );
       setLastDistance(distance);
-    } else if (e.touches.length === 1) {
-      touchStartY.current = e.touches[0].clientY;
-      touchStartTime.current = Date.now();
     }
   };
 
@@ -114,40 +95,12 @@ const Modal: React.FC<ModalProps> = ({
       }
 
       setLastDistance(distance);
-    } else if (e.touches.length === 1) {
-      const currentY = e.touches[0].clientY;
-      const deltaY = currentY - touchStartY.current;
-
-      if (deltaY > 0 && (contentRef.current?.scrollTop === 0 || deltaY > 10)) {
-        e.preventDefault();
-        setDragOffset(deltaY);
-      } else if (
-        deltaY < 0 &&
-        contentRef.current &&
-        contentRef.current.scrollHeight - contentRef.current.scrollTop <=
-          contentRef.current.clientHeight + 10
-      ) {
-        e.preventDefault();
-        setDragOffset(deltaY);
-      }
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length < 2) {
       setLastDistance(0);
-    }
-
-    if (!isOpen) return;
-
-    const deltaTime = Date.now() - touchStartTime.current;
-    const velocity = Math.abs(dragOffset) / deltaTime;
-    const shouldClose = Math.abs(dragOffset) > 100 || velocity > 0.3;
-
-    if (shouldClose) {
-      handleClose();
-    } else {
-      setDragOffset(0);
     }
   };
 
