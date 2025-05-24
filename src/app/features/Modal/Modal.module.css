@@ -52,7 +52,7 @@
   height: 100%;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
-  touch-action: none; /* Добавляем это свойство */
+
 }
 
 .imageContainer > *,
@@ -61,7 +61,7 @@
   max-height: 80dvh;
   object-fit: contain;
   transition: opacity 0.3s ease;
-  touch-action: none; /* Добавляем это свойство */
+
 }
 
 .navButton {
