@@ -295,6 +295,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           style={{
             maxWidth: '100%',
             maxHeight: '80dvh',
+            width: 'auto',
             objectFit: 'contain'
           }}
         />
