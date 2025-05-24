@@ -26,34 +26,33 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null); // Для работы с изображением
+  const imageRef = useRef<HTMLDivElement>(null); // Реф для работы с изображением
   const [isClosing, setIsClosing] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
 
-  // Для масштабирования
+  // Состояния для масштабирования
   const [scale, setScale] = useState(1);
   const [lastDistance, setLastDistance] = useState(0);
-  const [centerPoint, setCenterPoint] = useState({ x: 0, y: 0 });
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
-      setScale(1); // Reset scale when closing
+      setScale(1); // Сброс масштаба при закрытии
     }, 300);
   }, [onClose]);
 
-  // Reset scale when navigating between images
+  // Сброс масштаба при навигации между изображениями
   const handlePrev = useCallback(() => {
-    setScale(1);
+    setScale(1); // Сбрасываем масштаб
     onPrev?.();
   }, [onPrev]);
 
   const handleNext = useCallback(() => {
-    setScale(1);
+    setScale(1); // Сбрасываем масштаб
     onNext?.();
   }, [onNext]);
 
@@ -62,7 +61,7 @@ const Modal: React.FC<ModalProps> = ({
       document.body.style.overflow = 'hidden';
       setIsClosing(false);
       setDragOffset(0);
-      setScale(1); // Reset scale when opening
+      setScale(1); // Сброс масштаба при открытии
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -90,19 +89,6 @@ const Modal: React.FC<ModalProps> = ({
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      // Calculate center point between two fingers
-      const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-      const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-      
-      // Get position relative to the image container
-      const rect = imageRef.current?.getBoundingClientRect();
-      if (rect) {
-        setCenterPoint({
-          x: (centerX - rect.left - rect.width / 2) / scale,
-          y: (centerY - rect.top - rect.height / 2) / scale
-        });
-      }
-
       // Начинаем отслеживать расстояние между двумя пальцами
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
@@ -117,7 +103,6 @@ const Modal: React.FC<ModalProps> = ({
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      // Обрабатываем жест "пинч"
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
@@ -277,7 +262,7 @@ const Modal: React.FC<ModalProps> = ({
           className={styles.imageContainer}
           style={{
             transform: `scale(${scale})`,
-            transformOrigin: `${centerPoint.x * scale + 50}% ${centerPoint.y * scale + 50}%`,
+            transformOrigin: 'center center', // Фиксируем центр масштабирования
             transition: 'transform 0.2s ease-out',
           }}
         >
