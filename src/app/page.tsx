@@ -7,7 +7,7 @@ import DocumentationSection from "./features/Documentation/DocumentationSection"
 export default function Home() {
   return (
     <>
-      <HeroSection id="home" imageSrc='/assets/5WbDAuO7qL.png' />
+      <HeroSection id="home" imageSrc='/assets/5WbDAuO7qL.webp' />
       <AboutSection id="about" />
       <Portfolio id="portfolio" />
       <ServicesSection id="services" />
