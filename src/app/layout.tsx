@@ -4,28 +4,37 @@ import "./globals.css";
 import Footer from "./features/Footer/Footer";
 import Header from "./features/Header/Header";
 
-// Оптимизация шрифтов
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin", "cyrillic"],
   weight: ["400", "600", "700"],
-  display: 'swap', // Добавлено для оптимизации отображения
+  display: 'swap', 
 });
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600"], // Убраны лишние начертания
+  weight: ["400", "500", "600"],
   display: 'swap',
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Дизайн интерьера | Студия [Имя Фамилия]",
-    template: "%s | Студия дизайна [Имя]"
+    default: "Дизайнер интерьера | Шептицкая Дарья",
+    template: "%s | Дизайнер интерьера Шептицкая Дарья"
   },
   description: "Авторские дизайн-проекты интерьеров под ключ",
-  metadataBase: new URL('https://interior-designer-website-git-main-ruslans-projects-3bb2167d.vercel.app/'), // Добавлено для canonical URL
+  metadataBase: new URL('https://interior-designer-website-git-main-ruslans-projects-3bb2167d.vercel.app/'), 
+  icons: {
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "any"},
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -44,16 +53,14 @@ export default function RootLayout({
     <html lang="ru" className="scroll-smooth">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased`}>
-        {/* JSON-LD для SEO */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          className="hidden" // Скрываем от видимого интерфейса
+          className="hidden"
         />
-        
-        {/* Основная структура страницы */}
         <Header />
         <main className="min-h-screen">
           {children}
