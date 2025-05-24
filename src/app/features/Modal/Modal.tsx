@@ -26,18 +26,23 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null); // Для работы с изображением
   const [isClosing, setIsClosing] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
-  
+
+  // Для масштабирования
+  const [scale, setScale] = useState(1);
+  const [lastDistance, setLastDistance] = useState(0);
+
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
     }, 300);
-  }, [onClose]); // Стабилизированная версия
+  }, [onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -67,45 +72,69 @@ const Modal: React.FC<ModalProps> = ({
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, [isOpen, handleClose]); // Все зависимости на месте
+  }, [isOpen, handleClose]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchStartTime.current = Date.now();
+    if (e.touches.length === 2) {
+      // Начинаем отслеживать расстояние между двумя пальцами
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setLastDistance(distance);
+    } else if (e.touches.length === 1) {
+      touchStartY.current = e.touches[0].clientY;
+      touchStartTime.current = Date.now();
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isOpen) 
-      return;
-    
-    const currentY = e.touches[0].clientY;
-    const deltaY = currentY - touchStartY.current;
-    
-    // Если свайп вниз и контент вверху
-    if (deltaY > 0 && (contentRef.current?.scrollTop === 0 || deltaY > 10)) {
-      e.preventDefault();
-      setDragOffset(deltaY);
-    }
-    // Если свайп вверх и контент внизу
-    else if (deltaY < 0 && (contentRef.current && 
-           contentRef.current.scrollHeight - contentRef.current.scrollTop <= 
-           contentRef.current.clientHeight + 10)) {
-      e.preventDefault();
-      setDragOffset(deltaY);
+    if (e.touches.length === 2) {
+      // Обрабатываем жест "пинч"
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+
+      if (lastDistance) {
+        const scaleChange = distance / lastDistance;
+        setScale((prevScale) => Math.min(Math.max(prevScale * scaleChange, 1), 3)); // Ограничиваем масштаб от 1 до 3
+      }
+
+      setLastDistance(distance);
+    } else if (e.touches.length === 1) {
+      const currentY = e.touches[0].clientY;
+      const deltaY = currentY - touchStartY.current;
+
+      if (deltaY > 0 && (contentRef.current?.scrollTop === 0 || deltaY > 10)) {
+        e.preventDefault();
+        setDragOffset(deltaY);
+      } else if (
+        deltaY < 0 &&
+        contentRef.current &&
+        contentRef.current.scrollHeight - contentRef.current.scrollTop <=
+          contentRef.current.clientHeight + 10
+      ) {
+        e.preventDefault();
+        setDragOffset(deltaY);
+      }
     }
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length < 2) {
+      setLastDistance(0);
+    }
+
     if (!isOpen) return;
-    
+
     const deltaTime = Date.now() - touchStartTime.current;
     const velocity = Math.abs(dragOffset) / deltaTime;
     const shouldClose = Math.abs(dragOffset) > 100 || velocity > 0.3;
-    
+
     if (shouldClose) {
       handleClose();
     } else {
-      // Анимация возврата
       setDragOffset(0);
     }
   };
@@ -123,7 +152,7 @@ const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       ref={overlayRef}
       className={`${styles.modalOverlay} ${isClosing ? styles.closing : ''}`}
       onClick={onClick}
@@ -132,48 +161,98 @@ const Modal: React.FC<ModalProps> = ({
       onTouchEnd={handleTouchEnd}
       style={{
         opacity: getOverlayOpacity(),
-        transition: dragOffset === 0 ? 'opacity 0.3s ease' : 'none'
+        transition: dragOffset === 0 ? 'opacity 0.3s ease' : 'none',
       }}
     >
-      <div 
+      <div
         ref={contentRef}
         className={styles.modalContent}
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         style={{
           transform: getTransformStyle(),
-          transition: dragOffset === 0 ? 'transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 1)' : 'none'
+          transition:
+            dragOffset === 0
+              ? 'transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 1)'
+              : 'none',
         }}
       >
-        <button className={styles.closeButton} onClick={handleClose} aria-label="Закрыть">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <button
+          className={styles.closeButton}
+          onClick={handleClose}
+          aria-label="Закрыть"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 6L6 18M6 6L18 18"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
         {onPrev && onNext && (
           <>
-            <button 
-              className={`${styles.navButton} ${styles.prevButton}`} 
+            <button
+              className={`${styles.navButton} ${styles.prevButton}`}
               onClick={onPrev}
               disabled={!canGoPrev}
               aria-label="Предыдущее изображение"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15 18L9 12L15 6"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
-            <button 
-              className={`${styles.navButton} ${styles.nextButton}`} 
+            <button
+              className={`${styles.navButton} ${styles.nextButton}`}
               onClick={onNext}
               disabled={!canGoNext}
               aria-label="Следующее изображение"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 6L15 12L9 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 6L15 12L9 18"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </>
         )}
-        <div className={styles.imageContainer}>
+        <div
+          ref={imageRef}
+          className={styles.imageContainer}
+          style={{
+            transform: `scale(${scale})`,
+            transition: 'transform 0.2s ease-out',
+          }}
+        >
           {children}
         </div>
       </div>
@@ -181,4 +260,4 @@ const Modal: React.FC<ModalProps> = ({
   );
 };
 
-export default Modal; 
+export default Modal;

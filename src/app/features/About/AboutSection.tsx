@@ -53,7 +53,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
                 src="/assets/Photo.webp"
                 alt="Фото Шептицкая Дарья"
                 fill
-                priority// Убрали priority для избежания preload-предупреждения
+                priority
                 quality={85}
                 className={styles.aboutPhoto}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"

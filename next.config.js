@@ -8,6 +8,8 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['react-icons', 'lodash', 'date-fns'],
     disableOptimizedLoading: true, // Отключает автоматический preload CSS
+    optimizeCss: true, // Оптимизирует CSS
+    removeUnusedCSS: true, // Удаляет неиспользуемый CSS
   },
 
   compiler: {

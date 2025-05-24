@@ -241,7 +241,7 @@ const renderGalleryItems = useMemo(() => (
           <Image 
             src={item.image} 
             alt={item.title} 
-            loading="lazy"
+            loading="eager"  // Не lazy, но и не priority
             fill  
             sizes={getSizes()}
           />
@@ -296,7 +296,8 @@ const renderGridItems = useMemo(() => (
           width={1200}
           height={800}
           className={styles.modalImage}
-          priority
+          loading="eager"
+          unoptimized={true}  // Для серверной оптимизации
           style={{
             maxWidth: '100%',
             maxHeight: '80dvh',
