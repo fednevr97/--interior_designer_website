@@ -257,10 +257,19 @@ const Modal: React.FC<ModalProps> = ({
   // Функция для получения стилей изображения
   const getImageStyle = () => {
     return {
+      width: '100%',
+      height: '100%',
+      objectFit: 'contain',
+      touchAction: scale > 1 ? 'none' : 'pan-y'
+    };
+  };
+
+    // Функция для получения стилей контейнера
+  const getContainerStyle = () => {
+    return {
       transform: `scale(${scale}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
       transformOrigin: 'center center',
       transition: isDragging.current || isZooming.current ? 'none' : 'transform 0.2s ease-out',
-      touchAction: scale > 1 ? 'none' : 'pan-y'
     };
   };
 
@@ -327,7 +336,8 @@ const Modal: React.FC<ModalProps> = ({
         style={getContentStyle()}
       >
         {/* Контейнер изображения */}
-        <div className={styles.imageContainer}>
+        <div className={styles.imageContainer}
+          style={getContainerStyle()}>
           <Image
             src={items[currentIndex].image}
             alt={items[currentIndex].title}
