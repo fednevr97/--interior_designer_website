@@ -4,15 +4,16 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import styles from './Modal.module.css';
 
+// Интерфейс пропсов модального окна
 interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  items: {
-    id: number;
-    image: string;
-    title: string;
+  isOpen: boolean;        // Флаг открытия модального окна
+  onClose: () => void;    // Функция закрытия
+  items: {                // Массив изображений
+    id: number;          // Уникальный идентификатор
+    image: string;       // URL изображения
+    title: string;       // Заголовок изображения
   }[];
-  initialIndex: number;
+  initialIndex: number;   // Начальный индекс изображения
 }
 
 const Modal: React.FC<ModalProps> = ({ 
@@ -21,40 +22,41 @@ const Modal: React.FC<ModalProps> = ({
   items,
   initialIndex,
 }) => {
-  // Состояния компонента
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [isClosing, setIsClosing] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [dragOffset, setDragOffset] = useState(0);
-  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  // Состояния для управления модальным окном
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);  // Текущий индекс изображения
+  const [isClosing, setIsClosing] = useState(false);              // Флаг анимации закрытия
+  const [scale, setScale] = useState(1);                          // Масштаб изображения
+  const [position, setPosition] = useState({ x: 0, y: 0 });       // Позиция для свайпов
+  const [dragOffset, setDragOffset] = useState(0);                // Смещение при перетаскивании
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }); // Позиция изображения при зуме
 
   // Рефы для DOM-элементов
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);    // Реф для оверлея
+  const contentRef = useRef<HTMLDivElement>(null);    // Реф для контента
+  const imageRef = useRef<HTMLImageElement>(null);    // Реф для изображения
 
   // Рефы для обработки жестов
-  const touchStartPos = useRef({ x: 0, y: 0 });
-  const touchStartDistance = useRef(0);
-  const touchStartTime = useRef(0);
-  const touchStartImagePos = useRef({ x: 0, y: 0 });
-  const isDragging = useRef(false);
-  const isZooming = useRef(false);
-  const isHorizontalSwipe = useRef(false);
-  const isImageDragging = useRef(false);
+  const touchStartPos = useRef({ x: 0, y: 0 });       // Начальная позиция касания
+  const touchStartDistance = useRef(0);               // Начальное расстояние для зума
+  const touchStartTime = useRef(0);                   // Время начала касания
+  const touchStartImagePos = useRef({ x: 0, y: 0 });  // Начальная позиция изображения
+  const isDragging = useRef(false);                   // Флаг перетаскивания
+  const isZooming = useRef(false);                    // Флаг масштабирования
+  const isHorizontalSwipe = useRef(false);           // Флаг горизонтального свайпа
+  const isImageDragging = useRef(false);             // Флаг перетаскивания изображения
 
-  // Пороговые значения
-  const SWIPE_THRESHOLD = 50;
-  const SWIPE_VELOCITY_THRESHOLD = 0.3;
-  const CLOSE_THRESHOLD = 100;
-  const ZOOM_SENSITIVITY = 0.01;
-  const IMAGE_DRAG_THRESHOLD = 10;
+  // Константы для пороговых значений
+  const SWIPE_THRESHOLD = 50;              // Порог для определения свайпа
+  const CLOSE_THRESHOLD = 100;             // Порог для закрытия
+  const ZOOM_SENSITIVITY = 0.01;           // Чувствительность зума
+  const IMAGE_DRAG_THRESHOLD = 10;         // Порог для определения перетаскивания
 
+  // Эффект для обновления текущего индекса при изменении начального
   useEffect(() => {
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
 
+  // Обработчик закрытия модального окна
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
@@ -66,12 +68,14 @@ const Modal: React.FC<ModalProps> = ({
     }, 300);
   }, [onClose]);
 
+  // Обработчик клика по оверлею
   const handleOverlayClick = useCallback((e: React.MouseEvent) => {
     if (e.target === overlayRef.current) {
       handleClose();
     }
   }, [handleClose]);
 
+  // Эффект для обработки клавиатурных событий
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') handleClose();
@@ -89,9 +93,11 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, handleClose, currentIndex, items.length]);
 
+  // Флаги доступности навигации
   const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex < items.length - 1;
 
+  // Обработчик перехода к предыдущему изображению
   const handlePrev = useCallback(() => {
     if (scale === 1 && canGoPrev) {
       setCurrentIndex(prev => prev - 1);
@@ -101,6 +107,7 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, [scale, canGoPrev]);
 
+  // Обработчик перехода к следующему изображению
   const handleNext = useCallback(() => {
     if (scale === 1 && canGoNext) {
       setCurrentIndex(prev => prev + 1);
@@ -110,9 +117,12 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, [scale, canGoNext]);
 
+  // Обработчик начала касания
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      // Начало зума
+      // Инициализация зума
+      // Сброс всех флагов при новом касании
+      isHorizontalSwipe.current = false;
       isZooming.current = true;
       isDragging.current = false;
       isImageDragging.current = false;
@@ -125,7 +135,7 @@ const Modal: React.FC<ModalProps> = ({
       return;
     }
 
-    // Начало драга/свайпа
+    // Инициализация свайпа/перетаскивания
     isDragging.current = true;
     isImageDragging.current = scale > 1;
     isHorizontalSwipe.current = false;
@@ -137,9 +147,10 @@ const Modal: React.FC<ModalProps> = ({
     touchStartTime.current = Date.now();
   }, [scale, imagePosition]);
 
+  // Обработчик движения при касании
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2 && isZooming.current) {
-      // Обработка зума
+      // Обработка зума двумя пальцами
       e.preventDefault();
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
@@ -170,67 +181,72 @@ const Modal: React.FC<ModalProps> = ({
         return;
       }
 
-      // Определяем направление свайпа после превышения порога
+      // Определение направления свайпа
       if (!isHorizontalSwipe.current && Math.abs(deltaX) > IMAGE_DRAG_THRESHOLD) {
         isHorizontalSwipe.current = true;
       }
 
       if (scale === 1) {
         if (isHorizontalSwipe.current) {
-          // Горизонтальный свайп - навигация
-          // e.preventDefault();
+          // Горизонтальный свайп для навигации
           setPosition({ x: deltaX, y: 0 });
         } else {
-          // Вертикальный свайп - закрытие (вверх или вниз)
+          // Вертикальный свайп для закрытия
           setDragOffset(deltaY);
         }
       }
     }
   }, [scale]);
 
+  // Обработчик окончания касания
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (isZooming.current) {
       isZooming.current = false;
       return;
     }
-
+  
     if (isDragging.current) {
       const touch = e.changedTouches[0];
       const deltaX = touch.clientX - touchStartPos.current.x;
       const deltaY = touch.clientY - touchStartPos.current.y;
-      const deltaTime = Date.now() - touchStartTime.current;
-      const velocity = Math.abs(deltaX) / deltaTime;
-
-      // Проверяем, был ли это быстрый свайп
-      const isFastSwipe = velocity > SWIPE_VELOCITY_THRESHOLD;
-
+  
+      // Сброс состояний перед обработкой
+      isDragging.current = false;
+      isHorizontalSwipe.current = false;
+      isImageDragging.current = false;
+      
+  
       if (isImageDragging.current) {
-        // После перемещения изображения просто сбрасываем флаги
-        isImageDragging.current = false;
-      } 
-      else if (scale === 1) {
-        // Горизонтальный свайп - навигация
-        if (isHorizontalSwipe.current || isFastSwipe) {
-          if ((deltaX > SWIPE_THRESHOLD || isFastSwipe) && canGoPrev) {
+        // Если было перетаскивание изображения - ничего не делаем
+        return;
+      }
+  
+      if (scale === 1) {
+        // Определяем основное направление свайпа
+        const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
+        
+        if (isHorizontal) {
+          // Обрабатываем только один раз за свайп
+          if (deltaX > SWIPE_THRESHOLD && canGoPrev) {
+            console.log('Swiping left to right - prev');
             handlePrev();
-          } else if ((deltaX < -SWIPE_THRESHOLD || isFastSwipe) && canGoNext) {
+          } else if (deltaX < -SWIPE_THRESHOLD && canGoNext) {
+            console.log('Swiping right to left - next');
             handleNext();
           }
-        }
-        // Вертикальный свайп - закрытие (вверх или вниз)
-        else if (Math.abs(deltaY) > CLOSE_THRESHOLD) {
+        } else if (Math.abs(deltaY) > CLOSE_THRESHOLD) {
+          // Вертикальный свайп для закрытия
           handleClose();
         }
       }
-
-      // Сброс состояний
+  
+      // Сброс позиций
       setPosition({ x: 0, y: 0 });
       setDragOffset(0);
-      isDragging.current = false;
-      isHorizontalSwipe.current = false;
     }
   }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose]);
 
+  // Функция для получения стилей контента
   const getContentStyle = () => {
     return {
       transform: `translate(${position.x}px, ${position.y + dragOffset}px)`,
@@ -238,6 +254,7 @@ const Modal: React.FC<ModalProps> = ({
     };
   };
 
+  // Функция для получения стилей изображения
   const getImageStyle = () => {
     return {
       transform: `scale(${scale}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
@@ -247,12 +264,14 @@ const Modal: React.FC<ModalProps> = ({
     };
   };
 
+  // Функция для получения прозрачности оверлея
   const getOverlayOpacity = () => {
     return 1 - Math.min(Math.abs(dragOffset) / 300, 0.5);
   };
 
   if (!isOpen) return null;
 
+  // Рендер модального окна
   return (
     <div 
       ref={overlayRef}
@@ -267,12 +286,14 @@ const Modal: React.FC<ModalProps> = ({
         touchAction: 'none'
       }}
     >
+      {/* Кнопка закрытия */}
       <button className={styles.closeButton} onClick={handleClose} aria-label="Закрыть">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2"/>
         </svg>
       </button>
       
+      {/* Кнопки навигации */}
       {items.length > 1 && (
         <>
           <button 
@@ -298,12 +319,14 @@ const Modal: React.FC<ModalProps> = ({
         </>
       )}
 
+      {/* Контейнер контента */}
       <div 
         ref={contentRef}
         className={styles.modalContent}
         onClick={e => e.stopPropagation()}
         style={getContentStyle()}
       >
+        {/* Контейнер изображения */}
         <div className={styles.imageContainer}>
           <Image
             src={items[currentIndex].image}

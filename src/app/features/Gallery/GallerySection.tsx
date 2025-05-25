@@ -48,18 +48,19 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   displayMode = 'slider',
   gridColumns = 3,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [startX, setStartX] = useState<number>(0);
-  const [translateX, setTranslateX] = useState<number>(0);
+  // Состояния компонента
+  const [currentIndex, setCurrentIndex] = useState<number>(0); // Текущий индекс слайда
+  const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems); // Количество видимых элементов
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Выбранное изображение для модалки
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0); // Индекс выбранного изображения
+  const [isDragging, setIsDragging] = useState<boolean>(false); // Флаг перетаскивания
+  const [startX, setStartX] = useState<number>(0); // Начальная позиция X при перетаскивании
+  const [translateX, setTranslateX] = useState<number>(0); // Смещение при перетаскивании
   
-  const galleryBaseRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const galleryBaseRef = useRef<HTMLDivElement>(null); // Реф на контейнер галереи
+  const router = useRouter(); // Хук для навигации
 
-    // Обработчик клика по заголовку (переход по ссылке)
+  // Обработчик клика по заголовку (переход по ссылке)
   const handleTitleClick = useCallback(() => {
     if (titleLink) {
       router.push(titleLink);
@@ -75,21 +76,22 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     } else {
       setVisibleItems(defaultVisibleItems);
     }
-    setCurrentIndex(0);
-    setTranslateX(0);
+    setCurrentIndex(0); // Сброс индекса при изменении размера
+    setTranslateX(0); // Сброс смещения
   }, [defaultVisibleItems, tabletVisibleItems, mobileVisibleItems]);
 
   // Эффект для подписки на события изменения размера
   useEffect(() => {
-    handleResize();
+    handleResize(); // Инициализация при монтировании
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
 
+  // Проверка возможности навигации
   const canGoLeft = useMemo(() => currentIndex > 0, [currentIndex]);
   const canGoRight = useMemo(() => currentIndex < items.length - visibleItems, [currentIndex, items.length, visibleItems]);
 
-    // Обработчики навигации
+  // Обработчики навигации
   const goLeft = useCallback(() => {
     if (canGoLeft) {
       setCurrentIndex(prev => prev - 1);
@@ -102,6 +104,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     }
   }, [canGoRight]);
 
+  // Расчет transform стиля для слайдера
   const getTransform = useCallback(() => {
     if (isDragging) {
       return `translateX(calc(-${currentIndex * (100 / visibleItems + (gapPercent / visibleItems))}% + ${translateX}px))`;
@@ -111,6 +114,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     return `translateX(-${currentIndex * itemWithGap}%)`;
   }, [isDragging, currentIndex, visibleItems, gapPercent, translateX]);
 
+  // Определение sizes для Image в зависимости от количества видимых элементов
   const getSizes = useCallback(() => {
     switch(visibleItems) {
       case 1: return "100vw";
@@ -120,16 +124,17 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     }
   }, [visibleItems]);
 
+  // Обработчик клика по изображению (открытие модалки)
   const handleImageClick = useCallback((image: string, index: number) => {
-    if (!isDragging) {
+    if (!isDragging) { // Не открываем модалку если был drag
       setSelectedImage(image);
       setSelectedImageIndex(index);
     }
   }, [isDragging]);
 
-    // Обработчики touch-событий для слайдера
+  // Обработчики touch-событий для слайдера
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (visibleItems >= items.length) return;
+    if (visibleItems >= items.length) return; // Не обрабатываем если все элементы видны
     setIsDragging(true);
     setStartX(e.touches[0].clientX);
   }, [visibleItems, items.length]);
@@ -151,9 +156,10 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     } else if (translateX < -threshold && canGoRight) {
       goRight();
     }
-    setTranslateX(0);
+    setTranslateX(0); // Сброс смещения
   }, [isDragging, visibleItems, items.length, translateX, canGoLeft, canGoRight, goLeft, goRight]);
 
+  // Рендер элементов галереи (режим слайдера)
   const renderGalleryItems = useMemo(() => (
     <ul className={styles['gallery-list']} role="list">
       {items.map((item, index) => (
@@ -183,6 +189,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     </ul>
   ), [items, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, handleImageClick, getSizes]);
 
+  // Рендер элементов галереи (режим сетки)
   const renderGridItems = useMemo(() => (
     <ul className={styles.gridList} role="list">
       {items.map((item) => (
@@ -223,6 +230,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
         
         {displayMode === 'slider' ? (
           <div className={styles['gallery-wrapper']}>
+            {/* Кнопка навигации влево */}
             <NavButton 
               variant="arrow-left" 
               ariaLabel={`Предыдущий ${ariaLabelPrefix}`} 
@@ -230,6 +238,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               disabled={!canGoLeft}
             />
             
+            {/* Контейнер слайдера */}
             <div className={styles['gallery-container']}>
               <div 
                 ref={galleryBaseRef}
@@ -248,6 +257,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               </div>
             </div>
             
+            {/* Кнопка навигации вправо */}
             <NavButton 
               variant="arrow-right" 
               ariaLabel={`Следующий ${ariaLabelPrefix}`} 
@@ -256,18 +266,19 @@ const GallerySection: React.FC<GallerySectionProps> = ({
             />
           </div>
         ) : (
+          /* Режим сетки */
           <div className={styles.gridContainer} style={{ '--grid-columns': gridColumns } as React.CSSProperties}>
             {renderGridItems}
           </div>
         )}
       </div>
 
+      {/* Модальное окно для просмотра изображений */}
       <Modal 
         isOpen={!!selectedImage} 
         onClose={() => setSelectedImage(null)}
         items={items}
         initialIndex={selectedImageIndex}
-        
       />
     </section>
   );
