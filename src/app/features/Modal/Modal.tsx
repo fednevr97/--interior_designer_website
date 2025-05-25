@@ -1,159 +1,146 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import styles from './Modal.module.css';
 
-// Пропсы для компонента Modal
 interface ModalProps {
-  isOpen: boolean; // Флаг открытия модалки
-  onClose: () => void; // Функция закрытия
-  children: React.ReactNode; // Дочерние элементы
-  onPrev?: () => void; // Функция "предыдущий"
-  onNext?: () => void; // Функция "следующий"
-  canGoPrev?: boolean; // Доступность кнопки "предыдущий"
-  canGoNext?: boolean; // Доступность кнопки "следующий"
-  onClick?: (e: React.MouseEvent) => void; // Обработчик клика
-}
-
-// Пропсы для изображения
-interface ImageElementProps {
-  ref?: React.Ref<HTMLImageElement>;
-  style?: React.CSSProperties;
-}
-
-interface ImageChildProps {
-  src?: string;
-  alt?: string;
-  className?: string;
-  style?: React.CSSProperties;
+  isOpen: boolean;
+  onClose: () => void;
+  items: {
+    id: number;
+    image: string;
+    title: string;
+  }[];
+  initialIndex: number;
 }
 
 const Modal: React.FC<ModalProps> = ({ 
   isOpen, 
   onClose, 
-  children, 
-  onPrev, 
-  onNext, 
-  canGoPrev = true, 
-  canGoNext = true,
-  onClick
+  items,
+  initialIndex,
 }) => {
-  // Рефы
-  const overlayRef = useRef<HTMLDivElement>(null); // Оверлей модалки
-  const contentRef = useRef<HTMLDivElement>(null); // Контент модалки
-  const imageContainerRef = useRef<HTMLDivElement>(null); // Контейнер изображения
-  
-  // Состояния
-  const [isClosing, setIsClosing] = useState(false); // Флаг анимации закрытия
-  const [dragOffset, setDragOffset] = useState(0); // Смещение при перетаскивании
-  const [scale, setScale] = useState(1); // Масштаб изображения
-  
-  // Refs для touch-событий
-  const touchStartY = useRef(0);
+  // Состояния компонента
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [isClosing, setIsClosing] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState(0);
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+
+  // Рефы для DOM-элементов
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // Рефы для обработки жестов
+  const touchStartPos = useRef({ x: 0, y: 0 });
+  const touchStartDistance = useRef(0);
   const touchStartTime = useRef(0);
-  const touchStartX = useRef(0);
-  const initialDistance = useRef(0);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const prevImageSrcRef = useRef<string>('');
+  const touchStartImagePos = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+  const isZooming = useRef(false);
+  const isHorizontalSwipe = useRef(false);
+  const isImageDragging = useRef(false);
 
-  // Эффект для предотвращения скролла страницы при открытой модалке
+  // Пороговые значения
+  const SWIPE_THRESHOLD = 50;
+  const SWIPE_VELOCITY_THRESHOLD = 0.3;
+  const CLOSE_THRESHOLD = 100;
+  const ZOOM_SENSITIVITY = 0.01;
+  const IMAGE_DRAG_THRESHOLD = 10;
+
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      setIsClosing(false);
-      setDragOffset(0);
-      setScale(1);
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+    setCurrentIndex(initialIndex);
+  }, [initialIndex]);
 
-  // Эффект для обработки смены изображения
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    if (React.isValidElement(children)) {
-      const currentChild = children as React.ReactElement<ImageChildProps>;
-      const currentSrc = currentChild.props.src;
-      
-      if (currentSrc && currentSrc !== prevImageSrcRef.current) {
-        setScale(1); // Сброс масштаба при смене изображения
-        prevImageSrcRef.current = currentSrc;
-      }
-    }
-  }, [children, isOpen]);
-
-  // Обработчик закрытия модалки с анимацией
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
       setScale(1);
+      setPosition({ x: 0, y: 0 });
+      setImagePosition({ x: 0, y: 0 });
     }, 300);
   }, [onClose]);
 
-  // Обработчик нажатия Esc
+  const handleOverlayClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === overlayRef.current) {
+      handleClose();
+    }
+  }, [handleClose]);
+
   useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
-        handleClose();
-      }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+      if (e.key === 'ArrowLeft' && canGoPrev) handlePrev();
+      if (e.key === 'ArrowRight' && canGoNext) handleNext();
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscKey);
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
     }
-
     return () => {
-      document.removeEventListener('keydown', handleEscKey);
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, handleClose]);
+  }, [isOpen, handleClose, currentIndex, items.length]);
 
-  // Обработчики touch-событий
+  const canGoPrev = currentIndex > 0;
+  const canGoNext = currentIndex < items.length - 1;
 
-    // Обработчики навигации
-    const handlePrev = useCallback(() => {
-      if (scale === 1) { // Навигация только при нормальном масштабе
-        onPrev?.();
-      }
-    }, [onPrev, scale]);
-  
-    const handleNext = useCallback(() => {
-      if (scale === 1) {
-        onNext?.();
-      }
-    }, [onNext, scale]);
+  const handlePrev = useCallback(() => {
+    if (scale === 1 && canGoPrev) {
+      setCurrentIndex(prev => prev - 1);
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+      setImagePosition({ x: 0, y: 0 });
+    }
+  }, [scale, canGoPrev]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleNext = useCallback(() => {
+    if (scale === 1 && canGoNext) {
+      setCurrentIndex(prev => prev + 1);
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+      setImagePosition({ x: 0, y: 0 });
+    }
+  }, [scale, canGoNext]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      // Обработка масштабирования двумя пальцами
+      // Начало зума
+      isZooming.current = true;
+      isDragging.current = false;
+      isImageDragging.current = false;
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
-      initialDistance.current = Math.hypot(
+      touchStartDistance.current = Math.hypot(
         touch2.clientX - touch1.clientX,
         touch2.clientY - touch1.clientY
       );
       return;
     }
-  
-    if (scale === 1) {
-      touchStartX.current = e.touches[0].clientX;
-      touchStartY.current = e.touches[0].clientY;
-      touchStartTime.current = Date.now();
-    }
-  };
-  
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isOpen) return;
-    
-    if (e.touches.length === 2) {
+
+    // Начало драга/свайпа
+    isDragging.current = true;
+    isImageDragging.current = scale > 1;
+    isHorizontalSwipe.current = false;
+    touchStartPos.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    };
+    touchStartImagePos.current = { ...imagePosition };
+    touchStartTime.current = Date.now();
+  }, [scale, imagePosition]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && isZooming.current) {
+      // Обработка зума
       e.preventDefault();
-      // Расчет масштаба при pinch-зуме
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
       const currentDistance = Math.hypot(
@@ -161,59 +148,103 @@ const Modal: React.FC<ModalProps> = ({
         touch2.clientY - touch1.clientY
       );
       
-      const newScale = Math.max(1, Math.min(3, currentDistance / initialDistance.current));
+      const newScale = Math.max(1, Math.min(3, 
+        scale + (currentDistance - touchStartDistance.current) * ZOOM_SENSITIVITY
+      ));
       setScale(newScale);
+      touchStartDistance.current = currentDistance;
       return;
     }
 
-    if (scale === 1) {
-      // Обработка свайпов
+    if (isDragging.current && e.touches.length === 1) {
       const touch = e.touches[0];
-      const deltaX = touch.clientX - touchStartX.current;
-      const deltaY = touch.clientY - touchStartY.current;
-      
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Горизонтальный свайп
-        e.stopPropagation()
-      } else if (Math.abs(deltaY) > 10 && contentRef.current?.scrollTop === 0) {
-        // Вертикальный свайп для закрытия
-        e.stopPropagation()
-        setDragOffset(deltaY);
-      }
-    }
-  };
+      const deltaX = touch.clientX - touchStartPos.current.x;
+      const deltaY = touch.clientY - touchStartPos.current.y;
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const touch = e.changedTouches[0];
-    const deltaX = touch.clientX - touchStartX.current;
-    const deltaY = touch.clientY - touchStartY.current;
-    
-    // Обработка горизонтальных свайпов
-    if (scale === 1 && Math.abs(deltaX) > 50) {
-      if (deltaX > 0 && canGoPrev) {
-        handlePrev();
-      } else if (deltaX < 0 && canGoNext) {
-        handleNext();
+      if (isImageDragging.current) {
+        // Перемещение увеличенного изображения
+        e.preventDefault();
+        const newX = touchStartImagePos.current.x + deltaX;
+        const newY = touchStartImagePos.current.y + deltaY;
+        setImagePosition({ x: newX, y: newY });
+        return;
+      }
+
+      // Определяем направление свайпа после превышения порога
+      if (!isHorizontalSwipe.current && Math.abs(deltaX) > IMAGE_DRAG_THRESHOLD) {
+        isHorizontalSwipe.current = true;
+      }
+
+      if (scale === 1) {
+        if (isHorizontalSwipe.current) {
+          // Горизонтальный свайп - навигация
+          // e.preventDefault();
+          setPosition({ x: deltaX, y: 0 });
+        } else {
+          // Вертикальный свайп - закрытие (вверх или вниз)
+          setDragOffset(deltaY);
+        }
       }
     }
-    
-    // Обработка вертикальных свайпов
-    const absDrag = Math.abs(deltaY);
-    const deltaTime = Date.now() - touchStartTime.current;
-    const velocity = absDrag / deltaTime;
-    
-    if (absDrag > 100 || velocity > 0.3) {
-      handleClose();
-    } else {
+  }, [scale]);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (isZooming.current) {
+      isZooming.current = false;
+      return;
+    }
+
+    if (isDragging.current) {
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - touchStartPos.current.x;
+      const deltaY = touch.clientY - touchStartPos.current.y;
+      const deltaTime = Date.now() - touchStartTime.current;
+      const velocity = Math.abs(deltaX) / deltaTime;
+
+      // Проверяем, был ли это быстрый свайп
+      const isFastSwipe = velocity > SWIPE_VELOCITY_THRESHOLD;
+
+      if (isImageDragging.current) {
+        // После перемещения изображения просто сбрасываем флаги
+        isImageDragging.current = false;
+      } 
+      else if (scale === 1) {
+        // Горизонтальный свайп - навигация
+        if (isHorizontalSwipe.current || isFastSwipe) {
+          if ((deltaX > SWIPE_THRESHOLD || isFastSwipe) && canGoPrev) {
+            handlePrev();
+          } else if ((deltaX < -SWIPE_THRESHOLD || isFastSwipe) && canGoNext) {
+            handleNext();
+          }
+        }
+        // Вертикальный свайп - закрытие (вверх или вниз)
+        else if (Math.abs(deltaY) > CLOSE_THRESHOLD) {
+          handleClose();
+        }
+      }
+
+      // Сброс состояний
+      setPosition({ x: 0, y: 0 });
       setDragOffset(0);
+      isDragging.current = false;
+      isHorizontalSwipe.current = false;
     }
+  }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose]);
+
+  const getContentStyle = () => {
+    return {
+      transform: `translate(${position.x}px, ${position.y + dragOffset}px)`,
+      transition: isDragging.current ? 'none' : 'transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 1)'
+    };
   };
 
-  // Функции для расчета стилей
-  const getTransformStyle = () => {
-    if (dragOffset === 0) return `translateY(0)`;
-    const baseScale = 1 - Math.min(Math.abs(dragOffset) / 1000, 0.1);
-    return `translateY(${dragOffset}px) scale(${baseScale})`;
+  const getImageStyle = () => {
+    return {
+      transform: `scale(${scale}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
+      transformOrigin: 'center center',
+      transition: isDragging.current || isZooming.current ? 'none' : 'transform 0.2s ease-out',
+      touchAction: scale > 1 ? 'none' : 'pan-y'
+    };
   };
 
   const getOverlayOpacity = () => {
@@ -226,69 +257,71 @@ const Modal: React.FC<ModalProps> = ({
     <div 
       ref={overlayRef}
       className={`${styles.modalOverlay} ${isClosing ? styles.closing : ''}`}
-      onClick={onClick}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onClick={handleOverlayClick}
       style={{
         opacity: getOverlayOpacity(),
-        transition: dragOffset === 0 ? 'opacity 0.3s ease' : 'none'
+        transition: dragOffset === 0 ? 'opacity 0.3s ease' : 'none',
+        touchAction: 'none'
       }}
     >
+      <button className={styles.closeButton} onClick={handleClose} aria-label="Закрыть">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2"/>
+        </svg>
+      </button>
+      
+      {items.length > 1 && (
+        <>
+          <button 
+            className={`${styles.navButton} ${styles.prevButton}`} 
+            onClick={handlePrev}
+            disabled={!canGoPrev}
+            aria-label="Предыдущее изображение"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2"/>
+            </svg>
+          </button>
+          <button 
+            className={`${styles.navButton} ${styles.nextButton}`} 
+            onClick={handleNext}
+            disabled={!canGoNext}
+            aria-label="Следующее изображение"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 6L15 12L9 18" stroke="white" strokeWidth="2"/>
+            </svg>
+          </button>
+        </>
+      )}
+
       <div 
         ref={contentRef}
         className={styles.modalContent}
         onClick={e => e.stopPropagation()}
-        style={{
-          transform: getTransformStyle(),
-          transition: dragOffset === 0 ? 'transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 1)' : 'none'
-        }}
+        style={getContentStyle()}
       >
-        {/* Кнопка закрытия */}
-        <button className={styles.closeButton} onClick={handleClose} aria-label="Закрыть">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        
-        {/* Кнопки навигации */}
-        {onPrev && onNext && (
-          <>
-            <button 
-              className={`${styles.navButton} ${styles.prevButton}`} 
-              onClick={handlePrev}
-              disabled={!canGoPrev}
-              aria-label="Предыдущее изображение"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-            <button 
-              className={`${styles.navButton} ${styles.nextButton}`} 
-              onClick={handleNext}
-              disabled={!canGoNext}
-              aria-label="Следующее изображение"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 6L15 12L9 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </>
-        )}
-        
-        {/* Контейнер изображения с поддержкой масштабирования */}
-        <div 
-          ref={imageContainerRef}
-          className={styles.imageContainer}
-        >
-          {React.cloneElement(children as React.ReactElement<ImageElementProps>, {
-            ref: imgRef,
-            style: {
-              transform: `scale(${scale})`,
-              transformOrigin: 'center center',
-            }
-          })}
+        <div className={styles.imageContainer}>
+          <Image
+            src={items[currentIndex].image}
+            alt={items[currentIndex].title}
+            width={1200}
+            height={800}
+            ref={imageRef}
+            className={styles.modalImage}
+            loading="eager"
+            style={{
+              ...getImageStyle(),
+              maxWidth: '100%',
+              maxHeight: '100dvh',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain'
+            }}
+          />
         </div>
       </div>
     </div>

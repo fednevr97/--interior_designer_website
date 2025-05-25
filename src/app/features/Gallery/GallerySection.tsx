@@ -48,29 +48,18 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   displayMode = 'slider',
   gridColumns = 3,
 }) => {
-  // Состояния компонента
-  const [currentIndex, setCurrentIndex] = useState<number>(0); // Текущий индекс слайдера
-  const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems); // Видимые элементы
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Выбранное изображение
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0); // Индекс выбранного изображения
-  const [isDragging, setIsDragging] = useState<boolean>(false); // Флаг перетаскивания
-  const [startX, setStartX] = useState<number>(0); // Начальная позиция X при перетаскивании
-  const [translateX, setTranslateX] = useState<number>(0); // Смещение при перетаскивании
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [startX, setStartX] = useState<number>(0);
+  const [translateX, setTranslateX] = useState<number>(0);
   
-  // Рефы
-  const galleryBaseRef = useRef<HTMLDivElement>(null); // Ссылка на контейнер галереи
-  const modalContentRef = useRef<HTMLDivElement>(null); // Ссылка на контент модалки
-  const modalGalleryRef = useRef<HTMLDivElement>(null); // Ссылка на галерею в модалке
-  
-  // Состояния для модального окна
-  const [modalCurrentIndex, setModalCurrentIndex] = useState(0);
-  const [modalTranslateX, setModalTranslateX] = useState(0);
-  const [isModalDragging, setIsModalDragging] = useState(false);
-  const [modalStartX, setModalStartX] = useState(0);
-  
+  const galleryBaseRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Обработчик клика по заголовку (переход по ссылке)
+    // Обработчик клика по заголовку (переход по ссылке)
   const handleTitleClick = useCallback(() => {
     if (titleLink) {
       router.push(titleLink);
@@ -97,11 +86,10 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
 
-  // Мемоизированные проверки для навигации
   const canGoLeft = useMemo(() => currentIndex > 0, [currentIndex]);
   const canGoRight = useMemo(() => currentIndex < items.length - visibleItems, [currentIndex, items.length, visibleItems]);
 
-  // Обработчики навигации
+    // Обработчики навигации
   const goLeft = useCallback(() => {
     if (canGoLeft) {
       setCurrentIndex(prev => prev - 1);
@@ -114,7 +102,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     }
   }, [canGoRight]);
 
-  // Функция расчета transform для слайдера
   const getTransform = useCallback(() => {
     if (isDragging) {
       return `translateX(calc(-${currentIndex * (100 / visibleItems + (gapPercent / visibleItems))}% + ${translateX}px))`;
@@ -124,7 +111,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     return `translateX(-${currentIndex * itemWithGap}%)`;
   }, [isDragging, currentIndex, visibleItems, gapPercent, translateX]);
 
-  // Функция расчета sizes для оптимизации загрузки изображений
   const getSizes = useCallback(() => {
     switch(visibleItems) {
       case 1: return "100vw";
@@ -134,35 +120,14 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     }
   }, [visibleItems]);
 
-  // Обработчик клика по изображению (открытие модалки)
   const handleImageClick = useCallback((image: string, index: number) => {
-    if (!isDragging) { // Не открываем модалку если был свайп
+    if (!isDragging) {
       setSelectedImage(image);
       setSelectedImageIndex(index);
-      setModalCurrentIndex(index);
     }
   }, [isDragging]);
 
-  // Обработчики навигации в модальном окне
-  const handlePrevImage = useCallback(() => {
-    if (selectedImageIndex > 0) {
-      const newIndex = selectedImageIndex - 1;
-      setSelectedImageIndex(newIndex);
-      setSelectedImage(items[newIndex].image);
-      setModalCurrentIndex(newIndex);
-    }
-  }, [selectedImageIndex, items]);
-
-  const handleNextImage = useCallback(() => {
-    if (selectedImageIndex < items.length - 1) {
-      const newIndex = selectedImageIndex + 1;
-      setSelectedImageIndex(newIndex);
-      setSelectedImage(items[newIndex].image);
-      setModalCurrentIndex(newIndex);
-    }
-  }, [selectedImageIndex, items]);
-
-  // Обработчики touch-событий для слайдера
+    // Обработчики touch-событий для слайдера
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (visibleItems >= items.length) return;
     setIsDragging(true);
@@ -189,49 +154,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     setTranslateX(0);
   }, [isDragging, visibleItems, items.length, translateX, canGoLeft, canGoRight, goLeft, goRight]);
 
-  // Обработчики touch-событий для модального окна
-  const handleModalTouchStart = useCallback((e: React.TouchEvent) => {
-    setIsModalDragging(true);
-    setModalStartX(e.touches[0].clientX);
-    setModalTranslateX(0);
-  }, []);
-
-  const handleModalTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isModalDragging) return;
-    const currentX = e.touches[0].clientX;
-    const diff = currentX - modalStartX;
-    setModalTranslateX(diff);
-  }, [isModalDragging, modalStartX]);
-
-  const handleModalTouchEnd = useCallback(() => {
-    if (!isModalDragging) return;
-    setIsModalDragging(false);
-
-    const threshold = 50;
-    if (modalTranslateX > threshold) {
-      handlePrevImage();
-    } else if (modalTranslateX < -threshold) {
-      handleNextImage();
-    }
-    setModalTranslateX(0);
-  }, [isModalDragging, modalTranslateX, handlePrevImage, handleNextImage]);
-
-  // Обработчик клика по оверлею модалки
-  const handleModalClick = useCallback((e: React.MouseEvent) => {
-    if (modalContentRef.current && !modalContentRef.current.contains(e.target as Node)) {
-      setSelectedImage(null);
-    }
-  }, []);
-
-  // Функция расчета transform для модального окна
-  const getModalTransform = useCallback(() => {
-    if (isModalDragging) {
-      return `translateX(calc(-${modalCurrentIndex * (100 / items.length)}% + ${modalTranslateX}px))`;
-    }
-    return `translateX(-${modalCurrentIndex * (100 / items.length)}%)`;
-  }, [isModalDragging, modalCurrentIndex, items.length, modalTranslateX]);
-
-  // Рендер элементов галереи в режиме слайдера
   const renderGalleryItems = useMemo(() => (
     <ul className={styles['gallery-list']} role="list">
       {items.map((item, index) => (
@@ -250,7 +172,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
             <Image 
               src={item.image} 
               alt={item.title} 
-              loading="eager" // Загрузка без ленивой подгрузки
+              loading="eager"
               fill  
               sizes={getSizes()}
             />
@@ -261,7 +183,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     </ul>
   ), [items, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, handleImageClick, getSizes]);
 
-  // Рендер элементов в grid-режиме
   const renderGridItems = useMemo(() => (
     <ul className={styles.gridList} role="list">
       {items.map((item) => (
@@ -286,42 +207,9 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     </ul>
   ), [items, handleImageClick]);
 
-  // Рендер изображений в модальном окне
-  const renderModalImages = useMemo(() => (
-    items.map((item, index) => (
-      <div 
-        key={item.id}
-        className={styles.modalImageWrapper}
-        style={{
-          width: `${100 / items.length}%`,
-          opacity: selectedImageIndex === index ? 1 : 0.5,
-          transition: 'opacity 0.3s ease',
-          flexShrink: 0
-        }}
-      >
-        <Image
-          src={item.image}
-          alt={item.title}
-          width={1200}
-          height={800}
-          className={styles.modalImage}
-          loading="eager"
-          unoptimized={true} // Отключаем оптимизацию Next.js для серверной оптимизации
-          style={{
-            maxWidth: '100%',
-            maxHeight: '100dvh',
-            width: 'auto',
-            objectFit: 'contain'
-          }}
-        />
-      </div>
-    ))
-  ), [items, selectedImageIndex]);
-
   return (
     <section id={id} className={styles['gallery-section']} aria-labelledby={`${id}-title`}>
       <div className={styles.container}>
-        {/* Заголовок галереи */}
         <h2 
           id={`${id}-title`}
           className={styles.galleryTitle}
@@ -333,10 +221,8 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           {title}
         </h2>
         
-        {/* Режим отображения: слайдер или сетка */}
         {displayMode === 'slider' ? (
           <div className={styles['gallery-wrapper']}>
-            {/* Кнопка "назад" */}
             <NavButton 
               variant="arrow-left" 
               ariaLabel={`Предыдущий ${ariaLabelPrefix}`} 
@@ -344,7 +230,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               disabled={!canGoLeft}
             />
             
-            {/* Контейнер слайдера */}
             <div className={styles['gallery-container']}>
               <div 
                 ref={galleryBaseRef}
@@ -363,7 +248,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               </div>
             </div>
             
-            {/* Кнопка "вперед" */}
             <NavButton 
               variant="arrow-right" 
               ariaLabel={`Следующий ${ariaLabelPrefix}`} 
@@ -378,37 +262,13 @@ const GallerySection: React.FC<GallerySectionProps> = ({
         )}
       </div>
 
-      {/* Модальное окно для просмотра изображений */}
       <Modal 
         isOpen={!!selectedImage} 
         onClose={() => setSelectedImage(null)}
-        onPrev={handlePrevImage}
-        onNext={handleNextImage}
-        canGoPrev={selectedImageIndex > 0}
-        canGoNext={selectedImageIndex < items.length - 1}
-        onClick={handleModalClick}
-      >
-        <div 
-          ref={modalContentRef}
-          className={styles.modalContent}
-        >
-          <div 
-            ref={modalGalleryRef}
-            className={styles.modalGalleryContainer}
-            onTouchStart={handleModalTouchStart}
-            onTouchMove={handleModalTouchMove}
-            onTouchEnd={handleModalTouchEnd}
-            style={{
-              transform: getModalTransform(),
-              transition: isModalDragging ? 'none' : 'transform 0.3s ease',
-              width: `${items.length * 100}%`,
-              display: 'flex'
-            }}
-          >
-            {renderModalImages}
-          </div>
-        </div>
-      </Modal>
+        items={items}
+        initialIndex={selectedImageIndex}
+        
+      />
     </section>
   );
 };
