@@ -3,15 +3,29 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Modal.module.css';
 
+// Пропсы для компонента Modal
 interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  onPrev?: () => void;
-  onNext?: () => void;
-  canGoPrev?: boolean;
-  canGoNext?: boolean;
-  onClick?: (e: React.MouseEvent) => void;
+  isOpen: boolean; // Флаг открытия модалки
+  onClose: () => void; // Функция закрытия
+  children: React.ReactNode; // Дочерние элементы
+  onPrev?: () => void; // Функция "предыдущий"
+  onNext?: () => void; // Функция "следующий"
+  canGoPrev?: boolean; // Доступность кнопки "предыдущий"
+  canGoNext?: boolean; // Доступность кнопки "следующий"
+  onClick?: (e: React.MouseEvent) => void; // Обработчик клика
+}
+
+// Пропсы для изображения
+interface ImageElementProps {
+  ref?: React.Ref<HTMLImageElement>;
+  style?: React.CSSProperties;
+}
+
+interface ImageChildProps {
+  src?: string;
+  alt?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 const Modal: React.FC<ModalProps> = ({ 
@@ -24,39 +38,25 @@ const Modal: React.FC<ModalProps> = ({
   canGoNext = true,
   onClick
 }) => {
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const [isClosing, setIsClosing] = useState(false);
-  const [dragOffset, setDragOffset] = useState(0);
+  // Рефы
+  const overlayRef = useRef<HTMLDivElement>(null); // Оверлей модалки
+  const contentRef = useRef<HTMLDivElement>(null); // Контент модалки
+  const imageContainerRef = useRef<HTMLDivElement>(null); // Контейнер изображения
+  
+  // Состояния
+  const [isClosing, setIsClosing] = useState(false); // Флаг анимации закрытия
+  const [dragOffset, setDragOffset] = useState(0); // Смещение при перетаскивании
+  const [scale, setScale] = useState(1); // Масштаб изображения
+  
+  // Refs для touch-событий
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
+  const touchStartX = useRef(0);
+  const initialDistance = useRef(0);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const prevImageSrcRef = useRef<string>('');
 
-  // Состояния для масштабирования
-  const [scale, setScale] = useState(1);
-  const [lastDistance, setLastDistance] = useState(0);
-
-  const handleClose = useCallback(() => {
-    setIsClosing(true);
-    setTimeout(() => {
-      onClose();
-      setIsClosing(false);
-      setScale(1);
-    }, 300);
-  }, [onClose]);
-
-  const handlePrev = useCallback(() => {
-    setScale(1);
-    setLastDistance(0);
-    onPrev?.();
-  }, [onPrev]);
-
-  const handleNext = useCallback(() => {
-    setScale(1);
-    setLastDistance(0);
-    onNext?.();
-  }, [onNext]);
-
+  // Эффект для предотвращения скролла страницы при открытой модалке
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -72,6 +72,32 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen]);
 
+  // Эффект для обработки смены изображения
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    if (React.isValidElement(children)) {
+      const currentChild = children as React.ReactElement<ImageChildProps>;
+      const currentSrc = currentChild.props.src;
+      
+      if (currentSrc && currentSrc !== prevImageSrcRef.current) {
+        setScale(1); // Сброс масштаба при смене изображения
+        prevImageSrcRef.current = currentSrc;
+      }
+    }
+  }, [children, isOpen]);
+
+  // Обработчик закрытия модалки с анимацией
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+      setScale(1);
+    }, 300);
+  }, [onClose]);
+
+  // Обработчик нажатия Esc
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
@@ -88,73 +114,106 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, handleClose]);
 
+  // Обработчики touch-событий
+
+    // Обработчики навигации
+    const handlePrev = useCallback(() => {
+      if (scale === 1) { // Навигация только при нормальном масштабе
+        onPrev?.();
+      }
+    }, [onPrev, scale]);
+  
+    const handleNext = useCallback(() => {
+      if (scale === 1) {
+        onNext?.();
+      }
+    }, [onNext, scale]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
+      // Обработка масштабирования двумя пальцами
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      initialDistance.current = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
       );
-      setLastDistance(distance);
-    } else if (e.touches.length === 1) {
+      return;
+    }
+  
+    if (scale === 1) {
+      touchStartX.current = e.touches[0].clientX;
       touchStartY.current = e.touches[0].clientY;
       touchStartTime.current = Date.now();
     }
   };
-
+  
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isOpen) return;
+    
     if (e.touches.length === 2) {
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
+      e.preventDefault();
+      // Расчет масштаба при pinch-зуме
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const currentDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
       );
+      
+      const newScale = Math.max(1, Math.min(3, currentDistance / initialDistance.current));
+      setScale(newScale);
+      return;
+    }
 
-      if (lastDistance) {
-        const scaleChange = distance / lastDistance;
-        setScale((prevScale) => Math.min(Math.max(prevScale * scaleChange, 1), 3));
-      }
-
-      setLastDistance(distance);
-    } else if (e.touches.length === 1) {
-      const currentY = e.touches[0].clientY;
-      const deltaY = currentY - touchStartY.current;
-
-      if (deltaY > 0 && (contentRef.current?.scrollTop === 0 || deltaY > 10)) {
-        e.preventDefault();
-        setDragOffset(deltaY);
-      } else if (
-        deltaY < 0 &&
-        contentRef.current &&
-        contentRef.current.scrollHeight - contentRef.current.scrollTop <=
-          contentRef.current.clientHeight + 10
-      ) {
-        e.preventDefault();
+    if (scale === 1) {
+      // Обработка свайпов
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchStartX.current;
+      const deltaY = touch.clientY - touchStartY.current;
+      
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Горизонтальный свайп
+        e.stopPropagation()
+      } else if (Math.abs(deltaY) > 10 && contentRef.current?.scrollTop === 0) {
+        // Вертикальный свайп для закрытия
+        e.stopPropagation()
         setDragOffset(deltaY);
       }
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (e.touches.length < 2) {
-      setLastDistance(0);
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartX.current;
+    const deltaY = touch.clientY - touchStartY.current;
+    
+    // Обработка горизонтальных свайпов
+    if (scale === 1 && Math.abs(deltaX) > 50) {
+      if (deltaX > 0 && canGoPrev) {
+        handlePrev();
+      } else if (deltaX < 0 && canGoNext) {
+        handleNext();
+      }
     }
-
-    if (!isOpen) return;
-
+    
+    // Обработка вертикальных свайпов
+    const absDrag = Math.abs(deltaY);
     const deltaTime = Date.now() - touchStartTime.current;
-    const velocity = Math.abs(dragOffset) / deltaTime;
-    const shouldClose = Math.abs(dragOffset) > 100 || velocity > 0.3;
-
-    if (shouldClose) {
+    const velocity = absDrag / deltaTime;
+    
+    if (absDrag > 100 || velocity > 0.3) {
       handleClose();
     } else {
       setDragOffset(0);
     }
   };
 
+  // Функции для расчета стилей
   const getTransformStyle = () => {
-    if (dragOffset === 0) return '';
-    const scale = 1 - Math.min(Math.abs(dragOffset) / 1000, 0.1);
-    return `translateY(${dragOffset}px) scale(${scale})`;
+    if (dragOffset === 0) return `translateY(0)`;
+    const baseScale = 1 - Math.min(Math.abs(dragOffset) / 1000, 0.1);
+    return `translateY(${dragOffset}px) scale(${baseScale})`;
   };
 
   const getOverlayOpacity = () => {
@@ -164,7 +223,7 @@ const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div
+    <div 
       ref={overlayRef}
       className={`${styles.modalOverlay} ${isClosing ? styles.closing : ''}`}
       onClick={onClick}
@@ -173,100 +232,63 @@ const Modal: React.FC<ModalProps> = ({
       onTouchEnd={handleTouchEnd}
       style={{
         opacity: getOverlayOpacity(),
-        transition: dragOffset === 0 ? 'opacity 0.3s ease' : 'none',
+        transition: dragOffset === 0 ? 'opacity 0.3s ease' : 'none'
       }}
     >
-      <div
+      <div 
         ref={contentRef}
         className={styles.modalContent}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
         style={{
           transform: getTransformStyle(),
-          transition:
-            dragOffset === 0
-              ? 'transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 1)'
-              : 'none',
+          transition: dragOffset === 0 ? 'transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 1)' : 'none'
         }}
       >
-        <button
-          className={styles.closeButton}
-          onClick={handleClose}
-          aria-label="Закрыть"
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M18 6L6 18M6 6L18 18"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+        {/* Кнопка закрытия */}
+        <button className={styles.closeButton} onClick={handleClose} aria-label="Закрыть">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
+        
+        {/* Кнопки навигации */}
         {onPrev && onNext && (
           <>
-            <button
-              className={`${styles.navButton} ${styles.prevButton}`}
+            <button 
+              className={`${styles.navButton} ${styles.prevButton}`} 
               onClick={handlePrev}
               disabled={!canGoPrev}
               aria-label="Предыдущее изображение"
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15 18L9 12L15 6"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <button
-              className={`${styles.navButton} ${styles.nextButton}`}
+            <button 
+              className={`${styles.navButton} ${styles.nextButton}`} 
               onClick={handleNext}
               disabled={!canGoNext}
               aria-label="Следующее изображение"
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9 6L15 12L9 18"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 6L15 12L9 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
           </>
         )}
-        <div
-          ref={imageRef}
+        
+        {/* Контейнер изображения с поддержкой масштабирования */}
+        <div 
+          ref={imageContainerRef}
           className={styles.imageContainer}
-          style={{
-            transform: `scale(${scale})`,
-            transformOrigin: 'center center',
-            transition: 'transform 0.2s ease-out',
-          }}
         >
-          {children}
+          {React.cloneElement(children as React.ReactElement<ImageElementProps>, {
+            ref: imgRef,
+            style: {
+              transform: `scale(${scale})`,
+              transformOrigin: 'center center',
+            }
+          })}
         </div>
       </div>
     </div>

@@ -52,14 +52,16 @@
   height: 100%;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
+  touch-action: none;
 }
 
 .imageContainer > *,
 .modalImage {
   max-width: 100%;
-  max-height: 80dvh;
+  max-height: 100dvh;
   object-fit: contain;
   transition: opacity 0.3s ease;
+  touch-action: none;
 }
 
 .navButton {
@@ -101,12 +103,12 @@
 
 @media (max-width: 768px) {
   .modalContent {
-    max-width: 95vw;
-    max-height: 95dvh;
+    max-width: 100vw;
+    max-height: 100dvh;
   }
   
   .imageContainer {
-    max-height: 85dvh;
+    max-height: 100dvh;
   }
   
   .navButton {
