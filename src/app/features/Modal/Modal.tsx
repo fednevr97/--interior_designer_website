@@ -248,7 +248,7 @@ const handleTouchMove = useCallback((e: React.TouchEvent) => {
       touch2.clientY - touch1.clientY
     );
     
-    const newScale = Math.max(1, Math.min(3, 
+    const newScale = Math.max(1, Math.min(5, 
       scale + (currentDistance - touchStartDistance.current) * ZOOM_SENSITIVITY
     ));
     
