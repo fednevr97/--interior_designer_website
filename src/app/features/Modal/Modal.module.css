@@ -24,8 +24,10 @@
   border-radius: 12px;
   max-width: 90%;
   max-height: 100dvh;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  /* width: auto;
+  height: auto; */
   will-change: transform;
   margin: auto;
 }
@@ -53,6 +55,10 @@
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: none;
+  display: flex;           /* Добавляем flex */
+  align-items: center;     /* Центрируем по вертикали */
+  justify-content: center; /* Центрируем по горизонтали */
+  position: relative;      /* Для абсолютного позиционирования изображения */
 }
 
 .imageContainer > *,
@@ -101,7 +107,32 @@
   right: 4vw;
 }
 
-/* Добавить в Modal.module.css */
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slideItem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.24, 1);
+  will-change: transform;
+}
+
+.currentSlide {
+  z-index: 2;
+}
+
+.prevSlide, .nextSlide {
+  z-index: 1;
+}
+
 .slideLeft {
   animation: slideLeft 0.3s ease-out;
 }
