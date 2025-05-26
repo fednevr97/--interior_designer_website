@@ -81,6 +81,26 @@ const handleDoubleClick = useCallback((e: React.MouseEvent) => {
   }
 }, [scale]);
 
+const handleDoubleTap = useCallback((e: React.TouchEvent) => {
+  e.stopPropagation();
+  
+  if (scale === 1) {
+    const touch = e.touches[0] || e.changedTouches[0];
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    setScale(2);
+    setImagePosition({
+      x: (rect.width/2 - x) * 0.5,
+      y: (rect.height/2 - y) * 0.5
+    });
+  } else {
+    setScale(1);
+    setImagePosition({ x: 0, y: 0 });
+  }
+}, [scale]);
+
   // Обработчик закрытия модального окна
   const handleClose = useCallback(() => {
     setIsClosing(true); // Запускаем анимацию закрытия
@@ -274,54 +294,52 @@ const handleTouchMove = useCallback((e: React.TouchEvent) => {
 
   
 
-  // Обработчик окончания касания
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (isZooming.current) { // Завершение зума
-      isZooming.current = false;
+const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+  if (isZooming.current) {
+    isZooming.current = false;
+    return;
+  }
+
+  if (isDragging.current) {
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartPos.current.x;
+    const deltaY = touch.clientY - touchStartPos.current.y;
+
+    // Сбрасываем флаги
+    isDragging.current = false;
+    isHorizontalSwipe.current = false;
+    isImageDragging.current = false;
+
+    if (isImageDragging.current) {
       return;
     }
-  
-    if (isDragging.current) { // Завершение свайпа/перетаскивания
-      const touch = e.changedTouches[0];
-      const deltaX = touch.clientX - touchStartPos.current.x;
-      const deltaY = touch.clientY - touchStartPos.current.y;
-  
-      // Сбрасываем флаги
-      isDragging.current = false;
-      isHorizontalSwipe.current = false;
-      isImageDragging.current = false;
-  
-      if (isImageDragging.current) {
-        return;
-      }
-  
-      if (scale === 1) {
-        const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
-        
-        if (isHorizontal) { // Обработка горизонтального свайпа
-          if (deltaX > SWIPE_THRESHOLD && canGoPrev) {
-            handlePrev(); // Переход к предыдущему
-          } else if (deltaX < -SWIPE_THRESHOLD && canGoNext) {
-            handleNext(); // Переход к следующему
-          }
-        } else if (Math.abs(deltaY) > CLOSE_THRESHOLD) { // Вертикальный свайп для закрытия
-          handleClose();
+
+    if (scale === 1) {
+      const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
+      
+      if (isHorizontal) {
+        if (deltaX > SWIPE_THRESHOLD && canGoPrev) {
+          handlePrev();
+        } else if (deltaX < -SWIPE_THRESHOLD && canGoNext) {
+          handleNext();
         }
+      } else if (Math.abs(deltaY) > CLOSE_THRESHOLD) {
+        handleClose();
       }
-  
-      // Сбрасываем позиции
-      setPosition({ x: 0, y: 0 });
-      setDragOffset(0);
     }
 
-    const currentTime = Date.now();
-    const tapLength = currentTime - lastTapTime;
+    // Сбрасываем позиции
+    setPosition({ x: 0, y: 0 });
+    setDragOffset(0);
+  }
 
-      // Если между касаниями прошло меньше 300ms - считаем двойным тапом
+  const currentTime = Date.now();
+  const tapLength = currentTime - lastTapTime;
+
+  // Если между касаниями прошло меньше 300ms - считаем двойным тапом
   if (tapLength < 300 && tapLength > 0) {
     e.preventDefault();
     
-    // Сбрасываем масштаб или увеличиваем
     if (scale === 1) {
       const touch = e.changedTouches[0];
       const rect = e.currentTarget.getBoundingClientRect();
@@ -340,8 +358,7 @@ const handleTouchMove = useCallback((e: React.TouchEvent) => {
   }
   
   setLastTapTime(currentTime);
-
-  }, [lastTapTime, scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose]);
+}, [lastTapTime, scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose]);
 
   // Функция для получения стилей контента
   const getContentStyle = (): React.CSSProperties => {
@@ -433,7 +450,7 @@ const getImageStyle = (): React.CSSProperties => {
         style={getContentStyle()}
       >
         {/* Контейнер слайдера */}
-        <div className={styles.sliderContainer}>
+        <div className={styles.sliderContainer }>
           {/* Предыдущий слайд (если есть) */}
           {prevIndex !== null && (
             <div 
@@ -451,6 +468,19 @@ const getImageStyle = (): React.CSSProperties => {
                   height={800}
                   loading="eager"
                   style={getImageStyle()}
+                  onDoubleClick={handleDoubleClick}
+                  onTouchEnd={(e) => {
+                    // Для одинарного тапа на мобильных
+                    if (!isDragging.current && !isZooming.current) {
+                      const currentTime = Date.now();
+                      if (currentTime - lastTapTime < 300) {
+                        handleDoubleTap(e);
+                        setLastTapTime(0);
+                      } else {
+                        setLastTapTime(currentTime);
+                      }
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -472,7 +502,6 @@ const getImageStyle = (): React.CSSProperties => {
                 ref={imageRef}
                 loading="eager"
                 style={getImageStyle()}
-                onDoubleClick={handleDoubleClick}
               />
             </div>
           </div>
