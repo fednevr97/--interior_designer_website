@@ -30,6 +30,7 @@ const Modal: React.FC<ModalProps> = ({
   const [dragOffset, setDragOffset] = useState(0); // Смещение при перетаскивании
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }); // Позиция изображения
   const [slideDirection, setSlideDirection] = useState<'left'|'right'|null>(null); // Направление слайда
+  const [isAnimating, setIsAnimating] = useState(false); // Добавим новое состояние для анимации
 
   // Рефы для DOM-элементов
   const overlayRef = useRef<HTMLDivElement>(null); // Оверлей модального окна
@@ -80,35 +81,47 @@ const Modal: React.FC<ModalProps> = ({
   const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex < items.length - 1;
 
-  // Обработчик перехода к предыдущему изображению
+  // Обновим обработчики навигации
   const handlePrev = useCallback(() => {
-    if (scale === 1 && canGoPrev) { // Переход только при масштабе 1 и наличии предыдущего изображения
-      setSlideDirection('right'); // Устанавливаем направление анимации
+    if (scale === 1 && canGoPrev && !isAnimating) {
+      setIsAnimating(true);
+      setSlideDirection('right');
+    
+      // Сначала меняем индекс
+      setCurrentIndex(prev => prev - 1);
+    
+      // Затем запускаем анимацию
       setTimeout(() => {
-        setCurrentIndex(prev => prev - 1); // Изменяем индекс
-        setSlideDirection(null); // Сбрасываем направление
-      }, 300); // Время анимации
-      // Сбрасываем все параметры
+        setSlideDirection(null);
+        setIsAnimating(false);
+      }, 300);
+
       setScale(1);
       setPosition({ x: 0, y: 0 });
       setImagePosition({ x: 0, y: 0 });
     }
-  }, [scale, canGoPrev]);
+  }, [scale, canGoPrev, isAnimating]);
 
   // Обработчик перехода к следующему изображению
   const handleNext = useCallback(() => {
-    if (scale === 1 && canGoNext) { // Переход только при масштабе 1 и наличии следующего изображения
-      setSlideDirection('left'); // Устанавливаем направление анимации
+    if (scale === 1 && canGoNext && !isAnimating) {
+      setIsAnimating(true);
+      setSlideDirection('left');
+      
+      // Сначала меняем индекс
+      setCurrentIndex(prev => prev + 1);
+      
+      // Затем запускаем анимацию
       setTimeout(() => {
-        setCurrentIndex(prev => prev + 1); // Изменяем индекс
-        setSlideDirection(null); // Сбрасываем направление
-      }, 300); // Время анимации
-      // Сбрасываем все параметры
+        setSlideDirection(null);
+        setIsAnimating(false);
+      }, 300);
+  
       setScale(1);
       setPosition({ x: 0, y: 0 });
       setImagePosition({ x: 0, y: 0 });
     }
-  }, [scale, canGoNext]);
+  }, [scale, canGoNext, isAnimating]);
 
   // Эффект для обработки клавиатурных событий
   useEffect(() => {
