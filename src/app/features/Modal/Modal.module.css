@@ -23,14 +23,13 @@
 .modalContent {
   position: relative;
   background-color: transparent;
-  border-radius: 12px;
-  max-width: 90%;
   max-height: 100dvh;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
   will-change: transform; /* Оптимизация анимации */
   margin: auto;
   display: flex;
+  align-items: center;
   overflow: hidden; /* Ограничение видимой области */
 }
 
@@ -54,8 +53,10 @@
 
 /* Контейнер изображения */
 .imageContainer {
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
+  width: auto;
+  height: auto;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: none;
@@ -118,10 +119,12 @@
 /* Контейнер слайдера */
 .sliderContainer {
   position: relative;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  display: flex;
+  width: fit-content; /* Подстраивается под содержимое */
+  height: fit-content; /* Подстраивается под содержимое */
+  overflow: visible; /* Разрешаем выход за границы */
+  /* display: grid;
+  grid-template-columns: 0px auto 0px;  */
+  display: block;
   align-items: center;
   justify-content: center;
   flex-grow: 1;
@@ -132,8 +135,10 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
+  width: auto;
+  height: auto;
   transition: transform 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
   will-change: transform;
 }
@@ -141,11 +146,15 @@
 /* Стили для текущего слайда */
 .currentSlide {
   z-index: 2;
+  position: relative; 
+  width: auto;
+  height: auto;
 }
 
 /* Стили для предыдущего и следующего слайдов */
 .prevSlide, .nextSlide {
   z-index: 1;
+  position: absolute;
 }
 
 /* Анимации для слайдов */

@@ -1,6 +1,5 @@
 'use client'
 
-// Импортируем необходимые хуки и компоненты
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import NavButton from '../../shared/components/ui/NavButton/NavButton';
 import Image from 'next/image';
@@ -59,7 +58,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   const [translateX, setTranslateX] = useState<number>(0);              // Смещение при перетаскивании
   
   const galleryBaseRef = useRef<HTMLDivElement>(null);                  // Реф на контейнер галереи
-  const router = useRouter();                                          // Хук для навигации
+  const router = useRouter();                                          // Хук для навигации   
 
   // Обработчик клика по заголовку (переход по ссылке)
   const handleTitleClick = useCallback(() => {
@@ -129,9 +128,17 @@ const GallerySection: React.FC<GallerySectionProps> = ({
 
   // Обработчик клика по изображению (открытие модалки)
   const handleImageClick = useCallback((image: string, index: number) => {
-    if (!isDragging) { // Не открываем модалку если был drag
-      setSelectedImage(image);
+    if (!isDragging) {
+      // 1. Сначала устанавливаем индекс
       setSelectedImageIndex(index);
+      
+      // 2. Затем, в следующем цикле рендеринга, открываем модалку с этим изображением
+      // Используем setTimeout с 0 для отложенного выполнения
+      const timer = setTimeout(() => {
+        setSelectedImage(image);
+      }, 0);
+  
+      return () => clearTimeout(timer);
     }
   }, [isDragging]);
 

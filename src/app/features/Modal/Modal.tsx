@@ -53,7 +53,7 @@ const Modal: React.FC<ModalProps> = ({
   const SWIPE_THRESHOLD = 50; // Порог для определения свайпа
   const CLOSE_THRESHOLD = 100; // Порог для закрытия модального окна
   const ZOOM_SENSITIVITY = 0.01; // Чувствительность зума
-  const IMAGE_DRAG_THRESHOLD = 10; // Порог для перетаскивания изображения
+  const IMAGE_DRAG_THRESHOLD = 20; // Порог для перетаскивания изображения
 
   // Эффект для установки начального индекса при изменении initialIndex
   useEffect(() => {
