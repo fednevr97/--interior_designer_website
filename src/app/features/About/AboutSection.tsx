@@ -1,14 +1,17 @@
+// AboutSection.tsx
 'use client'
 
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import styles from './AboutSection.module.css';
 
+// Интерфейс для пропсов компонента
 interface AboutSectionProps {
   id?: string;
   className?: string;
 }
 
+// Текст для секции "О нас"
 const ABOUT_TEXT = [
   "Приветствую Вас на моем сайте!",
   `Меня зовут Дарья. Я - дизайнер интерьера, который верит, что каждый проект — это не просто работа, а творческое путешествие, где Ваши мечты становятся реальностью. С каждым новым проектом я стремлюсь создать пространство, которое отражает индивидуальность и стиль своих владельцев.`,
@@ -22,8 +25,10 @@ const ABOUT_TEXT = [
 const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   
-  // Миниатюра для blur-эффекта (можно заменить на реальный base64)
+  // Миниатюра для blur-эффекта при загрузке изображения
   const blurDataURL = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiIC8+PC9zdmc+';
+  
+  // Мемоизированное создание параграфов текста
   const paragraphs = useMemo(() => (
     ABOUT_TEXT.map((text, index) => (
       <p key={`para-${index}`} className={styles.aboutParagraph}>
@@ -45,6 +50,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
     >
       <div className={styles.container}>
         <div className={styles.aboutContent}>
+          {/* Обертка для изображения */}
           <div className={styles.aboutImageWrapper}>
             {!isLoaded && <div className={styles.skeleton} />}
             
@@ -61,12 +67,14 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
                 placeholder="blur"
                 blurDataURL={blurDataURL}
               />
+              {/* Наложение с текстом поверх изображения */}
               <div className={styles.imageOverlayText}>
                 <h3 id="about-title">Шептицкая Дарья</h3>
                 <p>Дизайнер интерьера</p>
               </div>
             </div>
           </div>
+          {/* Секция с текстом */}
           <div className={styles.aboutText}>
             {paragraphs}
           </div>

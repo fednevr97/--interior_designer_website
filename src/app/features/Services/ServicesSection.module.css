@@ -1,157 +1,169 @@
-/* Основные стили */
+/* Основные стили секции услуг */
 .services-section {
-    background-color: var(--light-text-color);
-  }
-  
-  .container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-  }
-  
-  .services-wrapper {
-    position: relative;
-    padding: 20px 0;
-  }
-  
-  .carousel-container {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .services-carousel {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-    gap: 20px;
-    padding: 10px 0;
-    height: calc(90dvh - var(--header-height, 80px)); 
-  }
+  background-color: var(--light-text-color);
+}
 
-  .services-carousel::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .service-item {
-    flex: 0 0 calc(33.333% - 14px);
-    min-width: calc(33.333% - 14px);
-    scroll-snap-align: start;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px var(--shadow-color);
-    transition: transform var(--transition-normal);
-    display: flex; /* Добавляем flex */
-    flex-direction: column; /* Вертикальное расположение */
-  }
-  
+/* Контейнер для центрирования контента */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Обертка для карусели услуг */
+.services-wrapper {
+  position: relative;
+  padding: 20px 0;
+}
+
+/* Контейнер карусели */
+.carousel-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Карусель услуг */
+.services-carousel {
+  display: flex;
+  overflow-x: auto;              /* Горизонтальная прокрутка */
+  scroll-snap-type: x mandatory; /* Привязка к элементам при прокрутке */
+  scroll-behavior: smooth;       /* Плавная прокрутка */
+  -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
+  width: 100%;
+  gap: 20px;
+  padding: 10px 0;
+  height: calc(90dvh - var(--header-height, 80px)); /* Высота с учетом хедера */
+}
+
+/* Скрываем скроллбар */
+.services-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Стили для карточки услуги */
+.service-item {
+  flex: 0 0 calc(33.333% - 14px); /* Ширина для 3 элементов в ряд */
+  min-width: calc(33.333% - 14px);
+  scroll-snap-align: start;      /* Привязка к началу элемента */
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  transition: transform var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Контейнер для изображения услуги */
+.service-image {
+  position: relative;
+  width: 100%;
+  height: 50%;
+}
+
+/* Стили для мобильного вида */
+.mobile-view {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Стили для изображения */
+.service-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform var(--transition-normal);
+}
+
+/* Контейнер для контента услуги */
+.service-content {
+  padding: 20px;
+  text-align: center;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 1rem;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+/* Заголовок услуги */
+.service-content h3 {
+  color: var(--primary-color);
+}
+
+/* Описание услуги */
+.service-content p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Цена услуги */
+.service-price {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Заголовок секции */
+.servicesTitle {
+  padding-left: 20px;
+}
+
+/* Адаптивность для планшетов */
+@media (max-width: 1024px) {
   .service-image {
-    position: relative;
-    width: 100%;
-    height: 50%;
-  }
-
-  .mobile-view {
-    width: 100%;
-    margin-bottom: 20px; /* Отступ между элементами на мобильных */
-  }
-
-  .service-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: transform var(--transition-normal);
-  }
-  
-  .service-content {
-    padding: 20px;
-    text-align: center;
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 1rem;
-    box-sizing: border-box;
-    flex: 1; /* Занимает всё оставшееся пространство */
-  }
-  
-  .service-content h3 {
-    color: var(--primary-color);
-  }
-  
-  .service-content p {
-    color: #666;
-    line-height: 1.6;
-  }
-  
-  .service-price {
-    font-weight: bold;
-    color: var(--primary-color);
-  }
-  
-  .servicesTitle {
-    padding-left: 20px;
-  }
-
-  /* Адаптивность для планшетов */
-  @media (max-width: 1024px) {
-    
-    .service-image {
       height: 50%;
-    }
+  }
 
-    .servicesTitle {
+  .servicesTitle {
       padding-left: 20px;
-    }
+  }
 
-    .service-content {
+  .service-content {
       padding: 10px;
       text-align: center;
       height: 50%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-    }
+  }
 
-    .service-content h3 {
+  .service-content h3 {
       font-size: 1rem;
-    }
-    
-    .service-content p {
-      font-size: 0.6rem;
-    }
   }
   
-  /* Адаптивность для телефонов */
-  @media (max-width: 768px) {
+  .service-content p {
+      font-size: 0.6rem;
+  }
+}
 
-    .servicesTitle {
+/* Адаптивность для телефонов */
+@media (max-width: 768px) {
+  .servicesTitle {
       padding-left: 0;
       text-align: center;
-    }
-
-    .service-item {
-      flex: 0 0 100%;
-      min-width: 100%;
-    }
-    
-    .service-content {
-      padding: 15px;
-    }
-    
-    .service-content h3 {
-      font-size: 1rem;
-    }
-    
-    .service-content p {
-      font-size: 0.7rem;
-    }
-
-    .services-carousel {
-      height: calc((100vw * 16 / 9) - var(--header-height-mobile));
-    }
   }
+
+  .service-item {
+      flex: 0 0 100%;    /* Один элемент на всю ширину */
+      min-width: 100%;
+  }
+  
+  .service-content {
+      padding: 15px;
+  }
+  
+  .service-content h3 {
+      font-size: 1rem;
+  }
+  
+  .service-content p {
+      font-size: 0.7rem;
+  }
+
+  .services-carousel {
+      height: calc((100vw * 16 / 9) - var(--header-height-mobile));
+  }
+}

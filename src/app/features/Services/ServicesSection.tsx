@@ -4,11 +4,14 @@ import React, { useEffect, useState } from 'react';
 import styles from './ServicesSection.module.css';
 import Image from 'next/image';
 
+// Интерфейс для пропсов компонента
 interface ServicesProps {
-  id?: string;
+  id?: string;  // Опциональный идентификатор секции
 }
 
+// Компонент секции услуг
 const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
+  // Массив с данными об услугах
   const services = [
     {
       id: 1,
@@ -33,8 +36,10 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
     }
   ];
 
+  // Состояние для определения мобильного устройства
   const [isMobile, setIsMobile] = useState(false);
 
+  // Эффект для отслеживания размера окна
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -45,7 +50,7 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Определение sizes для Image
+  // Функция для определения размеров изображений
   const getSizes = () => {
     return isMobile 
       ? "100vw" // На мобильных - 1 элемент (100% ширины)
@@ -70,7 +75,7 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
                       src={service.image} 
                       alt={service.title} 
                       fill
-                      priority={index === 0 || index === 1 || index === 2} // Добавляем priority только для первого изображения
+                      priority={index === 0 || index === 1 || index === 2} // Приоритетная загрузка первых трех изображений
                       sizes={getSizes()}
                       className={styles['service-img']}
                       style={{

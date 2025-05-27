@@ -2,30 +2,35 @@ import React from 'react';
 import { ReactNode } from 'react';
 import styles from './NavButton.module.css';
 
+// Интерфейс пропсов компонента
 interface NavButtonProps {
-  children?: ReactNode;
-  onClick?: () => void;
-  className?: string;
-  ariaLabel?: string;
-  variant?: 'arrow-left' | 'arrow-right';
-  disabled?: boolean; // Добавляем свойство disabled
+  children?: ReactNode;          // Дочерние элементы
+  onClick?: () => void;          // Обработчик клика
+  className?: string;            // Дополнительные CSS классы
+  ariaLabel?: string;            // Текст для доступности
+  variant?: 'arrow-left' | 'arrow-right';  // Вариант кнопки (стрелка влево/вправо)
+  disabled?: boolean;            // Состояние отключения кнопки
 }
 
+// Компонент кнопки навигации
 const NavButton: React.FC<NavButtonProps> = ({ 
   children, 
   onClick, 
   className = '', 
   ariaLabel = 'Navigation button',
   variant,
-  disabled = false // Добавляем значение по умолчанию
+  disabled = false 
 }) => {
+  // Функция для определения класса в зависимости от варианта
   const getVariantClass = () => {
     if (variant === 'arrow-left') return styles['nav-btn-prev'];
     if (variant === 'arrow-right') return styles['nav-btn-next'];
     return '';
   };
 
+  // Функция для определения содержимого кнопки
   const getDefaultContent = () => {
+    // SVG для стрелки влево
     if (variant === 'arrow-left') {
       return (
         <svg
@@ -45,6 +50,7 @@ const NavButton: React.FC<NavButtonProps> = ({
         </svg>
       );
     }
+    // SVG для стрелки вправо
     if (variant === 'arrow-right') {
       return (
         <svg
@@ -64,9 +70,11 @@ const NavButton: React.FC<NavButtonProps> = ({
         </svg>
       );
     }
+    // Возвращаем дочерние элементы, если вариант не указан
     return children;
   };
 
+  // Рендер кнопки
   return (
     <button
       className={`${styles['nav-btn']} ${getVariantClass()} ${className}`}

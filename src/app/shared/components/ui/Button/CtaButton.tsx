@@ -1,22 +1,14 @@
 import React from 'react';
-import styles from './CtaButton.module.css'; // Предполагается, что стили вынесены в отдельный файл
+import styles from './CtaButton.module.css';
 
 interface CtaButtonProps {
-  /**
-   * Текст на кнопке
-   */
+  /* Текст на кнопке */
   text?: string;
-  /**
-   * ARIA-лейбл для доступности
-   */
+  /* ARIA-лейбл для доступности */
   ariaLabel?: string;
-  /**
-   * Дополнительные классы стилей
-   */
+  /* Дополнительные классы стилей */
   className?: string;
-  /**
-   * Обработчик клика
-   */
+  /* Обработчик клика */
   onClick?: () => void;
 }
 

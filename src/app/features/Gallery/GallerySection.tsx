@@ -1,5 +1,6 @@
 'use client'
 
+// Импортируем необходимые хуки и компоненты
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import NavButton from '../../shared/components/ui/NavButton/NavButton';
 import Image from 'next/image';
@@ -9,28 +10,28 @@ import { useRouter } from 'next/navigation';
 
 // Интерфейс для элемента галереи
 export interface GalleryItem {
-  id: number;
-  image: string; // URL изображения
-  title: string; // Заголовок элемента
-  category?: string; // Опциональная категория
-  folder?: string; // Опциональная папка
+  id: number;        // Уникальный идентификатор элемента
+  image: string;     // URL изображения
+  title: string;     // Заголовок элемента
+  category?: string; // Опциональная категория для фильтрации
+  folder?: string;   // Опциональная папка для группировки
 }
 
 // Интерфейс для пропсов компонента GallerySection
 interface GallerySectionProps {
-  id: string; // Уникальный идентификатор секции
-  title: string; // Заголовок галереи
-  items: GalleryItem[]; // Массив элементов галереи
-  defaultVisibleItems?: number; // Количество видимых элементов по умолчанию
-  tabletVisibleItems?: number; // Количество на планшетах
-  mobileVisibleItems?: number; // Количество на мобильных
-  ariaLabelPrefix?: string; // Префикс для ARIA-меток
-  itemHeight?: string; // Высота элементов
-  mobileItemHeight?: string; // Высота на мобильных
-  gapPercent?: number; // Процент промежутка между элементами
-  titleLink?: string; // Ссылка в заголовке
-  displayMode?: 'slider' | 'grid'; // Режим отображения
-  gridColumns?: number; // Количество колонок в grid-режиме
+  id: string;                    // Уникальный идентификатор секции
+  title: string;                 // Заголовок галереи
+  items: GalleryItem[];          // Массив элементов галереи
+  defaultVisibleItems?: number;  // Количество видимых элементов по умолчанию
+  tabletVisibleItems?: number;   // Количество видимых элементов на планшетах
+  mobileVisibleItems?: number;   // Количество видимых элементов на мобильных
+  ariaLabelPrefix?: string;      // Префикс для ARIA-меток (для доступности)
+  itemHeight?: string;           // Высота элементов галереи
+  mobileItemHeight?: string;     // Высота элементов на мобильных устройствах
+  gapPercent?: number;           // Процент промежутка между элементами
+  titleLink?: string;            // Ссылка в заголовке (для навигации)
+  displayMode?: 'slider' | 'grid'; // Режим отображения: слайдер или сетка
+  gridColumns?: number;          // Количество колонок в режиме сетки
 }
 
 const GallerySection: React.FC<GallerySectionProps> = ({
@@ -38,27 +39,27 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   title,
   items,
   titleLink,
-  defaultVisibleItems = 4,
-  tabletVisibleItems = 3,
-  mobileVisibleItems = 1,
-  ariaLabelPrefix = 'элемент',
-  itemHeight = '650px',
-  mobileItemHeight = 'calc(100vw * 16 / 9 - var(--header-height-mobile) - 20px)',
-  gapPercent = 2,
-  displayMode = 'slider',
-  gridColumns = 3,
+  defaultVisibleItems = 4,      // По умолчанию показываем 4 элемента
+  tabletVisibleItems = 3,       // На планшетах - 3 элемента
+  mobileVisibleItems = 1,       // На мобильных - 1 элемент
+  ariaLabelPrefix = 'элемент',  // Префикс для ARIA-меток
+  itemHeight = '650px',         // Стандартная высота элемента
+  mobileItemHeight = 'calc(100vw * 16 / 9 - var(--header-height-mobile) - 20px)', // Адаптивная высота для мобильных
+  gapPercent = 2,               // Процент промежутка между элементами
+  displayMode = 'slider',       // Режим отображения по умолчанию - слайдер
+  gridColumns = 3,              // Количество колонок в сетке по умолчанию
 }) => {
   // Состояния компонента
-  const [currentIndex, setCurrentIndex] = useState<number>(0); // Текущий индекс слайда
+  const [currentIndex, setCurrentIndex] = useState<number>(0);           // Текущий индекс слайда
   const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems); // Количество видимых элементов
   const [selectedImage, setSelectedImage] = useState<string | null>(null); // Выбранное изображение для модалки
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0); // Индекс выбранного изображения
-  const [isDragging, setIsDragging] = useState<boolean>(false); // Флаг перетаскивания
-  const [startX, setStartX] = useState<number>(0); // Начальная позиция X при перетаскивании
-  const [translateX, setTranslateX] = useState<number>(0); // Смещение при перетаскивании
+  const [isDragging, setIsDragging] = useState<boolean>(false);         // Флаг перетаскивания
+  const [startX, setStartX] = useState<number>(0);                      // Начальная позиция X при перетаскивании
+  const [translateX, setTranslateX] = useState<number>(0);              // Смещение при перетаскивании
   
-  const galleryBaseRef = useRef<HTMLDivElement>(null); // Реф на контейнер галереи
-  const router = useRouter(); // Хук для навигации
+  const galleryBaseRef = useRef<HTMLDivElement>(null);                  // Реф на контейнер галереи
+  const router = useRouter();                                          // Хук для навигации
 
   // Обработчик клика по заголовку (переход по ссылке)
   const handleTitleClick = useCallback(() => {
@@ -70,19 +71,19 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   // Обработчик изменения размера окна (адаптивность)
   const handleResize = useCallback(() => {
     if (window.innerWidth <= 768) {
-      setVisibleItems(mobileVisibleItems);
+      setVisibleItems(mobileVisibleItems);      // Мобильная версия
     } else if (window.innerWidth <= 1023) {
-      setVisibleItems(tabletVisibleItems);
+      setVisibleItems(tabletVisibleItems);      // Планшетная версия
     } else {
-      setVisibleItems(defaultVisibleItems);
+      setVisibleItems(defaultVisibleItems);     // Десктопная версия
     }
-    setCurrentIndex(0); // Сброс индекса при изменении размера
-    setTranslateX(0); // Сброс смещения
+    setCurrentIndex(0);                         // Сброс индекса при изменении размера
+    setTranslateX(0);                           // Сброс смещения
   }, [defaultVisibleItems, tabletVisibleItems, mobileVisibleItems]);
 
   // Эффект для подписки на события изменения размера
   useEffect(() => {
-    handleResize(); // Инициализация при монтировании
+    handleResize();                             // Инициализация при монтировании
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
@@ -107,8 +108,10 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   // Расчет transform стиля для слайдера
   const getTransform = useCallback(() => {
     if (isDragging) {
+      // При перетаскивании учитываем текущее смещение
       return `translateX(calc(-${currentIndex * (100 / visibleItems + (gapPercent / visibleItems))}% + ${translateX}px))`;
     }
+    // Стандартное смещение для анимации
     const itemWidthPercent = 100 / visibleItems;
     const itemWithGap = itemWidthPercent + (gapPercent / visibleItems);
     return `translateX(-${currentIndex * itemWithGap}%)`;
@@ -117,10 +120,10 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   // Определение sizes для Image в зависимости от количества видимых элементов
   const getSizes = useCallback(() => {
     switch(visibleItems) {
-      case 1: return "100vw";
-      case 2: return "(max-width: 768px) 100vw, 50vw";
-      case 3: return "(max-width: 768px) 100vw, 33vw";
-      default: return "(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 25vw";
+      case 1: return "100vw";                    // Один элемент на всю ширину
+      case 2: return "(max-width: 768px) 100vw, 50vw"; // Два элемента
+      case 3: return "(max-width: 768px) 100vw, 33vw"; // Три элемента
+      default: return "(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 25vw"; // Четыре элемента
     }
   }, [visibleItems]);
 

@@ -1,43 +1,51 @@
+/* Основные стили страницы портфолио */
 .portfolioPage {
     margin: 0;
     width: 100%;
-    padding: 0 60px;
+    padding: 0 60px;  /* Отступы по бокам для десктопной версии */
 }
 
+/* Стили для главного заголовка страницы */
 .portfolioPage h1 {
-    padding-left: 60px;
-    color: var(--primary-color);
-    font-family: var(--font-secondary), var(--font-system);
-    font-size: 3rem;
-    padding-bottom: 20px;
+    padding-left: 60px;  /* Отступ слева для выравнивания с контентом */
+    color: var(--primary-color);  /* Цвет из переменных темы */
+    font-family: var(--font-secondary), var(--font-system);  /* Шрифт с запасным вариантом */
+    font-size: 3rem;  /* Размер шрифта для десктопа */
+    padding-bottom: 20px;  /* Отступ снизу */
 }
 
+/* Стили для секции категории */
 .categorySection {
-    margin-bottom: 4rem;
-  }
+    margin-bottom: 4rem;  /* Отступ между секциями категорий */
+}
   
+/* Стили для заголовка категории */
 .categoryTitle {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--accent-color);
-    color: var(--primary-color);
-    padding-left: 60px;
+    font-size: 2rem;  /* Размер шрифта заголовка категории */
+    margin-bottom: 2rem;  /* Отступ снизу */
+    padding-bottom: 0.5rem;  /* Отступ для линии подчеркивания */
+    border-bottom: 2px solid var(--accent-color);  /* Декоративная линия */
+    color: var(--primary-color);  /* Цвет из переменных темы */
+    padding-left: 60px;  /* Отступ слева для выравнивания */
 }
 
+/* Медиа-запрос для мобильных устройств */
 @media (max-width: 768px) {
+    /* Адаптивные отступы для мобильной версии */
     .portfolioPage {
-        padding: 0 20px;
+        padding: 0 20px;  /* Уменьшенные отступы по бокам */
     }
 
+    /* Центрирование заголовка категории на мобильных */
     .categoryTitle {
         padding-left: 0;
         text-align: center;
     }
 
+    /* Адаптивный размер шрифта для главного заголовка */
     .portfolioPage h1 {
-        font-size: calc(2rem + (3 - 2) * ((100vw - 600px) / (1200 - 600)));
-        text-align: center;
-        padding-left: 0;
+        font-size: calc(2rem + (3 - 2) * ((100vw - 600px) / (1200 - 600)));  /* Плавное изменение размера */
+        text-align: center;  /* Центрирование текста */
+        padding-left: 0;  /* Убираем отступ слева */
     }
 }

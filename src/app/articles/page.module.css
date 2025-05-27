@@ -1,38 +1,42 @@
-/* src/app/articles/page.module.css */
+/* Основной контейнер страницы */
 .container {
-  margin: 0 auto;
-  padding: 0 60px;
+  margin: 0 auto;          /* Центрирование контейнера */
+  padding: 0 60px;         /* Горизонтальные отступы */
 }
 
+/* Стили для заголовка */
 .title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #1f2937;
-  font-family: var(--font-secondary);
-  color: var(--primary-color);
+  font-size: 2.5rem;       /* Размер шрифта */
+  font-weight: bold;       /* Жирность шрифта */
+  margin-bottom: 2rem;     /* Отступ снизу */
+  text-align: center;      /* Центрирование текста */
+  color: #1f2937;         /* Цвет текста */
+  font-family: var(--font-secondary);  /* Шрифт из переменных */
+  color: var(--primary-color);         /* Цвет из переменных */
 }
 
+/* Сетка для карточек статей */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  padding: 1rem 0;
+  display: grid;           /* Используем CSS Grid */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));  /* Автоматическое заполнение колонок */
+  gap: 2rem;              /* Отступы между карточками */
+  padding: 1rem 0;        /* Вертикальные отступы */
 }
 
+/* Медиа-запрос для мобильных устройств */
 @media (max-width: 768px) {
-
+  /* Адаптивные отступы для контейнера */
   .container {
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 20px;      /* Уменьшаем горизонтальные отступы */
   }
   
-
+  /* Одна колонка для мобильных устройств */
   .grid {
     grid-template-columns: 1fr;
   }
   
+  /* Уменьшаем размер заголовка */
   .title {
     font-size: 2rem;
   }

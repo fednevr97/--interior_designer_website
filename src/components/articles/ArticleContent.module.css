@@ -1,110 +1,126 @@
-/* src/components/articles/ArticleContent.module.css */
+/* Основные стили контейнера статьи */
 .container {
-    margin: 0 auto;
-    padding: 0 60px; 
-  }
-  
-  .header {
-    margin-bottom: 2rem;
-    padding-top: 10px;
-  }
-  
-  .imageContainer {
-    position: relative;
-    height: 16rem;
-    margin-bottom: 1.5rem;
-    border-radius: 0.5rem;
-    overflow: hidden;
-  }
-  
-  .image {
-    object-fit: contain;
-  }
-  
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .tag {
-    font-size: 0.875rem;
-    background-color: var(--primary-color);
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-  }
-  
-  .title {
-    font-size: 1.875rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: #261f1f;
+  margin: 0 auto;
+  padding: 0 60px; 
+}
 
-  }
-  
-  .date {
-    color: #000000;
-  }
-  
-  .content {
-    font-size: 1.125rem;
-    line-height: 1.75;
-    color: var(--primary-color);
-  }
-  
-  .content :global(h2) {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 2rem 0 1rem;
-  }
-  
-  .content :global(p) {
-    margin-bottom: 1.5rem;
-  }
-  
-  .content :global(ul), .content :global(ol) {
-    margin: 1rem 0;
-    padding-left: 1.5rem;
-  }
-  
-  .content :global(li) {
-    margin-bottom: 0.5rem;
-  }
-  
-  .content :global(blockquote) {
-    border-left: 4px solid #e5e7eb;
-    padding-left: 1rem;
-    margin: 1.5rem 0;
-    color: #4b5563;
-  }
-  
-  .content :global(code) {
-    background-color: #f3f4f6;
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.25rem;
-    font-family: monospace;
-  }
-  
-  .content :global(pre) {
-    background-color: #1f2937;
-    color: #f3f4f6;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-  }
-  
-  .content :global(pre code) {
-    background-color: transparent;
-    padding: 0;
-    color: inherit;
-  }
+/* Стили для шапки статьи */
+.header {
+  margin-bottom: 2rem;
+  padding-top: 10px;
+}
 
-  @media (max-width: 768px) {
-    .container {
-        max-width: 48rem;
-        margin: 0 auto;
-        padding: 0 20px; 
-      }
+/* Контейнер для изображения */
+.imageContainer {
+  position: relative;
+  height: 16rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Стили для изображения */
+.image {
+  object-fit: contain;
+}
+
+/* Контейнер для тегов */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Стили для отдельного тега */
+.tag {
+  font-size: 0.875rem;
+  background-color: var(--primary-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+/* Стили для заголовка */
+.title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #261f1f;
+}
+
+/* Стили для даты */
+.date {
+  color: #000000;
+}
+
+/* Стили для основного контента */
+.content {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--primary-color);
+}
+
+/* Глобальные стили для заголовков второго уровня */
+.content :global(h2) {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 2rem 0 1rem;
+}
+
+/* Глобальные стили для параграфов */
+.content :global(p) {
+  margin-bottom: 1.5rem;
+}
+
+/* Глобальные стили для списков */
+.content :global(ul), .content :global(ol) {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+/* Глобальные стили для элементов списка */
+.content :global(li) {
+  margin-bottom: 0.5rem;
+}
+
+/* Глобальные стили для цитат */
+.content :global(blockquote) {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: #4b5563;
+}
+
+/* Глобальные стили для инлайн-кода */
+.content :global(code) {
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+
+/* Глобальные стили для блоков кода */
+.content :global(pre) {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+/* Глобальные стили для кода внутри pre */
+.content :global(pre code) {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 768px) {
+  .container {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0 20px; 
   }
+}

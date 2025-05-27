@@ -1,252 +1,279 @@
+/* Основной контейнер модального окна */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2000;
-    display: none;
-    align-items: center;
-    justify-content: center;
+  position: fixed;          /* Фиксированное позиционирование */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;           /* Высокий z-index для отображения поверх других элементов */
+  display: none;           /* По умолчанию скрыто */
+  align-items: center;     /* Центрирование по вертикали */
+  justify-content: center; /* Центрирование по горизонтали */
+}
+
+/* Активное состояние модального окна */
+.modal.active {
+  display: flex;           /* Отображаем как flex-контейнер */
+}
+
+/* Затемненный фон модального окна */
+.modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+}
+
+/* Контент модального окна */
+.modal__content {
+  position: relative;
+  width: 90%;
+  max-width: 800px;        /* Максимальная ширина контента */
+  height: auto;
+  min-height: 300px;       /* Минимальная высота контента */
+  background: #4e5343;     /* Цвет фона */
+  padding: 20px;
+  border-radius: 8px;      /* Скругление углов */
+  z-index: 1;
+  margin: 20px;
+  box-sizing: border-box;  /* Учитываем padding в общей ширине */
+}
+
+/* Кнопка закрытия */
+.modal__close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--light-text-color);
+  transition: all 0.3s ease; /* Плавная анимация при наведении */
+}
+
+/* Заголовок модального окна */
+.modal__title {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+  color: var(--light-text-color);
+}
+
+/* Контейнер формы */
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;              /* Отступ между элементами формы */
+}
+
+/* Контейнер чекбоксов */
+.modal__checkboxes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin: 10px 0;
+  border: none;
+  padding: 0;
+}
+
+/* Заголовок группы чекбоксов */
+.modal__checkboxLegend {
+  color: var(--light-text-color);
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Стили для label чекбокса */
+.modal__checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+  padding-left: 28px;     /* Место для кастомного чекбокса */
+  color: var(--light-text-color);
+}
+
+/* Скрываем оригинальный чекбокс */
+.modal__checkboxLabel input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Кастомный чекбокс */
+.modal__checkboxCustom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border: 2px solid #292c23;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+/* Стили для отмеченного чекбокса */
+.modal__checkboxLabel input:checked ~ .modal__checkboxCustom {
+  background-color: #292c23;
+  border-color: #292c23;
+}
+
+/* Галочка в чекбоксе */
+.modal__checkboxLabel input:checked ~ .modal__checkboxCustom::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Контейнер для полей ввода */
+.modal__inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Стили для полей ввода */
+.modal__input {
+  flex: 1;
+  padding: 0 0 8px 0;
+  border: none;
+  border-bottom: 2px solid #292c23;
+  font-size: 16px;
+  background: transparent;
+  transition: all 0.3s ease;
+  outline: none;
+  color: var(--light-text-color);
+}
+
+/* Стили для активного поля ввода */
+.modal__input:focus {
+  border-bottom-color: #000000;
+}
+
+/* Стили для placeholder */
+.modal__input::placeholder {
+  color: #9e9e9e;
+  opacity: 1;
+}
+
+/* Кнопка отправки формы */
+.modal__submit {
+  padding: 15px;
+  background-color: var(--shadow-dark);
+  color: var(--light-text-color);
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin: 20px auto 0;
+  transition: all 0.3s ease;
+}
+
+/* Контейнер для тултипа */
+.modal__policyTooltip {
+  position: absolute;
+  z-index: 1000;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+/* Стили для текста тултипа */
+.modal__policyTooltipText {
+  background-color: #292c23;
+  color: var(--light-text-color);
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: relative;
+  margin-top: 10px;
+}
+
+/* Стрелка тултипа */
+.modal__policyTooltipText::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #292c23 transparent;
+}
+
+/* Анимация появления/исчезновения тултипа */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  .modal.active {
-    display: flex;
+  10% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .modal__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+  90% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Стили для десктопных устройств */
+@media (min-width: 768px) {
   .modal__content {
-    position: relative;
-    width: 90%;
+    padding: 40px;
+    width: 100%;
     max-width: 800px;
     height: auto;
-    min-height: 300px;
-    background: #4e5343;
-    padding: 20px;
-    border-radius: 8px;
-    z-index: 1;
-    margin: 20px;
-    box-sizing: border-box;
   }
-  
-  .modal__close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--light-text-color);
-    transition: all 0.3s ease;
-  }
-  
-  .modal__title {
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 24px;
-    color: var(--light-text-color);
-  }
-  
-  .modal__form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
+
   .modal__checkboxes {
-    display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr); /* Три колонки для чекбоксов */
+    gap: 10px;
+    margin: 20px;
+  }
+
+  .modal__inputGroup {
+    flex-direction: row; /* Горизонтальное расположение полей */
     gap: 15px;
-    margin: 10px 0;
-    border: none;
-    padding: 0;
   }
-  
-  .modal__checkboxLegend {
-    color: var(--light-text-color);
-    margin-bottom: 10px;
-    font-weight: bold;
+
+  .modal__submit {
+    width: 225px; /* Фиксированная ширина кнопки */
   }
-  
-  .modal__checkboxLabel {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    position: relative;
-    padding-left: 28px;
-    color: var(--light-text-color);
+}
+
+/* Стили для больших экранов */
+@media (min-width: 1024px) {
+  /* Эффект при наведении на кнопку закрытия */
+  .modal__close:hover {
+    transform: scale(1.2);
   }
-  
-  .modal__checkboxLabel input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-  
-  .modal__checkboxCustom {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    background-color: transparent;
-    border: 2px solid #292c23;
-    border-radius: 4px;
-    transition: all 0.3s;
-  }
-  
-  .modal__checkboxLabel input:checked ~ .modal__checkboxCustom {
-    background-color: #292c23;
+
+  /* Эффект при наведении на чекбокс */
+  .modal__checkboxLabel:hover .modal__checkboxCustom {
     border-color: #292c23;
   }
-  
-  .modal__checkboxLabel input:checked ~ .modal__checkboxCustom::after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-  
-  .modal__inputGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .modal__input {
-    flex: 1;
-    padding: 0 0 8px 0;
-    border: none;
-    border-bottom: 2px solid #292c23;
-    font-size: 16px;
-    background: transparent;
-    transition: all 0.3s ease;
-    outline: none;
-    color: var(--light-text-color);
-  }
-  
-  .modal__input:focus {
-    border-bottom-color: #000000;
-  }
-  
-  .modal__input::placeholder {
-    color: #9e9e9e;
-    opacity: 1;
-  }
-  
-  .modal__submit {
-    padding: 15px;
-    background-color: var(--shadow-dark);
-    color: var(--light-text-color);
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    margin: 20px auto 0;
-    transition: all 0.3s ease;
-  }
 
-  .modal__policyTooltip {
-    position: absolute;
-    z-index: 1000;
-    animation: fadeInOut 3s ease-in-out;
+  /* Эффект при наведении на кнопку отправки */
+  .modal__submit:hover {
+    transform: scale(1.05);
   }
-  
-  .modal__policyTooltipText {
-    background-color: #292c23;
-    color: var(--light-text-color);
-    text-align: center;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 14px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    position: relative;
-    margin-top: 10px;
-  }
-  
-  .modal__policyTooltipText::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #292c23 transparent;
-  }
-  
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    10% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    90% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-  }
-  /* Десктопные стили */
-  @media (min-width: 768px) {
-    .modal__content {
-      padding: 40px;
-      width: 100%;
-      max-width: 800px;
-      height: auto;
-    }
-  
-    .modal__checkboxes {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 20px;
-    }
-  
-    .modal__inputGroup {
-      flex-direction: row;
-      gap: 15px;
-    }
-  
-    .modal__submit {
-      width: 225px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-
-    .modal__close:hover {
-      transform: scale(1.2);
-    }
-
-    .modal__checkboxLabel:hover .modal__checkboxCustom {
-      border-color: #292c23;
-    }
-
-    .modal__submit:hover {
-      transform: scale(1.05);
-    }
-  }
+}

@@ -5,33 +5,34 @@ import Link from 'next/link';
 import styles from './SideMenu.module.css';
 import LogoIcon from '../Icons/logoIcon/LogoIcon';
 
-// Типы для пропсов
+// Интерфейсы для типизации пропсов
 interface MenuItem {
-  id: string;
-  href: string;
-  label: string;
+  id: string;      // Уникальный идентификатор пункта меню
+  href: string;    // Ссылка пункта меню
+  label: string;   // Текст пункта меню
 }
 
 interface SocialLink {
-  id: string;
-  url: string;
-  label: string;
-  icon: React.ReactNode;
+  id: string;          // Уникальный идентификатор соцсети
+  url: string;         // Ссылка на соцсеть
+  label: string;       // Текст для доступности
+  icon: React.ReactNode; // Иконка соцсети
 }
 
 interface SideMenuProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean;     // Состояние открытия меню
+  onClose: () => void; // Функция закрытия меню
   logo: {
-    icon: React.ReactNode;
-    text: string;
+    icon: React.ReactNode; // Иконка логотипа
+    text: string;         // Текст логотипа
   };
-  menuItems: MenuItem[];
-  phone: string;
-  socialLinks: SocialLink[];
-  address: string;
+  menuItems: MenuItem[];  // Массив пунктов меню
+  phone: string;          // Номер телефона
+  socialLinks: SocialLink[]; // Массив ссылок на соцсети
+  address: string;        // Адрес
 }
 
+// Компонент бокового меню
 const SideMenu: React.FC<SideMenuProps> = ({ 
   isOpen, 
   onClose, 
@@ -39,9 +40,8 @@ const SideMenu: React.FC<SideMenuProps> = ({
   menuItems, 
   phone, 
   socialLinks,
-
 }) => {
-  // Закрытие по ESC
+  // Обработчик закрытия по клавише ESC
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -59,8 +59,10 @@ const SideMenu: React.FC<SideMenuProps> = ({
     };
   }, [isOpen]);
 
+  // Реф для отслеживания кликов вне меню
   const menuRef = useRef<HTMLElement>(null);
 
+  // Обработчик клика вне меню
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -77,6 +79,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
     };
   }, [isOpen, onClose]);
 
+  // Формирование URL для Яндекс.Карт
   const address = "Севастополь, ул. Токарева, 3";
   const yandexMapsUrl = `https://yandex.ru/maps/?text=${encodeURIComponent(address)}`;
 
@@ -88,6 +91,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ref={menuRef}
     >
       <div className={styles['side-menu__content']}>
+        {/* Кнопка закрытия */}
         <button 
           className={styles['side-menu__close']} 
           onClick={onClose}
@@ -96,6 +100,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
           &times;
         </button>
         
+        {/* Навигация */}
         <nav className={styles['side-menu__nav']} role="navigation" aria-label="Навигация">
           <ul className={styles['side-menu__list']}>
             {/* Логотип */}
@@ -113,7 +118,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
               </Link>
             </li>
 
-            {/* Основные пункты меню */}
+            {/* Пункты меню */}
             <li className={styles['side-menu__item']}>
               <ul className={styles['side-menu__sublist']}>
                 {menuItems.map((item) => (
@@ -152,7 +157,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
               </a>
             </li>
 
-            {/* Соцсети */}
+            {/* Социальные сети */}
             <li className={`${styles['side-menu__item']} ${styles['side-menu__item-social']}`}>
               <div className={styles['side-menu__social-links']} role="group" aria-label="Социальные сети">
                 {socialLinks.map((social) => (

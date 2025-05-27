@@ -1,47 +1,52 @@
+/* Основные стили кнопки навигации */
 .nav-btn {
     position: relative;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 50%;          /* Круглая форма кнопки */
     background-color: var(--primary-color);
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-normal);
-    flex-shrink: 0;
-    margin: 0 5px;
+    transition: all var(--transition-normal);  /* Плавная анимация всех изменений */
+    flex-shrink: 0;              /* Запрет сжатия кнопки */
+    margin: 0 5px;               /* Отступы по бокам */
 }
 
+/* Стили для SVG иконок внутри кнопки */
 .nav-btn svg {
     width: var(--icon-size-small);
     height: var(--icon-size-small);
 }
 
+/* Общие стили для кнопок навигации влево и вправо */
 .nav-btn-prev,
 .nav-btn-next {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%) scale(1); /* Добавляем scale(1) по умолчанию */
-    z-index: 2;
+    transform: translateY(-50%) scale(1); /* Центрирование по вертикали с масштабом */
+    z-index: 2;                  /* Поверх других элементов */
     background: var(--primary-color);
     margin: 0;
 }
 
+/* Позиционирование кнопки "влево" */
 .nav-btn-prev {
-    left: -50px;
+    left: -50px;                 /* Отступ слева */
 }
 
+/* Позиционирование кнопки "вправо" */
 .nav-btn-next {
-    right: -50px;
+    right: -50px;                /* Отступ справа */
 }
 
 /* Адаптивность для планшетов */
 @media (min-width: 768px) and (max-width: 1023px) {
     .nav-btn-prev,
     .nav-btn-next {
-        display: none;
+        display: none;           /* Скрываем кнопки на планшетах */
     }
 }
 
@@ -49,17 +54,20 @@
 @media (max-width: 768px) {
     .nav-btn-prev,
     .nav-btn-next {
-        display: none;
+        display: none;           /* Скрываем кнопки на телефонах */
     }
 }
 
+/* Стили для десктопной версии */
 @media (min-width: 1024px) {
+    /* Эффект при наведении */
     .nav-btn:hover {
         background-color: #6b715c;
-        transform: translateY(-50%) scale(1.1); /* Сохраняем translateY при наведении */
+        transform: translateY(-50%) scale(1.1); /* Увеличение при наведении */
     }
 
+    /* Эффект при нажатии */
     .nav-btn:active {
-        transform: translateY(-50%) scale(0.95); /* Сохраняем translateY при наведении */
+        transform: translateY(-50%) scale(0.95); /* Уменьшение при нажатии */
     }
 }

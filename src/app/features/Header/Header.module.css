@@ -1,12 +1,14 @@
-/* Шапка */
+/* Header.module.css */
+/* Основной контейнер шапки */
 .header {
   width: 100%;
   background-color: var(--primary-color);
   height: var(--header-height);
-  position: fixed;
-  z-index: 1000;
+  position: fixed; /* Фиксированное позиционирование */
+  z-index: 1000; /* Поверх других элементов */
 }
 
+/* Контейнер содержимого шапки */
 .header__content {
   margin: 0 auto;
   padding: 10px var(--padding-horizontal);
@@ -16,11 +18,13 @@
   box-sizing: border-box;
 }
 
+/* Навигация */
 .header__nav {
   width: 100%;
   height: 100%;
 }
 
+/* Список меню */
 .header__menu {
   display: flex;
   align-items: center;
@@ -31,6 +35,7 @@
   height: 100%;
 }
 
+/* Элемент меню */
 .header__menuItem {
   display: flex;
   align-items: center;
@@ -38,12 +43,14 @@
   z-index: 1;
 }
 
+/* Стили для логотипа */
 .header__menuItemLogo {
   flex: 1;
   justify-content: center;
   height: 100%;
 }
 
+/* Ссылка логотипа */
 .header__logo {
   display: flex;
   align-items: center;
@@ -52,6 +59,7 @@
   height: 100%;
 }
 
+/* Текст логотипа */
 .header__logoText {
   display: block;
   font-size: 0.9rem;
@@ -63,18 +71,21 @@
   color: var(--light-text-color);
 }
 
+/* Перенос строки в логотипе */
 .header__logoText br {
   display: block;
   content: "";
   margin-top: 0.2em;
 }
 
+/* Контейнер контактов */
 .header__contacts {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
+/* Стили для телефона */
 .header__phone {
   color: var(--light-text-color);
   text-decoration: none;
@@ -82,6 +93,7 @@
   transition: all var(--transition-normal);
 }
 
+/* Кнопка CTA */
 .header__ctaBtn {
   padding: 0.5rem 1rem;
   background-color: var(--primary-color);
@@ -114,13 +126,14 @@
   transition: all var(--transition-normal);
 }
 
+/* Иконка в кнопке меню */
 .menuButton svg {
   width: 30px;
   height: 30px;
   pointer-events: none;
 }
 
-/* Телефон */
+/* Медиа-запросы для мобильных устройств */
 @media (max-width: 768px) {
   .header {
     height: var(--header-height-mobile);
@@ -128,7 +141,7 @@
   }
   
   .header__logoText {
-    display: none;
+    display: none; /* Скрываем текст логотипа на мобильных */
   }
 
   .header__logoText br {
@@ -157,7 +170,7 @@
   }
 }
 
-/* Планшет */
+/* Медиа-запросы для планшетов */
 @media (min-width: 768px) and (max-width: 1023px) {
   .header__content {
     padding: 10px 30px;
@@ -168,8 +181,8 @@
   }
 }
 
+/* Hover эффекты для десктопа */
 @media (min-width: 1024px) {
-    
   .header__phone:hover {
     color: #fff;
     transform: scale(1.1);

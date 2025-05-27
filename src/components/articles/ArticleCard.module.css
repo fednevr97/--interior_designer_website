@@ -1,74 +1,83 @@
-/* src/components/articles/ArticleCard.module.css */
+/* Основные стили карточки статьи */
 .card {
-    display: block;
-    overflow: hidden;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform var(--transition-normal);
-    text-decoration: none; /* Добавляем это свойство */
-  }
-  
-  .imageContainer {
-    position: relative;
-    height: 12rem;
-  }
-  
-  .image {
-    object-fit: cover;
-  }
-  
-  .content {
-    background-color: white;
-    padding: 1.5rem;
-  }
-  
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
-  
-  .tag {
-    font-size: 0.75rem;
-    background-color: #f3f4f6;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    color: black;
-  }
-  
-  .title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    transition: color 0.3s ease;
-  }
-  
-  .excerpt {
-    color: #4b5563;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin-bottom: 1rem;
-    text-decoration: none
-  }
-  
-  .date {
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
+  display: block;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform var(--transition-normal);
+  text-decoration: none; /* Убираем подчеркивание ссылки */
+}
 
-  @media (min-width: 1024px) {
+/* Контейнер для изображения */
+.imageContainer {
+  position: relative;
+  height: 12rem; /* Фиксированная высота для контейнера */
+}
 
-    .ctaButton:hover {
+/* Стили для изображения */
+.image {
+  object-fit: cover; /* Заполнение контейнера с сохранением пропорций */
+}
+
+/* Контейнер для контента */
+.content {
+  background-color: white;
+  padding: 1.5rem;
+}
+
+/* Контейнер для тегов */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Стили для отдельного тега */
+.tag {
+  font-size: 0.75rem;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  color: black;
+}
+
+/* Стили для заголовка */
+.title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+/* Стили для отрывка текста */
+.excerpt {
+  color: #4b5563;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Ограничение текста двумя строками */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  text-decoration: none
+}
+
+/* Стили для даты */
+.date {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Стили для десктопной версии */
+@media (min-width: 1024px) {
+  /* Эффект при наведении на кнопку */
+  .ctaButton:hover {
       transform: scale(1.1);
       color: #fff;
-    }
-
-    .card:hover {
-      transform: scale(1.05);
-    }
-
   }
+
+  /* Эффект при наведении на карточку */
+  .card:hover {
+      transform: scale(1.05);
+  }
+}

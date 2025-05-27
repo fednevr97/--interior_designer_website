@@ -1,12 +1,16 @@
+/* AboutSection.module.css */
+/* Основная секция "О нас" */
 .aboutSection {
   min-height: calc(100dvh - var(--header-height));
   scroll-margin-top: var(--header-height);
 }
 
+/* Контейнер с оптимизацией производительности */
 .container {
   contain: layout paint style;
 }
 
+/* Сетка для контента */
 .aboutContent {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
@@ -14,11 +18,13 @@
   min-height: calc(100dvh - var(--header-height));
 }
 
+/* Обертка для изображения */
 .aboutImageWrapper {
   position: relative;
   aspect-ratio: 3/4;
 }
 
+/* Контейнер изображения */
 .aboutImage {
   position: relative;
   overflow: hidden;
@@ -27,6 +33,7 @@
   will-change: transform;
 }
 
+/* Стили для фотографии */
 .aboutPhoto {
   width: 100%;
   height: 100%;
@@ -34,6 +41,7 @@
   transition: transform 0.3s ease;
 }
 
+/* Скелетон для состояния загрузки */
 .skeleton {
   background-color: #eaeaea;
   background-image: linear-gradient(
@@ -46,6 +54,7 @@
   animation: shimmer 1.5s infinite;
 }
 
+/* Наложение с текстом поверх изображения */
 .imageOverlayText {
   position: absolute;
   bottom: 0;
@@ -59,6 +68,7 @@
   will-change: transform;
 }
 
+/* Секция с текстом */
 .aboutText {
   padding: 0 clamp(20px, 4vw, 40px);
   display: flex;
@@ -66,17 +76,20 @@
   justify-content: center;
 }
 
+/* Стили для заголовка в наложении */
 .imageOverlayText h3 {
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   margin-bottom: 0.5em;
   font-weight: 600;
 }
 
+/* Стили для параграфа в наложении */
 .imageOverlayText p {
   font-size: clamp(1rem, 3vw, 1.5rem);
   opacity: 0.9;
 }
 
+/* Стили для основного текста */
 .aboutParagraph {
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   line-height: 1.7;
@@ -88,6 +101,7 @@
   text-wrap: pretty;
 }
 
+/* Медиа-запросы для мобильных устройств */
 @media (max-width: 768px) {
   .aboutImageWrapper {
     aspect-ratio: 16/9;

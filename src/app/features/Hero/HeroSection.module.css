@@ -1,47 +1,51 @@
-/* Основные стили */
+/* Основные стили для секции Hero */
 .hero {
   position: relative;
   overflow: hidden;
-  --gradient-height: 100px;
-  --gradient-height-mobile: 40px;
-  height: 100dvh;
-  padding-bottom: 60px;
+  --gradient-height: 100px;        /* Высота градиента для десктопа */
+  --gradient-height-mobile: 40px;  /* Высота градиента для мобильных */
+  height: 100dvh;                  /* Высота на весь экран */
+  padding-bottom: 60px;            /* Отступ снизу */
   box-sizing: border-box;
-  contain: layout paint;
+  contain: layout paint;           /* Оптимизация производительности */
 }
 
+/* Контейнер для изображения */
 .imageContainer {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
+/* Стили для основного изображения */
 .heroImage {
-  object-fit: cover;
-  object-position: center;
-  will-change: transform;
-  transition: opacity 0.4s ease-out;
+  object-fit: cover;               /* Заполнение контейнера */
+  object-position: center;         /* Центрирование изображения */
+  will-change: transform;          /* Оптимизация анимаций */
+  transition: opacity 0.4s ease-out; /* Плавное появление */
 }
 
+/* Класс для скрытия изображения */
 .hidden {
   opacity: 0;
 }
 
-/* Скелетон для загрузки */
+/* Скелетон для состояния загрузки */
 .skeleton {
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.5s infinite; /* Анимация загрузки */
 }
 
+/* Анимация для скелетона */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
-/* Градиентный оверлей */
+/* Градиентный оверлей внизу секции */
 .hero::after {
   content: '';
   position: absolute;
@@ -55,19 +59,18 @@
     rgba(255,255,255,0) 100%
   );
   z-index: 2;
-  pointer-events: none;
+  pointer-events: none;           /* Игнорирование событий мыши */
 }
 
 /* Мобильные стили */
 @media (max-width: 768px) {
   .hero {
     --gradient-height: var(--gradient-height-mobile);
-    /* height: calc(100dvh - var(--header-height-mobile)); */
-    height: calc((100vw * 16 / 9) - var(--header-height-mobile));
-    padding-bottom: 20px;
+    height: calc((100vw * 16 / 9) - var(--header-height-mobile)); /* Адаптивная высота */
+    padding-bottom: 20px;         /* Уменьшенный отступ */
   }
 
   .hero::after {
-    bottom: 20px;
+    bottom: 20px;                 /* Корректировка позиции градиента */
   }
 }

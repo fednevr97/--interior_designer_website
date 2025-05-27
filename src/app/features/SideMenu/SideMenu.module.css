@@ -1,189 +1,204 @@
+/* Основные стили бокового меню */
 .side-menu {
-    --menu-width: 350px;
-    --transition-speed: 0.3s;
-    --overlay-opacity: 0.5;
-    
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: var(--menu-width);
-    height: 100dvh;
-    background: rgba(104, 110, 87, 0.8);
-    z-index: 1000;
-    transform: translateX(-100%);
-    transition: all var(--transition-speed) ease;
-    will-change: transform;
-    box-sizing: border-box;
-  }
+  /* CSS переменные для настройки меню */
+  --menu-width: 350px;           /* Ширина меню */
+  --transition-speed: 0.3s;      /* Скорость анимации */
+  --overlay-opacity: 0.5;        /* Прозрачность фона */
+  
+  position: fixed;               /* Фиксированное позиционирование */
+  top: 0;
+  left: 0;
+  width: var(--menu-width);
+  height: 100dvh;               /* Высота с учетом динамического viewport */
+  background: rgba(104, 110, 87, 0.8); /* Полупрозрачный фон */
+  z-index: 1000;                /* Высокий z-index для отображения поверх контента */
+  transform: translateX(-100%);  /* Начальное положение за пределами экрана */
+  transition: all var(--transition-speed) ease; /* Плавная анимация */
+  will-change: transform;        /* Оптимизация производительности */
+  box-sizing: border-box;
+}
 
-  .side-menu.active {
-    transform: translateX(0);
-  }
+/* Класс для активного состояния меню */
+.side-menu.active {
+  transform: translateX(0);      /* Показываем меню */
+}
 
-  .side-menu__content {
-    padding: 2rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all var(--transition-speed) ease;
-  }
+/* Контейнер содержимого меню */
+.side-menu__content {
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Распределение элементов по высоте */
+  transition: all var(--transition-speed) ease;
+}
 
-  .side-menu__nav {
-    height: 100%;
-  }
+/* Навигационная секция */
+.side-menu__nav {
+  height: 100%;
+}
 
-  /* Кнопка закрытия */
-  .side-menu__close {
-    position: absolute;
-    top: 0.5rem;
-    right: 1.5rem;
-    font-size: 2rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #000;
-    transition: opacity 0.2s;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+/* Стили кнопки закрытия */
+.side-menu__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  transition: opacity 0.2s;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .side-menu__close svg {
-    width: 100%;
-    height: 100%;
-    fill: #000;
-  }
+/* Стили иконки закрытия */
+.side-menu__close svg {
+  width: 100%;
+  height: 100%;
+  fill: #000;
+}
 
-  /* Список меню */
-  .side-menu__list {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    height: 100%;
-  }
+/* Стили списка меню */
+.side-menu__list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  height: 100%;
+}
 
+/* Стили подсписка */
+.side-menu__sublist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-  .side-menu__sublist {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+/* Стили ссылок */
+.side-menu__link {
+  position: relative;
+  padding: 0.5rem 0;
+  display: inline-block;
+  color: #000;
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: 0.2s;
+}
 
-  /* Ссылки */
-  .side-menu__link {
-    position: relative;
-    padding: 0.5rem 0;
-    display: inline-block;
-    color: #000;
-    font-size: 1.2rem;
-    text-decoration: none;
-    transition: 0.2s;
-  }
+/* Анимация подчеркивания для ссылок */
+.side-menu__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease-out;
+}
 
-  .side-menu__link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 2px;
-    background: currentColor;
-    transition: width 0.3s ease-out;
-  }
+/* Стили для логотипа */
+.side-menu__item--logo {
+  text-align: center;
+}
 
-  /* Логотип */
-  .side-menu__item--logo {
-    text-align: center;
-  }
+/* Контейнер логотипа в меню */
+.header__logo-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #000;
+  text-decoration: none;
+  position: relative;
+}
 
-  .header__logo-menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #000;
-    text-decoration: none;
-    position: relative;
-  }
+/* Стили кнопки логотипа */
+.header__btn-logo {
+  margin-bottom: 1rem;
+  width: 100%;
+  height: 15dvh;
+  position: relative;
+}
 
-  .header__btn-logo {
-    margin-bottom: 1rem;
-    width: 100%;
-    height: 15dvh;
-    position: relative;
-  }
+/* Стили SVG логотипа */
+.header__btn-logo svg {
+  width: 100%;
+  height: 100%;
+  fill: #000;
+}
 
-  .header__btn-logo svg {
-    width: 100%;
-    height: 100%;
-    fill: #000;
+/* Стили текста логотипа */
+.header__logo-text {
+  font-weight: 500;
+  line-height: 1.4;
+  color: #000;
+  font-family: var(--font-secondary);
+  font-size: 18px;
+}
+
+/* Стили для социальных сетей */
+.side-menu__social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+/* Обертка для иконок соцсетей */
+.social-icon-wrapper {
+  display: inline-block;
+  color: #000;
+  transition: transform 0.2s;
+  width: 24px;
+  height: 24px;
+}
+
+/* Стили SVG иконок соцсетей */
+.social-icon-wrapper svg {
+  width: 100%;
+  height: 100%;
+  fill: #000;
+}
+
+/* Стили для телефона */
+.side-menu__item-phone {
+  display: flex;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+  .side-menu {
+      width: 80vw;              /* Ширина меню на мобильных */
   }
 
   .header__logo-text {
-    font-weight: 500;
-    line-height: 1.4;
-    color: #000;
-    font-family: var(--font-secondary);
-    font-size: 18px;
+      display: none;            /* Скрываем текст логотипа на мобильных */
   }
+}
 
-  /* Соцсети */
-  .side-menu__social-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-  }
-
-  .social-icon-wrapper {
-    display: inline-block;
-    color: #000;
-    transition: transform 0.2s;
-    width: 24px;
-    height: 24px;
-  }
-
-  .social-icon-wrapper svg {
-    width: 100%;
-    height: 100%;
-    fill: #000;
-  }
-
-  .side-menu__item-phone {
-    display: flex;
-  }
-
-  /* Адаптивность */
-  @media (max-width: 768px) {
-    .side-menu {
-      width: 80vw;
-    }
-
-    .header__logo-text {
-        display: none;
-      }
-  }
-
-  @media (min-width: 1024px) {
-
-    .side-menu__close:hover {
+/* Стили для десктопа */
+@media (min-width: 1024px) {
+  /* Эффекты при наведении */
+  .side-menu__close:hover {
       transform: scale(1.2);
-    }
-
-    .side-menu__link:hover {
-      transform: scale(1.1);
-    }
-
-    .side-menu__link:hover::after,
-    .side-menu__link:focus::after {
-      width: 100%;
-    }
-
-    .social-icon-wrapper:hover {
-      transform: scale(1.1);
-    }
   }
+
+  .side-menu__link:hover {
+      transform: scale(1.1);
+  }
+
+  .side-menu__link:hover::after,
+  .side-menu__link:focus::after {
+      width: 100%;              /* Показываем подчеркивание при наведении */
+  }
+
+  .social-icon-wrapper:hover {
+      transform: scale(1.1);
+  }
+}

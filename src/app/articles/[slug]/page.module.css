@@ -1,63 +1,63 @@
-/* components/articles/ArticleCard.module.css */
 .card {
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform var(--transition-normal);;
-    background: white;
-  }
-  
-  .imageWrapper {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-  }
-  
-  .image {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .content {
-    padding: 1.5rem;
-  }
-  
-  .title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: var(--text-primary);
-  }
-  
-  .excerpt {
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-  }
-  
-  .date {
-    color: var(--text-tertiary);
-    font-size: 0.75rem;
-  }
-  
-  .link {
-    display: inline-block;
-    margin-top: 1rem;
-    color: var(--primary);
-    font-weight: 500;
-    text-decoration: none;
-  }
+  border-radius: 8px;          /*  Скругление углов */
+  overflow: hidden;            /*  Скрываем выходящий за пределы контент */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /*  Тень карточки */
+  transition: transform var(--transition-normal);;  /*  Плавная анимация трансформации */
+  background: white;           /*  Белый фон */
+}
 
+.imageWrapper {
+  position: relative;          /*  Для позиционирования изображения */
+  width: 100%;                /*  Полная ширина */
+  height: 200px;              /*  Фиксированная высота */
+  overflow: hidden;           /*  Скрываем выходящее за пределы изображение */
+}
 
-/* Отключаем hover эффекты на мобильных устройствах */
+.image {
+  object-fit: cover;          /*  Заполняем контейнер изображением */
+  width: 100%;                /*  Полная ширина */
+  height: 100%;               /*  Полная высота */
+}
+
+.content {
+  padding: 1.5rem;            /*  Внутренние отступы контента */
+}
+
+.title {
+  font-size: 1.25rem;         /*  Размер заголовка */
+  font-weight: 600;           /*  Жирность шрифта */
+  margin-bottom: 0.75rem;     /*  Отступ снизу */
+  color: var(--text-primary); /*  Цвет текста */
+}
+
+.excerpt {
+  color: var(--text-secondary);  /*  Цвет текста отрывка */
+  margin-bottom: 1rem;          /*  Отступ снизу */
+  font-size: 0.875rem;          /*  Размер шрифта */
+}
+
+.date {
+  color: var(--text-tertiary);   /*  Цвет даты */
+  font-size: 0.75rem;            /*  Размер шрифта */
+}
+
+.link {
+  display: inline-block;         /*  Блочно-строчный элемент */
+  margin-top: 1rem;             /*  Отступ сверху */
+  color: var(--primary);        /*  Цвет ссылки */
+  font-weight: 500;             /*  Жирность шрифта */
+  text-decoration: none;        /*  Убираем подчеркивание */
+}
+
+/* Медиа-запрос для десктопных устройств */
 @media (min-width: 1024px) {
-  .card:hover {
-    transform: scale(1.05);
-  }
+/*  Эффект увеличения при наведении */
+.card:hover {
+  transform: scale(1.05);
+}
 
-  .link:hover {
-    text-decoration: underline;
-  }
+/*  Подчеркивание ссылки при наведении */
+.link:hover {
+  text-decoration: underline;
+}
 }
