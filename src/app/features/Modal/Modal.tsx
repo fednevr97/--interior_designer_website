@@ -16,6 +16,7 @@ interface ModalProps {
   initialIndex: number;   // Начальный индекс отображаемого элемента
 }
 
+
 const Modal: React.FC<ModalProps> = ({ 
   isOpen, 
   onClose, 

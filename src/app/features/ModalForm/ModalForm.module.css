@@ -163,14 +163,61 @@
     margin: 20px auto 0;
     transition: all 0.3s ease;
   }
+
+  .modal__policyTooltip {
+    position: absolute;
+    z-index: 1000;
+    animation: fadeInOut 3s ease-in-out;
+  }
   
+  .modal__policyTooltipText {
+    background-color: #292c23;
+    color: var(--light-text-color);
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+    margin-top: 10px;
+  }
+  
+  .modal__policyTooltipText::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #292c23 transparent;
+  }
+  
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
   /* Десктопные стили */
   @media (min-width: 768px) {
     .modal__content {
       padding: 40px;
       width: 100%;
       max-width: 800px;
-      height: 400px;
+      height: auto;
     }
   
     .modal__checkboxes {
