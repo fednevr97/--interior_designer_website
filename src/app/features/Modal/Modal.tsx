@@ -458,7 +458,7 @@ const Modal: React.FC<ModalProps> = ({
             <div 
               className={`${styles.slideItem} ${styles.prevSlide}`}
               style={{
-                transform: slideDirection === 'right' ? 'translateX(100%)' : 'translateX(-100%)',
+                transform: slideDirection === 'right' ? 'translateX(500%)' : 'translateX(-500%)',
                 opacity: slideDirection === 'right' ? 1 : 0
               }}
             >
@@ -513,7 +513,7 @@ const Modal: React.FC<ModalProps> = ({
             <div 
               className={`${styles.slideItem} ${styles.nextSlide}`}
               style={{
-                transform: slideDirection === 'left' ? 'translateX(-100%)' : 'translateX(100%)',
+                transform: slideDirection === 'left' ? 'translateX(-500%)' : 'translateX(500%)',
                 opacity: slideDirection === 'left' ? 1 : 0
               }}
             >

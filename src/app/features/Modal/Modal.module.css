@@ -169,7 +169,7 @@
 /* Анимация слайда влево */
 @keyframes slideLeft {
   from {
-    transform: translateX(100%);
+    transform: translateX(500%);
   }
   to {
     transform: translateX(0);
@@ -179,7 +179,7 @@
 /* Анимация слайда вправо */
 @keyframes slideRight {
   from {
-    transform: translateX(-100%);
+    transform: translateX(-500%);
   }
   to {
     transform: translateX(0);
