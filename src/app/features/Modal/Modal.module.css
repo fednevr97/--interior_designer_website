@@ -30,7 +30,7 @@
   margin: auto;
   display: flex;
   align-items: center;
-  overflow: hidden; /* Ограничение видимой области */
+  overflow: visible; /* Ограничение видимой области */
 }
 
 /* Кнопка закрытия */
@@ -57,7 +57,7 @@
   height: 100%; */
   width: auto;
   height: auto;
-  overflow: hidden;
+  overflow: visible;
   -webkit-overflow-scrolling: touch;
   touch-action: none;
   display: flex;

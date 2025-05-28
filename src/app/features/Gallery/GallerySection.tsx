@@ -136,7 +136,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
       // Используем setTimeout с 0 для отложенного выполнения
       const timer = setTimeout(() => {
         setSelectedImage(image);
-      }, 0);
+      }, 300);
   
       return () => clearTimeout(timer);
     }
