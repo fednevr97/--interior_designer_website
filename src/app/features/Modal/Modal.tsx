@@ -470,7 +470,6 @@ const Modal: React.FC<ModalProps> = ({
                   height={800}
                   loading="eager"
                   style={getImageStyle()}
-                  onDoubleClick={handleDoubleClick}
                   onTouchEnd={(e) => {
                     // Для одинарного тапа на мобильных
                     if (!isDragging.current && !isZooming.current) {
@@ -504,6 +503,7 @@ const Modal: React.FC<ModalProps> = ({
                 ref={imageRef}
                 loading="eager"
                 style={getImageStyle()}
+                onDoubleClick={handleDoubleClick}
               />
             </div>
           </div>

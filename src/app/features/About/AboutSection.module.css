@@ -21,7 +21,6 @@
 /* Обертка для изображения */
 .aboutImageWrapper {
   position: relative;
-  aspect-ratio: 3/4;
 }
 
 /* Контейнер изображения */

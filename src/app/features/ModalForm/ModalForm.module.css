@@ -215,6 +215,47 @@
   border-color: transparent transparent #292c23 transparent;
 }
 
+.modal__captcha {
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal__error {
+  color: #ff3333;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.modal__error {
+  color: #ff0000;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.modal__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.modal__success {
+  text-align: center;
+  padding: 20px;
+}
+
+.modal__successText {
+  margin: 15px 0;
+  font-size: 16px;
+  color: var(--light-text-color);
+}
+
+.modal__successIcon {
+  font-size: 48px;
+  color: var(--light-text-color);
+  margin: 20px 0;
+}
+
 /* Анимация появления/исчезновения тултипа */
 @keyframes fadeInOut {
   0% {
