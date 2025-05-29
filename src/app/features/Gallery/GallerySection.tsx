@@ -216,6 +216,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               fill
               sizes="(max-width: 768px) 50vw, 33vw"
               className={styles.gridImage}
+              loading="lazy"
             />
           </div>
           <h3>{item.title}</h3>
@@ -257,7 +258,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                 style={{
                   '--visible-items': visibleItems,
                   transform: getTransform(),
-                  transition: isDragging ? 'none' : 'transform 0.3s ease'
+                  transition: isDragging ? 'none' : 'transform 0.3s ease',
                 } as React.CSSProperties}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}

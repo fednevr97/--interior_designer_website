@@ -40,7 +40,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           src={imageSrc}
           alt={imageAlt}
           fill
-          priority={true}        // Приоритетная загрузка
+          priority
           quality={85}           // Качество изображения
           className={`${styles.heroImage} ${!isLoaded ? styles.hidden : ''}`}
           sizes="(max-width: 768px) 100vw, 100vw" // Адаптивные размеры

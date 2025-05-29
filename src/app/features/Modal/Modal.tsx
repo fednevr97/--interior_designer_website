@@ -468,7 +468,7 @@ const Modal: React.FC<ModalProps> = ({
                   alt={items[prevIndex].title}
                   width={1200}
                   height={800}
-                  loading="eager"
+                  loading="lazy"
                   style={getImageStyle()}
                   onTouchEnd={(e) => {
                     // Для одинарного тапа на мобильных
@@ -501,7 +501,7 @@ const Modal: React.FC<ModalProps> = ({
                 width={1200}
                 height={800}
                 ref={imageRef}
-                loading="eager"
+                loading="lazy"
                 style={getImageStyle()}
                 onDoubleClick={handleDoubleClick}
               />
@@ -523,7 +523,7 @@ const Modal: React.FC<ModalProps> = ({
                   alt={items[nextIndex].title}
                   width={1200}
                   height={800}
-                  loading="eager"
+                  loading="lazy"
                   style={getImageStyle()}
                 />
               </div>
