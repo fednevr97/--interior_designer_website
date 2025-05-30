@@ -60,6 +60,26 @@ const ModalForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [captchaToken, setCaptchaToken] = useState(''); // Токен reCAPTCHA
   const [isSuccess, setIsSuccess] = useState(false); // Флаг успешной отправки
 
+  //Сброс данных формы при закрытии модального окна
+  useEffect(() => {
+    if (!isOpen) {
+      // Полный сброс всех данных формы
+      setFormData({ 
+        type: '', 
+        area: '', 
+        name: '', 
+        email: '', 
+        phone: '' 
+      });
+      setIsPolicyChecked(false);
+      setIsCaptchaVerified(false);
+      setCaptchaToken('');
+      setSubmitError(null);
+      setIsSuccess(false);
+      
+    }
+  }, [isOpen]); // Зависимость от пропса isOpen
+
   // Обработчик успешной проверки reCAPTCHA
   const handleCaptchaVerified = useCallback((token: string) => {
     setIsCaptchaVerified(true);
