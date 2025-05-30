@@ -4,6 +4,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import styles from './Modal.module.css';
+import { GalleryItem } from '../Gallery/GallerySection';
 
 // Интерфейс пропсов для модального окна
 interface ModalProps {
@@ -15,6 +16,11 @@ interface ModalProps {
     title: string;       // Заголовок изображения
   }[];
   initialIndex: number;   // Начальный индекс отображаемого элемента
+}
+
+// В начале файла добавим интерфейс для Image
+interface ImageConstructor {
+  new(): HTMLImageElement;
 }
 
 const Modal: React.FC<ModalProps> = ({ 
@@ -54,6 +60,36 @@ const Modal: React.FC<ModalProps> = ({
   const CLOSE_THRESHOLD = 100; // Порог для закрытия модального окна
   const ZOOM_SENSITIVITY = 0.01; // Чувствительность зума
   const IMAGE_DRAG_THRESHOLD = 20; // Порог для перетаскивания изображения
+
+  // Вынесем preloadImages за пределы условных операторов
+  const preloadImages = useCallback((items: GalleryItem[], currentIndex: number) => {
+    // Предзагрузка предыдущего и следующего изображения
+    const prevIndex = currentIndex - 1;
+    const nextIndex = currentIndex + 1;
+      
+    if (prevIndex >= 0) {
+      const img = new (window.Image as ImageConstructor)();
+      img.src = items[prevIndex].image;
+    }
+      
+    if (nextIndex < items.length) {
+      const img = new (window.Image as ImageConstructor)();
+      img.src = items[nextIndex].image;
+    }
+  }, []);
+  
+  // Вынесем useEffect за пределы условных операторов
+  useEffect(() => {
+    let isSubscribed = true;
+    
+    if (isOpen && isSubscribed) {
+      preloadImages(items, currentIndex);
+    }
+    
+    return () => {
+      isSubscribed = false;
+    };
+  }, [isOpen, currentIndex, items, preloadImages]);
 
   // Эффект для установки начального индекса при изменении initialIndex
   useEffect(() => {
@@ -395,6 +431,8 @@ const Modal: React.FC<ModalProps> = ({
   // Определяем индексы предыдущего и следующего изображений
   const prevIndex = currentIndex > 0 ? currentIndex - 1 : null;
   const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : null;
+
+
 
   // Рендерим модальное окно
   return (

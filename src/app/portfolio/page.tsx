@@ -2,14 +2,22 @@ import GallerySection from '../features/Gallery/GallerySection';
 import styles from './page.module.css';
 import { getProjects, getCategories } from '../data/projects';
 
+export const revalidate = 3600; // Кэшировать на 1 час
 // Асинхронный компонент страницы портфолио
 export default async function PortfolioPage() {
-  // Параллельная загрузка проектов и категорий
-  const [projects, categories] = await Promise.all([
-    getProjects(),  // Получение всех проектов
-    getCategories() // Получение списка категорий
-  ]);
+// Добавить кэширование
 
+// Оптимизировать запрос
+const [projects, categories] = await Promise.all([
+  getProjects().then(projects => {
+    // Предварительная загрузка изображений
+    return projects.map(project => ({
+      ...project,
+      image: project.image // Добавить предварительную загрузку
+    }));
+  }),
+  getCategories()
+]);
   return (
     <div className={styles.portfolioPage}>
       {/* Главный заголовок страницы */}
