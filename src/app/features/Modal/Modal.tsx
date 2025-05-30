@@ -38,7 +38,6 @@ const Modal: React.FC<ModalProps> = ({
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }); // Позиция изображения
   const [slideDirection, setSlideDirection] = useState<'left'|'right'|null>(null); // Направление слайда
   const [isAnimating, setIsAnimating] = useState(false); // Флаг анимации
-  const [lastTapTime, setLastTapTime] = useState(0); // Время последнего тапа
 
   // Рефы для DOM-элементов
   const overlayRef = useRef<HTMLDivElement>(null); // Оверлей модального окна
@@ -60,6 +59,10 @@ const Modal: React.FC<ModalProps> = ({
   const CLOSE_THRESHOLD = 100; // Порог для закрытия модального окна
   const ZOOM_SENSITIVITY = 0.01; // Чувствительность зума
   const IMAGE_DRAG_THRESHOLD = 20; // Порог для перетаскивания изображения
+
+  // Обработчик окончания касания
+  const [lastTap, setLastTap] = useState<{ time: number; x: number; y: number } | null>(null);
+  const doubleTapTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Вынесем preloadImages за пределы условных операторов
   const preloadImages = useCallback((items: GalleryItem[], currentIndex: number) => {
@@ -113,27 +116,6 @@ const Modal: React.FC<ModalProps> = ({
       });
     } else {
       // Сбрасываем если увеличен
-      setScale(1);
-      setImagePosition({ x: 0, y: 0 });
-    }
-  }, [scale]);
-
-  // Обработчик двойного тапа для зума на мобильных устройствах
-  const handleDoubleTap = useCallback((e: React.TouchEvent) => {
-    e.stopPropagation();
-    
-    if (scale === 1) {
-      const touch = e.touches[0] || e.changedTouches[0];
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      
-      setScale(2);
-      setImagePosition({
-        x: (rect.width/2 - x) * 0.5,
-        y: (rect.height/2 - y) * 0.5
-      });
-    } else {
       setScale(1);
       setImagePosition({ x: 0, y: 0 });
     }
@@ -253,24 +235,64 @@ const Modal: React.FC<ModalProps> = ({
   }, [scale, imagePosition]);
 
   // Функция ограничения позиции изображения
-  const constrainImagePosition = useCallback((newPos: { x: number; y: number }, currentScale: number) => {
+  const constrainImagePosition = useCallback((newPos: { x: number; y: number }) => {
+    
     if (!imageRef.current || !contentRef.current) return newPos;
-
+  
     const container = contentRef.current;
     const containerRect = container.getBoundingClientRect();
     const img = imageRef.current;
-    
-    // Используем offsetWidth/offsetHeight вместо naturalWidth/naturalHeight
-    const imgWidth = img.offsetWidth * currentScale;
-    const imgHeight = img.offsetHeight * currentScale;
-    
-    // Рассчитываем максимальные смещения
-    const maxX = Math.max(0, (imgWidth - containerRect.width) / 2);
-    const maxY = Math.max(0, (imgHeight - containerRect.height) / 2);
-
+    const imgRect = img.getBoundingClientRect();
+  
+    // Размеры изображения с учетом масштаба
+    const scaledWidth = imgRect.width;
+    const scaledHeight = imgRect.height;
+  
+    // Максимальные смещения (половина разницы между изображением и контейнером)
+    const maxX = Math.max(0, (scaledWidth - containerRect.width) / 4);
+    const maxY = Math.max(0, (scaledHeight - containerRect.height) / 8);
+  
+    // Ограничения для верхней границы (не может опуститься ниже верха вьюпорта)
+    let constrainedY = newPos.y;
+    if (scaledHeight > containerRect.height) {
+      // Если изображение больше контейнера по высоте
+      constrainedY = Math.min(maxY, Math.max(-maxY, newPos.y));
+      
+      // Дополнительная проверка для верхней границы
+      const topEdge = (scaledHeight - containerRect.height) / 2 - newPos.y;
+      if (topEdge < 0) {
+        constrainedY = (scaledHeight - containerRect.height) / 2;
+      }
+    } else {
+      // Если изображение меньше контейнера - центрируем
+      constrainedY = 0;
+    }
+  
+    // Аналогичные ограничения для горизонтали
+    let constrainedX = newPos.x;
+    if (scaledWidth > containerRect.width) {
+      constrainedX = Math.min(maxX, Math.max(-maxX, newPos.x));
+      
+      // Дополнительная проверка для левой границы
+      const leftEdge = (scaledWidth - containerRect.width) / 2 - newPos.x;
+      if (leftEdge < 0) {
+        constrainedX = (scaledWidth - containerRect.width) / 2;
+      }
+    } else {
+      constrainedX = 0;
+    }
+    console.log('Constraints:', {
+      containerSize: { width: containerRect.width, height: containerRect.height },
+      imageSize: { width: scaledWidth, height: scaledHeight },
+      maxOffset: { x: maxX, y: maxY },
+      newPosition: newPos,
+      constrainedPosition: { x: constrainedX, y: constrainedY }
+    });
+  
     return {
-      x: Math.max(-maxX, Math.min(maxX, newPos.x)),
-      y: Math.max(-maxY, Math.min(maxY, newPos.y))
+      
+      x: constrainedX,
+      y: constrainedY
     };
   }, []);
 
@@ -290,7 +312,7 @@ const Modal: React.FC<ModalProps> = ({
       ));
       
       // Применяем ограничения сразу при изменении масштаба
-      const constrainedPos = constrainImagePosition(imagePosition, newScale);
+      const constrainedPos = constrainImagePosition(imagePosition);
       setImagePosition(constrainedPos);
       setScale(newScale);
       touchStartDistance.current = currentDistance;
@@ -309,7 +331,7 @@ const Modal: React.FC<ModalProps> = ({
         };
         
         // Применяем ограничения при перемещении
-        const constrainedPos = constrainImagePosition(newPos, scale);
+        const constrainedPos = constrainImagePosition(newPos);
         setImagePosition(constrainedPos);
         return;
       }
@@ -328,73 +350,101 @@ const Modal: React.FC<ModalProps> = ({
       }
     }
   }, [scale, imagePosition, constrainImagePosition]);
-
-  // Обработчик окончания касания
+  
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (isZooming.current) {
       isZooming.current = false;
       return;
     }
-
+  
+    // Обработка свайпов и перетаскивания
     if (isDragging.current) {
       const touch = e.changedTouches[0];
       const deltaX = touch.clientX - touchStartPos.current.x;
       const deltaY = touch.clientY - touchStartPos.current.y;
-
-      // Сбрасываем флаги
+  
       isDragging.current = false;
       isHorizontalSwipe.current = false;
       isImageDragging.current = false;
-
-      if (isImageDragging.current) {
-        return;
-      }
-
+  
       if (scale === 1) {
-        const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
-        
-        if (isHorizontal) {
-          if (deltaX > SWIPE_THRESHOLD && canGoPrev) {
-            handlePrev();
-          } else if (deltaX < -SWIPE_THRESHOLD && canGoNext) {
-            handleNext();
-          }
+        if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+          if (deltaX > 0 && canGoPrev) handlePrev();
+          if (deltaX < 0 && canGoNext) handleNext();
         } else if (Math.abs(deltaY) > CLOSE_THRESHOLD) {
           handleClose();
         }
       }
-
-      // Сбрасываем позиции
-      setPosition({ x: 0, y: 0 });
-      setDragOffset(0);
-    }
-
-    const currentTime = Date.now();
-    const tapLength = currentTime - lastTapTime;
-
-    // Если между касаниями прошло меньше 300ms - считаем двойным тапом
-    if (tapLength < 300 && tapLength > 0) {
-      e.preventDefault();
       
-      if (scale === 1) {
-        const touch = e.changedTouches[0];
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
+      setPosition({ x: 0, y: 0 });
+      return;
+    }
+  
+    // Обработка двойного тапа
+    const currentTouch = e.changedTouches[0];
+    const currentTime = Date.now();
+    const tapPosition = { 
+      x: currentTouch.clientX, 
+      y: currentTouch.clientY 
+    };
+  
+    if (lastTap && doubleTapTimeout.current) {
+      // Проверяем был ли предыдущий тап недавно и близко по позиции
+      const isDoubleTap = (
+        currentTime - lastTap.time < 300 &&
+        Math.abs(tapPosition.x - lastTap.x) < 30 &&
+        Math.abs(tapPosition.y - lastTap.y) < 30
+      );
+  
+      if (isDoubleTap) {
+        clearTimeout(doubleTapTimeout.current);
+        doubleTapTimeout.current = null;
         
-        setScale(2);
-        setImagePosition({
-          x: (rect.width/2 - x) * 0.5,
-          y: (rect.height/2 - y) * 0.5
-        });
-      } else {
-        setScale(1);
-        setImagePosition({ x: 0, y: 0 });
+        const rect = contentRef.current?.getBoundingClientRect();
+        if (rect) {
+          const x = tapPosition.x - rect.left;
+          const y = tapPosition.y - rect.top;
+          
+          if (scale === 1) {
+            // Увеличиваем
+            setScale(2);
+            setImagePosition({
+              x: (rect.width/2 - x) * 0.5,
+              y: (rect.height/2 - y) * 0.5
+            });
+          } else {
+            // Уменьшаем
+            setScale(1);
+            setImagePosition({ x: 0, y: 0 });
+          }
+        }
+        setLastTap(null);
+        return;
       }
     }
-    
-    setLastTapTime(currentTime);
-  }, [lastTapTime, scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose]);
+  
+    // Запоминаем текущий тап
+    setLastTap({
+      time: currentTime,
+      ...tapPosition
+    });
+  
+    // Устанавливаем таймаут для сброса двойного тапа
+    doubleTapTimeout.current = setTimeout(() => {
+      setLastTap(null);
+      doubleTapTimeout.current = null;
+    }, 300);
+  }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose, lastTap]);
+  
+  // Очистка таймеров при размонтировании
+  useEffect(() => {
+    const timeout = doubleTapTimeout.current;
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, []);
 
   // Функция для получения стилей контента
   const getContentStyle = (): React.CSSProperties => {
@@ -407,7 +457,7 @@ const Modal: React.FC<ModalProps> = ({
   // Функция для получения стилей изображения
   const getImageStyle = (): React.CSSProperties => {
     // Применяем ограничения перед рендерингом
-    const constrainedPos = scale > 1 ? constrainImagePosition(imagePosition, scale) : { x: 0, y: 0 };
+    const constrainedPos = scale > 1 ? constrainImagePosition(imagePosition) : { x: 0, y: 0 };
     
     return {
       objectFit: 'contain',
@@ -509,18 +559,6 @@ const Modal: React.FC<ModalProps> = ({
                   loading="lazy"
                   style={getImageStyle()}
                   quality={75} // Оптимизация качества (по умолчанию 75)
-                  onTouchEnd={(e) => {
-                    // Для одинарного тапа на мобильных
-                    if (!isDragging.current && !isZooming.current) {
-                      const currentTime = Date.now();
-                      if (currentTime - lastTapTime < 300) {
-                        handleDoubleTap(e);
-                        setLastTapTime(0);
-                      } else {
-                        setLastTapTime(currentTime);
-                      }
-                    }
-                  }}
                 />
               </div>
             </div>

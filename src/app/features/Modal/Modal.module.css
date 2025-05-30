@@ -62,6 +62,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  pointer-events: auto;
 }
 
 /* Стили для изображения */
