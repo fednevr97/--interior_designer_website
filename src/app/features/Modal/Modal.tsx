@@ -60,10 +60,6 @@ const Modal: React.FC<ModalProps> = ({
   const ZOOM_SENSITIVITY = 0.01; // Чувствительность зума
   const IMAGE_DRAG_THRESHOLD = 20; // Порог для перетаскивания изображения
 
-  // Обработчик окончания касания
-  const [lastTap, setLastTap] = useState<{ time: number; x: number; y: number } | null>(null);
-  const doubleTapTimeout = useRef<NodeJS.Timeout | null>(null);
-
   // Вынесем preloadImages за пределы условных операторов
   const preloadImages = useCallback((items: GalleryItem[], currentIndex: number) => {
     // Предзагрузка предыдущего и следующего изображения
@@ -235,64 +231,24 @@ const Modal: React.FC<ModalProps> = ({
   }, [scale, imagePosition]);
 
   // Функция ограничения позиции изображения
-  const constrainImagePosition = useCallback((newPos: { x: number; y: number }) => {
-    
+  const constrainImagePosition = useCallback((newPos: { x: number; y: number }, currentScale: number) => {
     if (!imageRef.current || !contentRef.current) return newPos;
-  
+
     const container = contentRef.current;
     const containerRect = container.getBoundingClientRect();
     const img = imageRef.current;
-    const imgRect = img.getBoundingClientRect();
-  
-    // Размеры изображения с учетом масштаба
-    const scaledWidth = imgRect.width;
-    const scaledHeight = imgRect.height;
-  
-    // Максимальные смещения (половина разницы между изображением и контейнером)
-    const maxX = Math.max(0, (scaledWidth - containerRect.width) / 4);
-    const maxY = Math.max(0, (scaledHeight - containerRect.height) / 8);
-  
-    // Ограничения для верхней границы (не может опуститься ниже верха вьюпорта)
-    let constrainedY = newPos.y;
-    if (scaledHeight > containerRect.height) {
-      // Если изображение больше контейнера по высоте
-      constrainedY = Math.min(maxY, Math.max(-maxY, newPos.y));
-      
-      // Дополнительная проверка для верхней границы
-      const topEdge = (scaledHeight - containerRect.height) / 2 - newPos.y;
-      if (topEdge < 0) {
-        constrainedY = (scaledHeight - containerRect.height) / 2;
-      }
-    } else {
-      // Если изображение меньше контейнера - центрируем
-      constrainedY = 0;
-    }
-  
-    // Аналогичные ограничения для горизонтали
-    let constrainedX = newPos.x;
-    if (scaledWidth > containerRect.width) {
-      constrainedX = Math.min(maxX, Math.max(-maxX, newPos.x));
-      
-      // Дополнительная проверка для левой границы
-      const leftEdge = (scaledWidth - containerRect.width) / 2 - newPos.x;
-      if (leftEdge < 0) {
-        constrainedX = (scaledWidth - containerRect.width) / 2;
-      }
-    } else {
-      constrainedX = 0;
-    }
-    console.log('Constraints:', {
-      containerSize: { width: containerRect.width, height: containerRect.height },
-      imageSize: { width: scaledWidth, height: scaledHeight },
-      maxOffset: { x: maxX, y: maxY },
-      newPosition: newPos,
-      constrainedPosition: { x: constrainedX, y: constrainedY }
-    });
-  
+    
+    // Используем offsetWidth/offsetHeight вместо naturalWidth/naturalHeight
+    const imgWidth = img.offsetWidth * currentScale;
+    const imgHeight = img.offsetHeight * currentScale;
+    
+    // Рассчитываем максимальные смещения
+    const maxX = Math.max(0, (imgWidth - containerRect.width) / 2);
+    const maxY = Math.max(0, (imgHeight - containerRect.height) / 2);
+
     return {
-      
-      x: constrainedX,
-      y: constrainedY
+      x: Math.max(-maxX, Math.min(maxX, newPos.x)),
+      y: Math.max(-maxY, Math.min(maxY, newPos.y))
     };
   }, []);
 
@@ -312,7 +268,7 @@ const Modal: React.FC<ModalProps> = ({
       ));
       
       // Применяем ограничения сразу при изменении масштаба
-      const constrainedPos = constrainImagePosition(imagePosition);
+      const constrainedPos = constrainImagePosition(imagePosition, newScale);
       setImagePosition(constrainedPos);
       setScale(newScale);
       touchStartDistance.current = currentDistance;
@@ -331,7 +287,7 @@ const Modal: React.FC<ModalProps> = ({
         };
         
         // Применяем ограничения при перемещении
-        const constrainedPos = constrainImagePosition(newPos);
+        const constrainedPos = constrainImagePosition(newPos, scale);
         setImagePosition(constrainedPos);
         return;
       }
@@ -350,6 +306,10 @@ const Modal: React.FC<ModalProps> = ({
       }
     }
   }, [scale, imagePosition, constrainImagePosition]);
+
+  // Обработчик окончания касания
+  const [lastTap, setLastTap] = useState<{ time: number; x: number; y: number } | null>(null);
+  const doubleTapTimeout = useRef<NodeJS.Timeout | null>(null);
   
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (isZooming.current) {
@@ -457,7 +417,7 @@ const Modal: React.FC<ModalProps> = ({
   // Функция для получения стилей изображения
   const getImageStyle = (): React.CSSProperties => {
     // Применяем ограничения перед рендерингом
-    const constrainedPos = scale > 1 ? constrainImagePosition(imagePosition) : { x: 0, y: 0 };
+    const constrainedPos = scale > 1 ? constrainImagePosition(imagePosition, scale) : { x: 0, y: 0 };
     
     return {
       objectFit: 'contain',
