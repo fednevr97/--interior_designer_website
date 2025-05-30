@@ -13,7 +13,7 @@ export default async function PortfolioPage() {
   return (
     <div className={styles.portfolioPage}>
       {/* Главный заголовок страницы */}
-      <h1>Наше портфолио</h1>
+      <h1>Моё портфолио</h1>
       
       {/* Маппинг по категориям для создания секций */}
       {categories.map(category => (

@@ -465,11 +465,12 @@ const Modal: React.FC<ModalProps> = ({
               <div className={styles.imageContainer}>
                 <Image
                   src={items[prevIndex].image}
-                  alt={items[prevIndex].title}
+                  alt="Фото галереи" 
                   width={1200}
                   height={800}
                   loading="lazy"
                   style={getImageStyle()}
+                  quality={75} // Оптимизация качества (по умолчанию 75)
                   onTouchEnd={(e) => {
                     // Для одинарного тапа на мобильных
                     if (!isDragging.current && !isZooming.current) {
@@ -497,13 +498,14 @@ const Modal: React.FC<ModalProps> = ({
             <div className={styles.imageContainer}>
               <Image
                 src={items[currentIndex].image}
-                alt={items[currentIndex].title}
+                alt="Фото галереи" 
                 width={1200}
                 height={800}
                 ref={imageRef}
                 loading="lazy"
                 style={getImageStyle()}
                 onDoubleClick={handleDoubleClick}
+                quality={75} // Оптимизация качества (по умолчанию 75)
               />
             </div>
           </div>
@@ -520,11 +522,12 @@ const Modal: React.FC<ModalProps> = ({
               <div className={styles.imageContainer}>
                 <Image
                   src={items[nextIndex].image}
-                  alt={items[nextIndex].title}
+                  alt="Фото галереи" 
                   width={1200}
                   height={800}
                   loading="lazy"
                   style={getImageStyle()}
+                  quality={75} // Оптимизация качества (по умолчанию 75)
                 />
               </div>
             </div>

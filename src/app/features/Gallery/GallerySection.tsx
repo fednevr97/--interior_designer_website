@@ -187,13 +187,13 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           >
             <Image 
               src={item.image} 
-              alt={item.title} 
+              alt="Фото галереи" 
               loading="eager"
               fill  
               sizes={getSizes()}
+              quality={75} // Оптимизация качества (по умолчанию 75)
             />
           </div>
-          <h3>{item.title}</h3>
         </li>
       ))}
     </ul>
@@ -212,14 +212,14 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           <div className={styles.imageWrapper}>
             <Image 
               src={item.image}
-              alt={item.title}
+              alt="Фото галереи" 
               fill
               sizes="(max-width: 768px) 50vw, 33vw"
               className={styles.gridImage}
               loading="lazy"
+              quality={75} // Оптимизация качества (по умолчанию 75)
             />
           </div>
-          <h3>{item.title}</h3>
         </li>
       ))}
     </ul>

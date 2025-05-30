@@ -15,10 +15,10 @@ export default function ArticleContent({ article }: { article: Article }) {
         <div className={styles.imageContainer}>
           <Image
             src={article.meta.coverImage}  // Путь к изображению
-            alt={article.meta.title}        // Альтернативный текст
+            alt="Фото статьи"        // Альтернативный текст
             fill                            // Заполнение контейнера
             className={styles.image}
-            priority                        // Приоритетная загрузка
+            quality={75} // Оптимизация качества (по умолчанию 75)
           />
         </div>
         

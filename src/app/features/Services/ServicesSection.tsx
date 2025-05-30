@@ -18,14 +18,14 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
       image: "/assets/Дизайн проекта.webp",
       title: "Дизайн проекта",
       description: "Создание уникального и функционального дизайна интерьера с учетом Ваших пожеланий и стиля жизни. Мы разрабатываем подробные планы, визуализации и подбор материалов, чтобы каждый элемент гармонично сочетался.",
-      price: "От 10 000 руб."
+      price: "От 3 000 руб."
     },
     {
       id: 2,
       image: "/assets/комплектация.webp",
       title: "Комплектация",
       description: "Полный цикл подбора и закупки мебели, отделочных материалов и декора. Я обеспечиваю качественную реализацию всех аспектов проекта, чтобы повысить комфорт и эстетическую ценность Вашего пространства.",
-      price: "От 15 000 руб."
+      price: "От 3 000 руб."
     },
     {
       id: 3,
@@ -60,7 +60,7 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
   return (
     <section id={id} className={styles['services-section']} aria-labelledby="services-title">
       <div className={styles.container}>
-        <h2 id="services-title" className={styles.servicesTitle}>Наши услуги</h2>
+        <h2 id="services-title" className={styles.servicesTitle}>Мои услуги</h2>
         <div className={styles['services-wrapper']}>
           <div className={styles['carousel-container']}>
             <div className={styles['services-carousel']} role="list">
@@ -81,6 +81,7 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
                       style={{
                         objectFit: 'cover',
                       }}
+                      quality={75} // Оптимизация качества (по умолчанию 75)
                     />
                   </div>
                   <div className={styles['service-content']}>

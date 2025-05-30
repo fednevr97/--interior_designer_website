@@ -29,8 +29,8 @@ const Footer = () => {
             {/* Блок с email */}
             <li className={`${styles.footer__infoItem} ${styles.footer__infoItem_email}`}>
               <span className={styles.footer__infoLabel}>Email:</span>
-              <a href="mailto:example@example.com" className={styles.footer__infoLink}>
-                example@example.com
+              <a href="mailto:me@sheptitskaja.ru" className={styles.footer__infoLink}>
+                me@sheptitskaja.ru
               </a>
             </li>
             {/* Блок с социальными сетями */}

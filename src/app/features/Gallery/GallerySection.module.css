@@ -78,19 +78,6 @@
     transition: transform var(--transition-normal);
 }
 
-/* Заголовок элемента */
-.gallery-item h3 {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 15px;
-    margin: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    color: var(--light-text-color);
-    font-size: 1.2rem;
-}
-
 /* Заголовок галереи */
 .galleryTitle {
     padding-left: 20px;
@@ -128,19 +115,6 @@
     height: 100%;
 }
   
-/* Заголовок в сетке */
-.gridItem h3 {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 15px;
-    margin: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    color: var(--light-text-color);
-    font-size: 1rem;
-}
-
 /* Контейнер для модальной галереи */
 .modalGalleryContainer {
     display: flex;
