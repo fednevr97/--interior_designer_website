@@ -120,6 +120,7 @@ const Modal: React.FC<ModalProps> = ({
   // Обработчик закрытия модального окна с анимацией
   const handleClose = useCallback(() => {
     setIsClosing(true); // Запускаем анимацию закрытия
+    setDragOffset(0); // Сбрасываем перед закрытием
     setTimeout(() => {
       onClose(); // Закрываем модальное окно
       setIsClosing(false); // Сбрасываем флаг закрытия
@@ -333,6 +334,10 @@ const Modal: React.FC<ModalProps> = ({
           if (deltaX < 0 && canGoNext) handleNext();
         } else if (Math.abs(deltaY) > CLOSE_THRESHOLD) {
           handleClose();
+        }else {
+          // Добавляем анимацию возврата, если свайп недостаточный
+          setPosition({ x: 0, y: 0 });
+          setDragOffset(0);
         }
       }
       
