@@ -134,6 +134,7 @@ const Modal: React.FC<ModalProps> = ({
   //   }, 300); // Задержка для завершения анимации
   // }, [onClose]);
   const handleClose = useCallback(() => {
+    if (isClosing) return; // Предотвращаем множественные вызовы
     setIsClosing(true);
     setDragOffset(0);
     setScale(1);
@@ -152,7 +153,7 @@ const Modal: React.FC<ModalProps> = ({
         setPosition({ x: 0, y: 0 });
       });
     }, 300);
-  }, [onClose]);
+  }, [onClose, isClosing]);
 
   // Обработчик клика по оверлею для закрытия
   const handleOverlayClick = useCallback((e: React.MouseEvent) => {
@@ -217,13 +218,13 @@ const Modal: React.FC<ModalProps> = ({
 
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed'; // Для iOS
+      // document.body.style.position = 'fixed'; // Для iOS
       document.body.style.width = '100%';// Блокируем скролл страницы
       window.addEventListener('keydown', handleKeyDown); // Добавляем обработчик
     }
     return () => {
       document.body.style.overflow = '';
-      document.body.style.position = '';
+      // document.body.style.position = '';
       document.body.style.width = ''; // Восстанавливаем скролл
       window.removeEventListener('keydown', handleKeyDown); // Удаляем обработчик
     };
@@ -231,6 +232,9 @@ const Modal: React.FC<ModalProps> = ({
 
   // Обработчик начала касания
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+
+    if (isClosing) return; // Игнорируем если закрываемся
+
     if (e.touches.length === 2) { // Обработка мультитача (зум)
       isHorizontalSwipe.current = false;
       isZooming.current = true;
@@ -257,7 +261,7 @@ const Modal: React.FC<ModalProps> = ({
     };
     touchStartImagePos.current = { ...imagePosition };
     touchStartTime.current = Date.now();
-  }, [scale, imagePosition]);
+  }, [scale, imagePosition, isClosing]);
 
   // Функция ограничения позиции изображения
   const constrainImagePosition = useCallback((newPos: { x: number; y: number }, currentScale: number) => {
@@ -283,7 +287,7 @@ const Modal: React.FC<ModalProps> = ({
 
   // Обработчик движения при касании
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
+
     if (e.touches.length === 2 && isZooming.current) {
       e.preventDefault();
       const touch1 = e.touches[0];
@@ -382,6 +386,26 @@ const Modal: React.FC<ModalProps> = ({
           setDragOffset(0);
         }
       }
+
+          // Быстрый свайп вниз (даже если не достигнут порог, но высокая скорость)
+    if ((Math.abs(deltaY) > CLOSE_THRESHOLD || velocity > 0.5)) {
+      if (deltaY > 0) { // Свайп вниз
+        handleClose();
+        return;
+      }
+    }
+
+    if (scale === 1) {
+      if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+        if (deltaX > 0 && canGoPrev) handlePrev();
+        if (deltaX < 0 && canGoNext) handleNext();
+      } else {
+        // Плавно возвращаем в исходное положение
+        setPosition({ x: 0, y: 0 });
+        setDragOffset(0);
+      }
+    }
+    
       
       setPosition({ x: 0, y: 0 });
       return;
@@ -442,6 +466,23 @@ const Modal: React.FC<ModalProps> = ({
       doubleTapTimeout.current = null;
     }, 300);
   }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose, lastTap, isClosing]);
+
+
+useEffect(() => {
+  let isMounted = true;
+  
+  const preload = () => {
+    if (isMounted && isOpen) {
+      preloadImages(items, currentIndex);
+    }
+  };
+  
+  preload();
+  
+  return () => {
+    isMounted = false;
+  };
+}, [isOpen, currentIndex, items, preloadImages]);
   
   // Очистка таймеров при размонтировании
   useEffect(() => {
