@@ -145,6 +145,12 @@ const Modal: React.FC<ModalProps> = ({
     setTimeout(() => {
       onClose();
       setIsClosing(false);
+      
+      // Дополнительный сброс на случай "залипания"
+      requestAnimationFrame(() => {
+        setDragOffset(0);
+        setPosition({ x: 0, y: 0 });
+      });
     }, 300);
   }, [onClose]);
 
@@ -330,9 +336,16 @@ const Modal: React.FC<ModalProps> = ({
       }
     }
   }, [scale, imagePosition, constrainImagePosition]);
-  
+
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (isClosing) return; // Добавьте эту строку
+
+        // Очищаем таймаут двойного тапа
+    if (doubleTapTimeout.current) {
+      clearTimeout(doubleTapTimeout.current);
+      doubleTapTimeout.current = null;
+    }
+
     if (isZooming.current) {
       isZooming.current = false;
       return;
@@ -343,10 +356,19 @@ const Modal: React.FC<ModalProps> = ({
       const touch = e.changedTouches[0];
       const deltaX = touch.clientX - touchStartPos.current.x;
       const deltaY = touch.clientY - touchStartPos.current.y;
+      const velocity = Math.abs(deltaY) / (Date.now() - touchStartTime.current);
   
       isDragging.current = false;
       isHorizontalSwipe.current = false;
       isImageDragging.current = false;
+
+          // Быстрый свайп вверх (даже если не достигнут порог, но высокая скорость)
+    if ((Math.abs(deltaY) > CLOSE_THRESHOLD || velocity > 0.5)) {
+      if (deltaY < 0) { // Свайп вверх
+        handleClose();
+        return;
+      }
+    }
   
       if (scale === 1) {
         if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
