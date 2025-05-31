@@ -60,10 +60,6 @@ const Modal: React.FC<ModalProps> = ({
   const ZOOM_SENSITIVITY = 0.01; // Чувствительность зума
   const IMAGE_DRAG_THRESHOLD = 20; // Порог для перетаскивания изображения
 
-  // Обработчик окончания касания
-  const [lastTap, setLastTap] = useState<{ time: number; x: number; y: number } | null>(null);
-  const doubleTapTimeout = useRef<NodeJS.Timeout | null>(null);
-
   // Вынесем preloadImages за пределы условных операторов
   const preloadImages = useCallback((items: GalleryItem[], currentIndex: number) => {
     // Предзагрузка предыдущего и следующего изображения
@@ -100,7 +96,6 @@ const Modal: React.FC<ModalProps> = ({
       setCurrentIndex(initialIndex);
     }
   }, [isOpen, initialIndex]);
-
   // Обработчик двойного клика для зума на десктопе
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -124,43 +119,16 @@ const Modal: React.FC<ModalProps> = ({
   }, [scale]);
 
   // Обработчик закрытия модального окна с анимацией
-  // const handleClose = useCallback(() => {
-  //   setIsClosing(true); // Запускаем анимацию закрытия
-  //   setDragOffset(0); // Сбрасываем перед закрытием
-  //   setTimeout(() => {
-  //     onClose(); // Закрываем модальное окно
-  //     setIsClosing(false); // Сбрасываем флаг закрытия
-  //     setScale(1); // Сбрасываем масштаб
-  //     setPosition({ x: 0, y: 0 }); // Сбрасываем позицию
-  //     setImagePosition({ x: 0, y: 0 }); // Сбрасываем позицию изображения
-  //   }, 300); // Задержка для завершения анимации
-  // }, [onClose]);
   const handleClose = useCallback(() => {
-    if (isClosing) return;
-    
     setIsClosing(true);
     setDragOffset(0);
     setScale(1);
     setPosition({ x: 0, y: 0 });
     setImagePosition({ x: 0, y: 0 });
-    setSlideDirection(null);
-    setIsAnimating(false);
-    
-    // Сбрасываем все флаги состояния
-    isDragging.current = false;
-    isZooming.current = false;
-    isHorizontalSwipe.current = false;
-    isImageDragging.current = false;
-    
-    // Используем requestAnimationFrame для гарантированного выполнения после анимации
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        onClose();
-        setIsClosing(false);
-        setDragOffset(0);
-        setPosition({ x: 0, y: 0 });
-      }, 300);
-    });
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 300);
   }, [onClose]);
 
   // Обработчик клика по оверлею для закрытия
@@ -216,46 +184,26 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, [scale, canGoNext, isAnimating]);
 
-  // Добавьте в начало компонента:
-  const scrollPosition = useRef(0);
-
   // Эффект для обработки клавиатурных событий
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose();
-      if (e.key === 'ArrowLeft' && canGoPrev) handlePrev();
-      if (e.key === 'ArrowRight' && canGoNext) handleNext();
+      if (e.key === 'Escape') handleClose(); // Закрытие по Escape
+      if (e.key === 'ArrowLeft' && canGoPrev) handlePrev(); // Переход по стрелке влево
+      if (e.key === 'ArrowRight' && canGoNext) handleNext(); // Переход по стрелке вправо
     };
-  
+
     if (isOpen) {
-      // Сохраняем текущую позицию скролла
-      scrollPosition.current = window.scrollY;
-      
-      // Блокируем скролл без изменения позиции
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.top = `-${scrollPosition.current}px`;
-      
-      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+      window.addEventListener('keydown', handleKeyDown); // Добавляем обработчик
     }
-    
     return () => {
-      // Восстанавливаем скролл и позицию
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
-      window.scrollTo(0, scrollPosition.current);
-      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset'; // Восстанавливаем скролл
+      window.removeEventListener('keydown', handleKeyDown); // Удаляем обработчик
     };
   }, [isOpen, handleClose, canGoPrev, canGoNext, handlePrev, handleNext]);
 
   // Обработчик начала касания
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-
-    if (isClosing) return; // Игнорируем если закрываемся
-
     if (e.touches.length === 2) { // Обработка мультитача (зум)
       isHorizontalSwipe.current = false;
       isZooming.current = true;
@@ -282,7 +230,7 @@ const Modal: React.FC<ModalProps> = ({
     };
     touchStartImagePos.current = { ...imagePosition };
     touchStartTime.current = Date.now();
-  }, [scale, imagePosition, isClosing]);
+  }, [scale, imagePosition]);
 
   // Функция ограничения позиции изображения
   const constrainImagePosition = useCallback((newPos: { x: number; y: number }, currentScale: number) => {
@@ -308,7 +256,6 @@ const Modal: React.FC<ModalProps> = ({
 
   // Обработчик движения при касании
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-
     if (e.touches.length === 2 && isZooming.current) {
       e.preventDefault();
       const touch1 = e.touches[0];
@@ -362,15 +309,11 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, [scale, imagePosition, constrainImagePosition]);
 
+  // Обработчик окончания касания
+  const [lastTap, setLastTap] = useState<{ time: number; x: number; y: number } | null>(null);
+  const doubleTapTimeout = useRef<NodeJS.Timeout | null>(null);
+  
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (isClosing) return; // Добавьте эту строку
-
-        // Очищаем таймаут двойного тапа
-    if (doubleTapTimeout.current) {
-      clearTimeout(doubleTapTimeout.current);
-      doubleTapTimeout.current = null;
-    }
-
     if (isZooming.current) {
       isZooming.current = false;
       return;
@@ -381,19 +324,10 @@ const Modal: React.FC<ModalProps> = ({
       const touch = e.changedTouches[0];
       const deltaX = touch.clientX - touchStartPos.current.x;
       const deltaY = touch.clientY - touchStartPos.current.y;
-      const velocity = Math.abs(deltaY) / (Date.now() - touchStartTime.current);
   
       isDragging.current = false;
       isHorizontalSwipe.current = false;
       isImageDragging.current = false;
-
-          // Быстрый свайп вверх (даже если не достигнут порог, но высокая скорость)
-    if ((Math.abs(deltaY) > CLOSE_THRESHOLD || velocity > 0.5)) {
-      if (deltaY < 0) { // Свайп вверх
-        handleClose();
-        return;
-      }
-    }
   
       if (scale === 1) {
         if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
@@ -407,26 +341,6 @@ const Modal: React.FC<ModalProps> = ({
           setDragOffset(0);
         }
       }
-
-          // Быстрый свайп вниз (даже если не достигнут порог, но высокая скорость)
-    if ((Math.abs(deltaY) > CLOSE_THRESHOLD || velocity > 0.5)) {
-      if (deltaY > 0) { // Свайп вниз
-        handleClose();
-        return;
-      }
-    }
-
-    if (scale === 1) {
-      if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
-        if (deltaX > 0 && canGoPrev) handlePrev();
-        if (deltaX < 0 && canGoNext) handleNext();
-      } else {
-        // Плавно возвращаем в исходное положение
-        setPosition({ x: 0, y: 0 });
-        setDragOffset(0);
-      }
-    }
-    
       
       setPosition({ x: 0, y: 0 });
       return;
@@ -486,24 +400,7 @@ const Modal: React.FC<ModalProps> = ({
       setLastTap(null);
       doubleTapTimeout.current = null;
     }, 300);
-  }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose, lastTap, isClosing]);
-
-
-    useEffect(() => {
-      let isMounted = true;
-      
-      const preload = () => {
-        if (isMounted && isOpen) {
-          preloadImages(items, currentIndex);
-        }
-      };
-      
-      preload();
-      
-      return () => {
-        isMounted = false;
-      };
-    }, [isOpen, currentIndex, items, preloadImages]);
+  }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose, lastTap]);
   
   // Очистка таймеров при размонтировании
   useEffect(() => {
