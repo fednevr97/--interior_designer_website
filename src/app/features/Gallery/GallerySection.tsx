@@ -127,18 +127,24 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   }, [visibleItems]);
 
   // Обработчик клика по изображению (открытие модалки)
+  // const handleImageClick = useCallback((image: string, index: number) => {
+  //   if (!isDragging) {
+  //     // 1. Сначала устанавливаем индекс
+  //     setSelectedImageIndex(index);
+      
+  //     // 2. Затем, в следующем цикле рендеринга, открываем модалку с этим изображением
+  //     // Используем setTimeout с 0 для отложенного выполнения
+  //     const timer = setTimeout(() => {
+  //       setSelectedImage(image);
+  //     }, 300);
+  
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [isDragging]);
   const handleImageClick = useCallback((image: string, index: number) => {
     if (!isDragging) {
-      // 1. Сначала устанавливаем индекс
       setSelectedImageIndex(index);
-      
-      // 2. Затем, в следующем цикле рендеринга, открываем модалку с этим изображением
-      // Используем setTimeout с 0 для отложенного выполнения
-      const timer = setTimeout(() => {
-        setSelectedImage(image);
-      }, 300);
-  
-      return () => clearTimeout(timer);
+      setSelectedImage(image);
     }
   }, [isDragging]);
 
@@ -285,9 +291,18 @@ const GallerySection: React.FC<GallerySectionProps> = ({
       </div>
 
       {/* Модальное окно для просмотра изображений */}
-      <Modal 
+      {/* <Modal 
         isOpen={!!selectedImage} 
         onClose={() => setSelectedImage(null)}
+        items={items}
+        initialIndex={selectedImageIndex}
+      /> */}
+      <Modal 
+        isOpen={!!selectedImage} 
+        onClose={() => {
+          setSelectedImage(null);
+          setSelectedImageIndex(0);
+        }}
         items={items}
         initialIndex={selectedImageIndex}
       />

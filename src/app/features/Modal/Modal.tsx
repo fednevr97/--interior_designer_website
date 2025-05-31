@@ -136,7 +136,8 @@ const Modal: React.FC<ModalProps> = ({
   //   }, 300); // Задержка для завершения анимации
   // }, [onClose]);
   const handleClose = useCallback(() => {
-    if (isClosing) return; // Предотвращаем множественные вызовы
+    if (isClosing) return;
+    
     setIsClosing(true);
     setDragOffset(0);
     setScale(1);
@@ -145,17 +146,22 @@ const Modal: React.FC<ModalProps> = ({
     setSlideDirection(null);
     setIsAnimating(false);
     
-    setTimeout(() => {
-      onClose();
-      setIsClosing(false);
-      
-      // Дополнительный сброс на случай "залипания"
-      requestAnimationFrame(() => {
+    // Сбрасываем все флаги состояния
+    isDragging.current = false;
+    isZooming.current = false;
+    isHorizontalSwipe.current = false;
+    isImageDragging.current = false;
+    
+    // Используем requestAnimationFrame для гарантированного выполнения после анимации
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        onClose();
+        setIsClosing(false);
         setDragOffset(0);
         setPosition({ x: 0, y: 0 });
-      });
-    }, 300);
-  }, [onClose, isClosing]);
+      }, 300);
+    });
+  }, [onClose]);
 
   // Обработчик клика по оверлею для закрытия
   const handleOverlayClick = useCallback((e: React.MouseEvent) => {
@@ -210,25 +216,38 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, [scale, canGoNext, isAnimating]);
 
+  // Добавьте в начало компонента:
+  const scrollPosition = useRef(0);
+
   // Эффект для обработки клавиатурных событий
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose(); // Закрытие по Escape
-      if (e.key === 'ArrowLeft' && canGoPrev) handlePrev(); // Переход по стрелке влево
-      if (e.key === 'ArrowRight' && canGoNext) handleNext(); // Переход по стрелке вправо
+      if (e.key === 'Escape') handleClose();
+      if (e.key === 'ArrowLeft' && canGoPrev) handlePrev();
+      if (e.key === 'ArrowRight' && canGoNext) handleNext();
     };
-
+  
     if (isOpen) {
+      // Сохраняем текущую позицию скролла
+      scrollPosition.current = window.scrollY;
+      
+      // Блокируем скролл без изменения позиции
       document.body.style.overflow = 'hidden';
-      // document.body.style.position = 'fixed'; // Для iOS
-      document.body.style.width = '100%';// Блокируем скролл страницы
-      window.addEventListener('keydown', handleKeyDown); // Добавляем обработчик
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${scrollPosition.current}px`;
+      
+      window.addEventListener('keydown', handleKeyDown);
     }
+    
     return () => {
+      // Восстанавливаем скролл и позицию
       document.body.style.overflow = '';
-      // document.body.style.position = '';
-      document.body.style.width = ''; // Восстанавливаем скролл
-      window.removeEventListener('keydown', handleKeyDown); // Удаляем обработчик
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      window.scrollTo(0, scrollPosition.current);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, handleClose, canGoPrev, canGoNext, handlePrev, handleNext]);
 
@@ -470,21 +489,21 @@ const Modal: React.FC<ModalProps> = ({
   }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose, lastTap, isClosing]);
 
 
-useEffect(() => {
-  let isMounted = true;
-  
-  const preload = () => {
-    if (isMounted && isOpen) {
-      preloadImages(items, currentIndex);
-    }
-  };
-  
-  preload();
-  
-  return () => {
-    isMounted = false;
-  };
-}, [isOpen, currentIndex, items, preloadImages]);
+    useEffect(() => {
+      let isMounted = true;
+      
+      const preload = () => {
+        if (isMounted && isOpen) {
+          preloadImages(items, currentIndex);
+        }
+      };
+      
+      preload();
+      
+      return () => {
+        isMounted = false;
+      };
+    }, [isOpen, currentIndex, items, preloadImages]);
   
   // Очистка таймеров при размонтировании
   useEffect(() => {
