@@ -2,7 +2,20 @@
 
 import { Article } from '@/lib/articles';
 import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
 import styles from './ArticleContent.module.css';
+
+  // Функция для получения стилей изображения
+  const getImageStyle = (): React.CSSProperties => {
+    // Применяем ограничения перед рендерингом
+    
+    return {
+      objectFit: 'contain',
+      transformOrigin: 'center center',
+      height:'100%',
+      width:'100%'
+    };
+  };
 
 // Компонент для отображения содержимого статьи
 export default function ArticleContent({ article }: { article: Article }) {
@@ -16,7 +29,10 @@ export default function ArticleContent({ article }: { article: Article }) {
           <Image
             src={article.meta.coverImage}  // Путь к изображению
             alt="Фото статьи"        // Альтернативный текст
-            fill                            // Заполнение контейнера
+            width={1200}
+            height={800}
+            loading="lazy"
+            style={getImageStyle()}
             className={styles.image}
             quality={75} // Оптимизация качества (по умолчанию 75)
           />
@@ -32,7 +48,7 @@ export default function ArticleContent({ article }: { article: Article }) {
         </div>
         
         {/* Заголовок статьи */}
-        <h1 className={styles.title}>{article.meta.title}</h1>
+        <h2 className={styles.title}>{article.meta.title}</h2>
         {/* Дата публикации */}
         <time className={styles.date}>
           {new Date(article.meta.date).toLocaleDateString('ru-RU')}
@@ -40,10 +56,10 @@ export default function ArticleContent({ article }: { article: Article }) {
       </header>
 
       {/* Основной контент статьи */}
-      <div 
-        className={styles.content}
-        dangerouslySetInnerHTML={{ __html: article.content }}  // Вставка HTML-контента
-      />
+
+      <div className={styles.content}>
+        <ReactMarkdown>{article.content}</ReactMarkdown>
+      </div>
     </article>
   );
 }

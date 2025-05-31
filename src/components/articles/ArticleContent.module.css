@@ -1,5 +1,6 @@
 /* Основные стили контейнера статьи */
 .container {
+  width: 100%;
   margin: 0 auto;
   padding: 0 60px; 
 }
@@ -13,9 +14,8 @@
 /* Контейнер для изображения */
 .imageContainer {
   position: relative;
-  height: 16rem;
-  margin-bottom: 1.5rem;
-  border-radius: 0.5rem;
+  height: 50dvh;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -30,6 +30,7 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  margin-top: 1.5rem;
 }
 
 /* Стили для отдельного тега */
@@ -46,6 +47,7 @@
   font-weight: bold;
   margin-bottom: 0.5rem;
   color: #261f1f;
+  text-align: center;
 }
 
 /* Стили для даты */
@@ -66,6 +68,11 @@
   font-weight: bold;
   margin: 2rem 0 1rem;
 }
+
+.content h1 {
+  padding-bottom: 40px;
+}
+
 
 /* Глобальные стили для параграфов */
 .content :global(p) {
@@ -123,4 +130,13 @@
       margin: 0 auto;
       padding: 0 20px; 
   }
+
+    /* Контейнер для изображения */
+  .imageContainer {
+    position: relative;
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+  }
+
 }
