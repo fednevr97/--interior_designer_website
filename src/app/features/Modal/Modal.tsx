@@ -60,6 +60,10 @@ const Modal: React.FC<ModalProps> = ({
   const ZOOM_SENSITIVITY = 0.01; // Чувствительность зума
   const IMAGE_DRAG_THRESHOLD = 20; // Порог для перетаскивания изображения
 
+  // Обработчик окончания касания
+  const [lastTap, setLastTap] = useState<{ time: number; x: number; y: number } | null>(null);
+  const doubleTapTimeout = useRef<NodeJS.Timeout | null>(null);
+
   // Вынесем preloadImages за пределы условных операторов
   const preloadImages = useCallback((items: GalleryItem[], currentIndex: number) => {
     // Предзагрузка предыдущего и следующего изображения
@@ -118,16 +122,30 @@ const Modal: React.FC<ModalProps> = ({
   }, [scale]);
 
   // Обработчик закрытия модального окна с анимацией
+  // const handleClose = useCallback(() => {
+  //   setIsClosing(true); // Запускаем анимацию закрытия
+  //   setDragOffset(0); // Сбрасываем перед закрытием
+  //   setTimeout(() => {
+  //     onClose(); // Закрываем модальное окно
+  //     setIsClosing(false); // Сбрасываем флаг закрытия
+  //     setScale(1); // Сбрасываем масштаб
+  //     setPosition({ x: 0, y: 0 }); // Сбрасываем позицию
+  //     setImagePosition({ x: 0, y: 0 }); // Сбрасываем позицию изображения
+  //   }, 300); // Задержка для завершения анимации
+  // }, [onClose]);
   const handleClose = useCallback(() => {
-    setIsClosing(true); // Запускаем анимацию закрытия
-    setDragOffset(0); // Сбрасываем перед закрытием
+    setIsClosing(true);
+    setDragOffset(0);
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+    setImagePosition({ x: 0, y: 0 });
+    setSlideDirection(null);
+    setIsAnimating(false);
+    
     setTimeout(() => {
-      onClose(); // Закрываем модальное окно
-      setIsClosing(false); // Сбрасываем флаг закрытия
-      setScale(1); // Сбрасываем масштаб
-      setPosition({ x: 0, y: 0 }); // Сбрасываем позицию
-      setImagePosition({ x: 0, y: 0 }); // Сбрасываем позицию изображения
-    }, 300); // Задержка для завершения анимации
+      onClose();
+      setIsClosing(false);
+    }, 300);
   }, [onClose]);
 
   // Обработчик клика по оверлею для закрытия
@@ -192,11 +210,15 @@ const Modal: React.FC<ModalProps> = ({
     };
 
     if (isOpen) {
-      document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed'; // Для iOS
+      document.body.style.width = '100%';// Блокируем скролл страницы
       window.addEventListener('keydown', handleKeyDown); // Добавляем обработчик
     }
     return () => {
-      document.body.style.overflow = 'unset'; // Восстанавливаем скролл
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = ''; // Восстанавливаем скролл
       window.removeEventListener('keydown', handleKeyDown); // Удаляем обработчик
     };
   }, [isOpen, handleClose, canGoPrev, canGoNext, handlePrev, handleNext]);
@@ -255,6 +277,7 @@ const Modal: React.FC<ModalProps> = ({
 
   // Обработчик движения при касании
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
     if (e.touches.length === 2 && isZooming.current) {
       e.preventDefault();
       const touch1 = e.touches[0];
@@ -307,12 +330,9 @@ const Modal: React.FC<ModalProps> = ({
       }
     }
   }, [scale, imagePosition, constrainImagePosition]);
-
-  // Обработчик окончания касания
-  const [lastTap, setLastTap] = useState<{ time: number; x: number; y: number } | null>(null);
-  const doubleTapTimeout = useRef<NodeJS.Timeout | null>(null);
   
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (isClosing) return; // Добавьте эту строку
     if (isZooming.current) {
       isZooming.current = false;
       return;
@@ -399,7 +419,7 @@ const Modal: React.FC<ModalProps> = ({
       setLastTap(null);
       doubleTapTimeout.current = null;
     }, 300);
-  }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose, lastTap]);
+  }, [scale, canGoPrev, canGoNext, handlePrev, handleNext, handleClose, lastTap, isClosing]);
   
   // Очистка таймеров при размонтировании
   useEffect(() => {
