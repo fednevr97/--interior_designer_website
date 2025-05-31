@@ -96,8 +96,10 @@ const Modal: React.FC<ModalProps> = ({
 
   // Эффект для установки начального индекса при изменении initialIndex
   useEffect(() => {
-    setCurrentIndex(initialIndex);
-  }, [initialIndex]);
+    if (isOpen) {
+      setCurrentIndex(initialIndex);
+    }
+  }, [isOpen, initialIndex]);
 
   // Обработчик двойного клика для зума на десктопе
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
