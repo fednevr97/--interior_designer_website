@@ -133,6 +133,21 @@
     box-sizing: border-box;
 }
 
+/* Добавьте в ваш CSS */
+/* Используйте это */
+.fancyboxItem {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  
+  /* Для модального окна */
+  .fancybox__container {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+
 /* Адаптивность для планшетов */
 @media (min-width: 768px) and (max-width: 1023px) {
     .galleryTitle {
