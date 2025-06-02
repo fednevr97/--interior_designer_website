@@ -8,28 +8,30 @@ import { useRouter } from 'next/navigation';
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
+// Интерфейс для элемента галереи
 export interface GalleryItem {
   id: number;
-  image: string;
-  title: string;
-  category?: string;
-  folder?: string;
+  image: string; // URL изображения
+  title: string; // Заголовок изображения
+  category?: string; // Опциональная категория
+  folder?: string; // Опциональная папка
 }
 
+// Пропсы компонента GallerySection
 interface GallerySectionProps {
-  id: string;
-  title: string;
-  items: GalleryItem[];
-  defaultVisibleItems?: number;
-  tabletVisibleItems?: number;
-  mobileVisibleItems?: number;
-  ariaLabelPrefix?: string;
-  itemHeight?: string;
-  mobileItemHeight?: string;
-  gapPercent?: number;
-  titleLink?: string;
-  displayMode?: 'slider' | 'grid';
-  gridColumns?: number;
+  id: string; // Уникальный идентификатор секции
+  title: string; // Заголовок секции
+  items: GalleryItem[]; // Массив элементов галереи
+  defaultVisibleItems?: number; // Количество видимых элементов по умолчанию
+  tabletVisibleItems?: number; // Количество видимых элементов на планшетах
+  mobileVisibleItems?: number; // Количество видимых элементов на мобильных
+  ariaLabelPrefix?: string; // Префикс для ARIA-меток
+  itemHeight?: string; // Высота элементов
+  mobileItemHeight?: string; // Высота элементов на мобильных
+  gapPercent?: number; // Процент отступа между элементами
+  titleLink?: string; // Ссылка для заголовка (опционально)
+  displayMode?: 'slider' | 'grid'; // Режим отображения (слайдер или сетка)
+  gridColumns?: number; // Количество колонок в режиме сетки
 }
 
 const GallerySection: React.FC<GallerySectionProps> = ({
@@ -47,43 +49,104 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   displayMode = 'slider',
   gridColumns = 3,
 }) => {
+  // Состояние для текущего индекса слайда
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  // Состояние для количества видимых элементов
   const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems);
+  // Состояние для отслеживания перетаскивания
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  // Начальная позиция X при перетаскивании
   const [startX, setStartX] = useState<number>(0);
+  // Текущее смещение при перетаскивании
   const [translateX, setTranslateX] = useState<number>(0);
   
+  // Реф для базового элемента галереи
   const galleryBaseRef = useRef<HTMLDivElement>(null);
+  // Хук для роутинга
   const router = useRouter();
 
-  // Инициализация Fancybox с учетом мобильных устройств
+  // Интерфейсы для работы с Fancybox
+  interface FancyboxSlide {
+    $image?: {
+      style: {
+        transform: string;
+      };
+    };
+  }
+
+  interface FancyboxInstance {
+    container: HTMLElement;
+    plugins: {
+      Image: {
+        zoomTo: (slide: FancyboxSlide, scale: string) => void;
+      };
+    };
+    close: () => void;
+  }
+
+  // Эффект для инициализации Fancybox
   useEffect(() => {
     const initFancybox = () => {
-      Fancybox.bind("[data-fancybox]", {
-        dragToClose: false,
-        closeButton: "auto",
+      // Проверка мобильного устройства
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+      
+      // Инициализация Fancybox с настройками
+      Fancybox.bind(document.body, "[data-fancybox]", {
+        dragToClose: isMobile, // Закрытие перетаскиванием на мобильных
+        closeButton: "auto", // Автоматическое отображение кнопки закрытия
         Images: {
-          zoom: !isMobileDevice(),
+          zoom: !isMobile, // Отключение зума на мобильных
+          zoomOpacity: "auto",
         },
+        // Настройки тулбара
         Toolbar: {
           display: {
             left: ["infobar"],
-            middle: isMobileDevice() ? [] : ["zoomIn", "zoomOut", "toggle1to1", "rotateCCW", "rotateCW", "flipX", "flipY"],
+            middle: isMobile ? [] : ["zoomIn", "zoomOut", "toggle1to1", "rotateCCW", "rotateCW", "flipX", "flipY"],
             right: ["close"],
           },
         },
+        // Обработчики событий
         on: {
-          ready: (fancybox) => {
-            fancybox.container.addEventListener('click', (e: MouseEvent) => {
-              const target = e.target as HTMLElement;
-              if (target.closest('[data-fancybox]')) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            }, { passive: false });
+          ready: (fancybox: unknown) => {
+            const instance = fancybox as FancyboxInstance;
+            
+            // Добавление обработчиков для мобильных устройств
+            if (isMobile) {
+              let startY = 0;
+              let isSwiping = false;
+              
+              // Обработчик начала касания
+              instance.container.addEventListener('touchstart', (e: TouchEvent) => {
+                startY = e.touches[0].clientY;
+                isSwiping = true;
+              }, { passive: true });
+              
+              // Обработчик перемещения пальца
+              instance.container.addEventListener('touchmove', (e: TouchEvent) => {
+                if (!isSwiping) return;
+                
+                const currentY = e.touches[0].clientY;
+                const diffY = Math.abs(currentY - startY);
+                const diffX = Math.abs(e.touches[0].clientX - startY);
+                
+                // Закрытие при свайпе вниз
+                if (diffY > 50 && diffY > diffX) {
+                  instance.close();
+                  isSwiping = false;
+                }
+              }, { passive: true });
+              
+              // Обработчик окончания касания
+              instance.container.addEventListener('touchend', () => {
+                isSwiping = false;
+              }, { passive: true });
+            }
           },
+          // Переинициализация после закрытия
           destroy: () => {
-            // Переинициализируем Fancybox после закрытия
             setTimeout(() => {
               initFancybox();
             }, 100);
@@ -91,24 +154,23 @@ const GallerySection: React.FC<GallerySectionProps> = ({
         }
       });
     };
-  
-    const isMobileDevice = () => {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    };
-  
+
     initFancybox();
-  
+
+    // Очистка при размонтировании компонента
     return () => {
       Fancybox.destroy();
     };
   }, []);
 
+  // Обработчик клика по заголовку
   const handleTitleClick = useCallback(() => {
     if (titleLink) {
       router.push(titleLink);
     }
   }, [titleLink, router]);
 
+  // Обработчик изменения размера окна
   const handleResize = useCallback(() => {
     if (window.innerWidth <= 768) {
       setVisibleItems(mobileVisibleItems);
@@ -121,27 +183,33 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     setTranslateX(0);
   }, [defaultVisibleItems, tabletVisibleItems, mobileVisibleItems]);
 
+  // Эффект для подписки на события изменения размера
   useEffect(() => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
 
+  // Проверка возможности прокрутки влево
   const canGoLeft = useMemo(() => currentIndex > 0, [currentIndex]);
+  // Проверка возможности прокрутки вправо
   const canGoRight = useMemo(() => currentIndex < items.length - visibleItems, [currentIndex, items.length, visibleItems]);
 
+  // Переход к предыдущему слайду
   const goLeft = useCallback(() => {
     if (canGoLeft) {
       setCurrentIndex(prev => prev - 1);
     }
   }, [canGoLeft]);
 
+  // Переход к следующему слайду
   const goRight = useCallback(() => {
     if (canGoRight) {
       setCurrentIndex(prev => prev + 1);
     }
   }, [canGoRight]);
 
+  // Расчет трансформации для слайдов
   const getTransform = useCallback(() => {
     if (isDragging) {
       return `translateX(calc(-${currentIndex * (100 / visibleItems + (gapPercent / visibleItems))}% + ${translateX}px))`;
@@ -151,6 +219,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     return `translateX(-${currentIndex * itemWithGap}%)`;
   }, [isDragging, currentIndex, visibleItems, gapPercent, translateX]);
 
+  // Определение размеров изображений в зависимости от устройства
   const getSizes = useCallback(() => {
     switch(visibleItems) {
       case 1: return "100vw";
@@ -160,6 +229,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     }
   }, [visibleItems]);
 
+  // Обработчики событий касания для слайдера
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (visibleItems >= items.length) return;
     if ((e.target as HTMLElement).closest('[data-fancybox]')) {
@@ -189,6 +259,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     setTranslateX(0);
   }, [isDragging, visibleItems, items.length, translateX, canGoLeft, canGoRight, goLeft, goRight]);
 
+  // Рендер элементов в режиме слайдера
   const renderGalleryItems = useMemo(() => (
     <ul className={styles['gallery-list']} role="list">
       {items.map((item) => (
@@ -227,6 +298,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     </ul>
   ), [items, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, getSizes]);
   
+  // Рендер элементов в режиме сетки
   const renderGridItems = useMemo(() => (
     <ul className={styles.gridList} role="list">
       {items.map((item) => (
@@ -263,6 +335,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     </ul>
   ), [items]);
 
+  // Основной рендер компонента
   return (
     <section id={id} className={styles['gallery-section']} aria-labelledby={`${id}-title`}>
       <div className={styles.container}>

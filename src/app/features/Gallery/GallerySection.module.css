@@ -160,24 +160,57 @@
 }
 
 /* Адаптивность для телефонов */
+/* Стили для мобильной версии Fancybox */
 @media (max-width: 768px) {
-    .gallery-item {
-        flex: 0 0 100%; /* Один элемент на всю ширину */
+    /* Скрываем кнопки навигации */
+    .fancybox__nav {
+      display: none !important;
     }
-
-    .gridItem h3 {
-        display: none; /* Скрываем заголовки на мобильных */
+  
+    /* Стили для контейнера */
+    .fancybox__container {
+      touch-action: pan-y pinch-zoom;
     }
-
-    .galleryTitle {
-        padding-left: 0;
-        text-align: center;
+  
+    /* Стили для контента */
+    .fancybox__content {
+      touch-action: pan-y pinch-zoom;
     }
-
-    .gridList {
-        --grid-columns: 1; /* Одна колонка на мобильных */
+  
+    /* Отключаем подсветку при тапе на iOS */
+    .fancyboxItem {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
-}
+  
+    /* Скрываем кнопки навигации в галерее */
+    .navButton {
+      display: none !important;
+    }
+  
+    .gallery-wrapper {
+      padding: 0;
+    }
+  
+    .gallery-container {
+      margin: 0;
+    }
+  }
+  
+  /* Общие стили для Fancybox */
+  .fancybox__container {
+    touch-action: pan-y pinch-zoom;
+  }
+  
+  .fancybox__content {
+    touch-action: pan-y pinch-zoom;
+  }
+  
+  /* Отключаем подсветку при тапе на iOS */
+  .fancyboxItem {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
 
 /* Hover эффекты только для десктопа */
 @media (min-width: 1024px) {
