@@ -65,6 +65,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
                 onLoad={() => setIsLoaded(true)}
                 placeholder="blur"
                 blurDataURL={blurDataURL}
+                priority
               />
               {/* Наложение с текстом поверх изображения */}
               <div className={styles.imageOverlayText}>

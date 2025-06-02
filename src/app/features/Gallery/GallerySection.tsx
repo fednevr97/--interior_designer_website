@@ -232,9 +232,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   // Обработчики событий касания для слайдера
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (visibleItems >= items.length) return;
-    if ((e.target as HTMLElement).closest('[data-fancybox]')) {
-      return;
-    }
     setIsDragging(true);
     setStartX(e.touches[0].clientX);
   }, [visibleItems, items.length]);
@@ -280,7 +277,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               e.preventDefault();
               e.stopPropagation();
             }}
-            onTouchStart={(e) => e.preventDefault()}
           >
             <div className={styles.imageWrapper}>
               <MemoizedImage 
@@ -316,7 +312,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               e.preventDefault();
               e.stopPropagation();
             }}
-            onTouchStart={(e) => e.preventDefault()}
           >
             <div className={styles.imageWrapper}>
               <MemoizedImage 

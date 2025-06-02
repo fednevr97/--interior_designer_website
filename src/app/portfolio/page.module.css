@@ -7,7 +7,6 @@
 
 /* Стили для главного заголовка страницы */
 .portfolioPage h1 {
-    padding-left: 60px;  /* Отступ слева для выравнивания с контентом */
     color: var(--primary-color);  /* Цвет из переменных темы */
     font-family: var(--font-secondary), var(--font-system);  /* Шрифт с запасным вариантом */
     font-size: 3rem;  /* Размер шрифта для десктопа */
