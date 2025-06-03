@@ -276,6 +276,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              return false;
             }}
           >
             <div className={styles.imageWrapper}>
