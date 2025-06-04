@@ -1,14 +1,17 @@
-import GallerySection from '../Gallery/GallerySection';
-import { getProjects } from '../../data/projects';
+'use client';
+import GallerySection, { GalleryItem } from '../Gallery/GallerySection';
 
-export default async function PortfolioSection({ id = "portfolio" }: { id?: string }) {
-  const projects = await getProjects();
+interface PortfolioProps {
+  items: GalleryItem[];
+  id?: string;
+}
 
+export default function Portfolio({ items, id = "documentation" }: PortfolioProps) {
   return (
     <GallerySection
       id={id}
       title="Портфолио"
-      items={projects}
+      items={items}
       defaultVisibleItems={4}
       tabletVisibleItems={3}
       mobileVisibleItems={1}

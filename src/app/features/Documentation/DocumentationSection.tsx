@@ -1,14 +1,17 @@
-import GallerySection from '../Gallery/GallerySection';
-import { getDocumentation } from '../../data/documentation';
+'use client';
+import GallerySection, { GalleryItem } from '../Gallery/GallerySection';
 
-export default async function DocumentationSection({ id = "documentation" }: { id?: string }) {
-  const projects = await getDocumentation();
+interface DocumentationSectionProps {
+  items: GalleryItem[];
+  id?: string;
+}
 
+export default function DocumentationSection({ items, id = "documentation" }: DocumentationSectionProps) {
   return (
     <GallerySection
       id={id}
       title="Обзор проектной документации"
-      items={projects}
+      items={items}
       defaultVisibleItems={2}
       tabletVisibleItems={2}
       mobileVisibleItems={1}
