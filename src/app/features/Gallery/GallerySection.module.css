@@ -133,21 +133,6 @@
     box-sizing: border-box;
 }
 
-/* Добавьте в ваш CSS */
-/* Используйте это */
-.fancyboxItem {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-    touch-action: manipulation;
-  }
-  
-  /* Для модального окна */
-  .fancybox__container {
-    -webkit-overflow-scrolling: touch;
-  }
-  
-
 /* Адаптивность для планшетов */
 @media (min-width: 768px) and (max-width: 1023px) {
     .galleryTitle {
@@ -160,30 +145,7 @@
 }
 
 /* Адаптивность для телефонов */
-/* Стили для мобильной версии Fancybox */
 @media (max-width: 768px) {
-    /* Скрываем кнопки навигации */
-    .fancybox__nav {
-      display: none !important;
-    }
-  
-    /* Стили для контейнера */
-    .fancybox__container {
-      touch-action: pan-y pinch-zoom;
-      overscroll-behavior: contain;
-    }
-  
-    /* Стили для контента */
-    .fancybox__content {
-      touch-action: pan-y pinch-zoom;
-      overscroll-behavior: contain;
-    }
-  
-    /* Отключаем подсветку при тапе на iOS */
-    .fancyboxItem {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
   
     /* Скрываем кнопки навигации в галерее */
     .navButton {
@@ -198,26 +160,7 @@
       margin: 0;
     }
   }
-  
-  /* Общие стили для Fancybox */
-  .fancybox__container {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-  }
-  
-  .fancybox__slide {
-    touch-action: pan-y;
-  }
-  
-  .fancybox__content {
-    touch-action: pan-y pinch-zoom;
-  }
-  
-  /* Отключаем подсветку при тапе на iOS */
-  .fancyboxItem {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
+
 
 /* Hover эффекты только для десктопа */
 @media (min-width: 1024px) {

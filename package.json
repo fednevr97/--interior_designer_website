@@ -14,7 +14,6 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@fancyapps/ui": "^5.0.36",
     "critters": "^0.0.23",
     "gray-matter": "^4.0.3",
     "next": "^15.1.8",
@@ -25,7 +24,8 @@
     "react-modal": "^3.16.3",
     "react-swipeable": "^7.0.2",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "yet-another-react-lightbox": "^3.23.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
