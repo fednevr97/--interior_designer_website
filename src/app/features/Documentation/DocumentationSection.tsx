@@ -1,7 +1,7 @@
 import GallerySection from '../Gallery/GallerySection';
 import { getDocumentation } from '../../data/documentation';
 
-export default async function DocumentationSection({ id = "docs" }: { id?: string }) {
+export default async function DocumentationSection({ id = "documentation" }: { id?: string }) {
   const projects = await getDocumentation();
 
   return (
