@@ -49,6 +49,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   displayMode = 'slider',
   gridColumns = 3,
 }) => {
+  
   // Состояние для текущего индекса слайда
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   // Состояние для количества видимых элементов
@@ -94,6 +95,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
       
       // Инициализация Fancybox с настройками
       Fancybox.bind(document.body, "[data-fancybox]", {
+        Hash: false, // Важно!
         dragToClose: isMobile, // Закрытие перетаскиванием на мобильных
         closeButton: "auto", // Автоматическое отображение кнопки закрытия
         Images: {
@@ -276,7 +278,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              return false;
             }}
           >
             <div className={styles.imageWrapper}>

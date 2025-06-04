@@ -199,7 +199,12 @@
   
   /* Общие стили для Fancybox */
   .fancybox__container {
-    touch-action: pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  .fancybox__slide {
+    touch-action: pan-y;
   }
   
   .fancybox__content {
