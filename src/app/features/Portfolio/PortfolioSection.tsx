@@ -6,7 +6,7 @@ interface PortfolioProps {
   id?: string;
 }
 
-export default function Portfolio({ items, id = "documentation" }: PortfolioProps) {
+export default function Portfolio({ items, id = "portfolio" }: PortfolioProps) {
   return (
     <GallerySection
       id={id}
