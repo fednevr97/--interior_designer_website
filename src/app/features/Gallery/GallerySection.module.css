@@ -170,11 +170,13 @@
     /* Стили для контейнера */
     .fancybox__container {
       touch-action: pan-y pinch-zoom;
+      overscroll-behavior: contain;
     }
   
     /* Стили для контента */
     .fancybox__content {
       touch-action: pan-y pinch-zoom;
+      overscroll-behavior: contain;
     }
   
     /* Отключаем подсветку при тапе на iOS */

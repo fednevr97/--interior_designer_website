@@ -176,11 +176,16 @@ const GallerySection: React.FC<GallerySectionProps> = ({
             height: visibleItems === mobileVisibleItems ? mobileItemHeight : itemHeight
           }}
         >
-          <a
-            href={item.image}
+          <div
+            data-src={item.image}
             data-fancybox={dataFancybox}
             data-type="image"
             className={styles.fancyboxItem}
+            tabIndex={0}
+            role="button"
+            aria-label={item.title}
+            onClick={e => e.stopPropagation()} // <--- предотвращает всплытие
+            onTouchEnd={e => e.stopPropagation()} // <--- предотвращает всплытие touch на iOS
           >
             <div className={styles.imageWrapper}>
               <MemoizedImage
@@ -192,7 +197,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                 quality={75}
               />
             </div>
-          </a>
+          </div>
         </li>
       ))}
     </ul>
@@ -206,12 +211,17 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           key={item.id}
           className={styles.gridItem}
         >
-          <a
-            href={item.image}
-            data-fancybox={dataFancybox}
-            data-type="image"
-            className={styles.fancyboxItem}
-          >
+        <div
+          data-src={item.image}
+          data-fancybox={dataFancybox}
+          data-type="image"
+          className={styles.fancyboxItem}
+          tabIndex={0}
+          role="button"
+          aria-label={item.title}
+          onClick={e => e.stopPropagation()} // <--- предотвращает всплытие
+          onTouchEnd={e => e.stopPropagation()} // <--- предотвращает всплытие touch на iOS
+        >
             <div className={styles.imageWrapper}>
               <MemoizedImage
                 src={item.image}
@@ -223,7 +233,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                 quality={75}
               />
             </div>
-          </a>
+          </div>
         </li>
       ))}
     </ul>
