@@ -5,12 +5,23 @@ import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 export default function FancyboxGlobalProvider() {
   useEffect(() => {
-    // Универсальный селектор для всех галерей
     const selector = '[data-fancybox^="gallery-"]';
+
+    // Патчим setHash для полной безопасности
+    // @ts-expect-error: patching third-party library
+    Fancybox.setHash = () => {};
+
+    // Очищаем глобальные обработчики истории
+    function cleanUpFancyboxGlobals() {
+      window.onpopstate = null;
+      window.onhashchange = null;
+    }
+
     Fancybox.unbind(selector);
     Fancybox.bind(selector, {
       Hash: false,
-      dragToClose: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+      placeFocusBack: false,
+      Thumbs: false,
       closeButton: "auto",
       Images: {
         zoom: !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
@@ -34,8 +45,12 @@ export default function FancyboxGlobalProvider() {
         },
       },
     });
+
+    cleanUpFancyboxGlobals();
+
     return () => {
       Fancybox.unbind(selector);
+      cleanUpFancyboxGlobals();
     };
   }, []);
   return null;
