@@ -5,7 +5,7 @@ import NavButton from '../../shared/components/ui/NavButton/NavButton';
 import MemoizedImage from '../../shared/components/MemoizedImage/MemoizedImage';
 import styles from './GallerySection.module.css';
 import { useRouter } from 'next/navigation';
-import { Fancybox } from "@fancyapps/ui";
+// import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 // Интерфейс для элемента галереи
@@ -69,39 +69,39 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   const dataFancybox = `gallery-${id}`;
 
   // ----------------- Fancybox инициализация -----------------
-  useEffect(() => {
-    // Селектор для всех ссылок внутри этой галереи
-    const selector = `[data-fancybox="${dataFancybox}"]`;
+  // useEffect(() => {
+  //   // Селектор для всех ссылок внутри этой галереи
+  //   const selector = `[data-fancybox="${dataFancybox}"]`;
 
-    // Проверяем мобильное устройство для некоторых опций fancybox
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  //   // Проверяем мобильное устройство для некоторых опций fancybox
+  //   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // Инициализация fancybox на найденных ссылках
-    Fancybox.bind(selector, {
-      Hash: false,
-      dragToClose: isMobile,
-      closeButton: "auto",
-      Images: {
-        zoom: !isMobile,
-        zoomOpacity: "auto",
-      },
-      Toolbar: {
-        display: {
-          left: ["infobar"],
-          middle: isMobile ? [] : [
-            "zoomIn", "zoomOut", "toggle1to1",
-            "rotateCCW", "rotateCW", "flipX", "flipY"
-          ],
-          right: ["close"],
-        },
-      },
-    });
+  //   // Инициализация fancybox на найденных ссылках
+  //   Fancybox.bind(selector, {
+  //     Hash: false,
+  //     dragToClose: isMobile,
+  //     closeButton: "auto",
+  //     Images: {
+  //       zoom: !isMobile,
+  //       zoomOpacity: "auto",
+  //     },
+  //     Toolbar: {
+  //       display: {
+  //         left: ["infobar"],
+  //         middle: isMobile ? [] : [
+  //           "zoomIn", "zoomOut", "toggle1to1",
+  //           "rotateCCW", "rotateCW", "flipX", "flipY"
+  //         ],
+  //         right: ["close"],
+  //       },
+  //     },
+  //   });
 
-    // Очистка при размонтировании или смене группы
-    return () => {
-      Fancybox.unbind(selector);
-    };
-  }, [dataFancybox]);
+  //   // Очистка при размонтировании или смене группы
+  //   return () => {
+  //     Fancybox.unbind(selector);
+  //   };
+  // }, [dataFancybox]);
   // ----------------------------------------------------------
 
   // Переход по ссылке при клике на заголовок, если titleLink задан
