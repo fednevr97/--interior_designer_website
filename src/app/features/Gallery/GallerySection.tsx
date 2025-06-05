@@ -6,12 +6,15 @@ import NavButton from '../../shared/components/ui/NavButton/NavButton';
 import MemoizedImage from '../../shared/components/MemoizedImage/MemoizedImage';
 import styles from './GallerySection.module.css';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 
-import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
+
+const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false });
+
 
 // Интерфейс для одного элемента галереи
 export interface GalleryItem {
@@ -53,6 +56,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   displayMode = 'slider',
   gridColumns = 3,
 }) => {
+  
   const router = useRouter();
 
   // Embla carousel ref и api

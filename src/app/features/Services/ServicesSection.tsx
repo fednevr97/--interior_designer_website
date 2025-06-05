@@ -68,14 +68,13 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
                 <article 
                   key={service.id} 
                   className={`${styles['service-item']} ${isMobile ? styles['mobile-view'] : ''}`} 
-                  role="listitem"
                 >
                   <div className={styles['service-image']}>
                     <Image 
                       src={service.image} 
                       alt={service.title} 
                       fill
-                      priority={index === 0 || index === 1 || index === 2} // Приоритетная загрузка первых трех изображений
+                      priority={index < 3}
                       sizes={getSizes()}
                       className={styles['service-img']}
                       style={{

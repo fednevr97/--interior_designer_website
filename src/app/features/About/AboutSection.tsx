@@ -1,7 +1,7 @@
 // AboutSection.tsx
 'use client'
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import styles from './AboutSection.module.css';
 
@@ -23,7 +23,7 @@ const ABOUT_TEXT = [
 ];
 
 const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  // const [isLoaded, setIsLoaded] = useState(false);
   
   // Миниатюра для blur-эффекта при загрузке изображения
   const blurDataURL = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiIC8+PC9zdmc+';
@@ -50,31 +50,25 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
     >
       <div className={styles.container}>
         <div className={styles.aboutContent}>
-          {/* Обертка для изображения */}
           <div className={styles.aboutImageWrapper}>
-            {!isLoaded && <div className={styles.skeleton} />}
-            
-            <div className={`${styles.aboutImage} ${!isLoaded ? styles.hidden : ''}`}>
-              <Image
-                src="/assets/Photo.webp"
-                alt="Фото Шептицкая Дарья"
-                fill
-                quality={75} // Оптимизация качества (по умолчанию 75)
-                className={styles.aboutPhoto}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
-                onLoad={() => setIsLoaded(true)}
-                placeholder="blur"
-                blurDataURL={blurDataURL}
-                priority
-              />
-              {/* Наложение с текстом поверх изображения */}
-              <div className={styles.imageOverlayText}>
-                <h3 id="about-title">Шептицкая Дарья</h3>
-                <p>Дизайнер интерьера</p>
-              </div>
+            {/* Скелетон СЛОЕМ поверх картинки, а не вместо картинки */}
+            <Image
+              src="/assets/Photo.webp"
+              alt="Фото Шептицкая Дарья"
+              fill
+              quality={75}
+              className={styles.aboutPhoto}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+              placeholder="blur"
+              blurDataURL={blurDataURL}
+              priority
+            />
+            <div className={styles.skeleton} />
+            <div className={styles.imageOverlayText}>
+              <h3 id="about-title">Шептицкая Дарья</h3>
+              <p>Дизайнер интерьера</p>
             </div>
           </div>
-          {/* Секция с текстом */}
           <div className={styles.aboutText}>
             {paragraphs}
           </div>
