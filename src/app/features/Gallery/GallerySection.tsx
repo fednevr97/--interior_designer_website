@@ -161,6 +161,9 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                 loading="eager"
                 fill
                 sizes={getSizes()}
+                style={{
+                  objectFit:"cover"
+                }}
                 quality={75}
               />
             </div>

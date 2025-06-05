@@ -21,6 +21,8 @@
 /* Обертка для изображения */
 .aboutImageWrapper {
   position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 /* Контейнер изображения */

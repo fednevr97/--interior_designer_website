@@ -71,6 +71,7 @@
 
 .content h1 {
   padding-bottom: 40px;
+  font-family: var(--font-secondary);
 }
 
 

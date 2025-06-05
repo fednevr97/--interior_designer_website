@@ -203,6 +203,10 @@
   margin-top: 10px;
 }
 
+.modal__policyCheckbox {
+  margin-right: 10px; /* Альтернативный способ добавления отступа */
+}
+
 /* Стрелка тултипа */
 .modal__policyTooltipText::after {
   content: "";

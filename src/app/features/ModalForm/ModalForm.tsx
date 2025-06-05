@@ -439,7 +439,7 @@ const ModalForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     aria-describedby={showPolicyError ? "policy-error" : undefined}
                   />
                   <span className={styles.modal__policyText}>
-                    Я согласен с <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className={styles.modal__policyLink}>политикой конфиденциальности</a>
+                    Я согласен(а) на обработку персональных данных в соответствии с <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className={styles.modal__policyLink}>политикой конфиденциальности</a>
                   </span>
                 </label>
                 {/* Всплывающая подсказка при отсутствии согласия */}
