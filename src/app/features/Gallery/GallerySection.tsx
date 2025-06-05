@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
 import NavButton from '../../shared/components/ui/NavButton/NavButton';
 import MemoizedImage from '../../shared/components/MemoizedImage/MemoizedImage';
 import styles from './GallerySection.module.css';
@@ -12,6 +13,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
+// Интерфейс для одного элемента галереи
 export interface GalleryItem {
   id: number;
   image: string;
@@ -20,19 +22,20 @@ export interface GalleryItem {
   folder?: string;
 }
 
+// Пропсы компонента галереи
 interface GallerySectionProps {
   id: string;
   title: string;
   items: GalleryItem[];
-  defaultVisibleItems?: number;
-  tabletVisibleItems?: number;
-  mobileVisibleItems?: number;
+  defaultVisibleItems?: number; // сколько слайдов показывать на десктопе
+  tabletVisibleItems?: number;  // не используется сейчас, но можно добавить адаптивность
+  mobileVisibleItems?: number;  // сколько слайдов на мобильном
   ariaLabelPrefix?: string;
   itemHeight?: string;
   mobileItemHeight?: string;
   gapPercent?: number;
   titleLink?: string;
-  displayMode?: 'slider' | 'grid';
+  displayMode?: 'slider' | 'grid'; // режим отображения: слайдер или сетка
   gridColumns?: number;
 }
 
@@ -47,155 +50,110 @@ const GallerySection: React.FC<GallerySectionProps> = ({
   ariaLabelPrefix = 'элемент',
   itemHeight = '650px',
   mobileItemHeight = 'calc(100vw * 16 / 9 - var(--header-height-mobile) - 20px)',
-  gapPercent = 2,
   displayMode = 'slider',
   gridColumns = 3,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [visibleItems, setVisibleItems] = useState<number>(defaultVisibleItems);
+  const router = useRouter();
 
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [startX, setStartX] = useState<number>(0);
-  const [translateX, setTranslateX] = useState<number>(0);
+  // Embla carousel ref и api
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    slidesToScroll: 1,
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: false,
+    loop: false,
+  });
 
-  // Lightbox state
+  // Состояние для открытия/закрытия модального окна (Lightbox)
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
   const [lightboxIndex, setLightboxIndex] = useState<number>(0);
 
-  const galleryBaseRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  // Навигация стрелками: назад и вперёд
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const canGoLeft = emblaApi ? emblaApi.canScrollPrev() : false; // можно ли листать влево
+  const canGoRight = emblaApi ? emblaApi.canScrollNext() : false; // можно ли листать вправо
 
-  const handleTitleClick = useCallback(() => {
-    if (titleLink) router.push(titleLink);
-  }, [titleLink, router]);
-
-  const prevVisibleItems = useRef(visibleItems);
-
-  // handleResize
-  const handleResize = useCallback(() => {
-    let newVisibleItems = defaultVisibleItems;
-    if (window.innerWidth <= 768) {
-      newVisibleItems = mobileVisibleItems;
-    } else if (window.innerWidth <= 1023) {
-      newVisibleItems = tabletVisibleItems;
-    }
-
-    setVisibleItems(prev => {
-      if (prev !== newVisibleItems) {
-        setCurrentIndex(0);
-        setTranslateX(0);
-      }
-      return newVisibleItems;
-    });
-    prevVisibleItems.current = newVisibleItems;
-  }, [defaultVisibleItems, tabletVisibleItems, mobileVisibleItems]);
+  const [visibleItems, setVisibleItems] = useState(defaultVisibleItems);
+  const [gap, setGap] = useState(20);
 
   useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 768) {
+        setVisibleItems(mobileVisibleItems);
+        setGap(8);
+      } else if (window.innerWidth <= 1023) {
+        setVisibleItems(tabletVisibleItems ?? defaultVisibleItems);
+        setGap(12);
+      } else {
+        setVisibleItems(defaultVisibleItems);
+        setGap(20);
+      }
+    }
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [handleResize]);
+  }, [defaultVisibleItems, tabletVisibleItems, mobileVisibleItems]);
 
-  const canGoLeft = useMemo(() => currentIndex > 0, [currentIndex]);
-  const canGoRight = useMemo(
-    () => currentIndex < items.length - visibleItems,
-    [currentIndex, items.length, visibleItems]
-  );
-
-  const goLeft = useCallback(() => {
-    if (canGoLeft) setCurrentIndex(prev => prev - 1);
-  }, [canGoLeft]);
-
-  const goRight = useCallback(() => {
-    if (canGoRight) setCurrentIndex(prev => prev + 1);
-  }, [canGoRight]);
-
-  const getTransform = useCallback(() => {
-    if (isDragging) {
-      return `translateX(calc(-${currentIndex * (100 / visibleItems + (gapPercent / visibleItems))}% + ${translateX}px))`;
-    }
-    const itemWidthPercent = 100 / visibleItems;
-    const itemWithGap = itemWidthPercent + (gapPercent / visibleItems);
-    return `translateX(-${currentIndex * itemWithGap}%)`;
-  }, [isDragging, currentIndex, visibleItems, gapPercent, translateX]);
-
-  const getSizes = useCallback(() => {
-    switch (visibleItems) {
-      case 1: return "100vw";
-      case 2: return "(max-width: 768px) 100vw, 50vw";
-      case 3: return "(max-width: 768px) 100vw, 33vw";
-      default: return "(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 25vw";
-    }
-  }, [visibleItems]);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (visibleItems >= items.length) return;
-    setIsDragging(true);
-    setStartX(e.touches[0].clientX);
-  }, [visibleItems, items.length]);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isDragging || visibleItems >= items.length) return;
-    const currentX = e.touches[0].clientX;
-    const diff = currentX - startX;
-    setTranslateX(diff);
-  }, [isDragging, visibleItems, items.length, startX]);
-
-  const handleTouchEnd = useCallback(() => {
-    if (!isDragging || visibleItems >= items.length) return;
-    setIsDragging(false);
-    const threshold = 50;
-    if (translateX > threshold && canGoLeft) {
-      goLeft();
-    } else if (translateX < -threshold && canGoRight) {
-      goRight();
-    }
-    setTranslateX(0);
-  }, [isDragging, visibleItems, items.length, translateX, canGoLeft, canGoRight, goLeft, goRight]);
-
-  // Открытие модального окна по клику
+  // Открытие модального окна по клику на изображение
   const handleGalleryItemClick = useCallback((idx: number) => {
     setLightboxIndex(idx);
     setLightboxOpen(true);
   }, []);
 
-    // Исправленный рендер Lightbox
-    const renderLightbox = useMemo(() => (
-      <Lightbox
-        open={lightboxOpen}
-        close={() => setLightboxOpen(false)}
-        slides={items.map(item => ({ src: item.image, alt: item.title }))}
-        index={lightboxIndex}
-        on={{ view: ({ index }) => setLightboxIndex(index) }}
-        plugins={[Zoom, Thumbnails]}
-        carousel={{
-          finite: items.length <= 5,
-        }}
-      />
-    ), [lightboxOpen, lightboxIndex, items]);
+  // Обработка клика по заголовку (переход по ссылке, если задана)
+  const handleTitleClick = useCallback(() => {
+    if (titleLink) router.push(titleLink);
+  }, [titleLink, router]);
 
-  // Рендер элементов в режиме слайдера
+  // sizes для адаптивных изображений
+  const getSizes = useCallback(() => {
+    // embla не управляет количеством visibleItems напрямую, используем defaultVisibleItems
+    switch (defaultVisibleItems) {
+      case 1: return "100vw";
+      case 2: return "(max-width: 768px) 100vw, 50vw";
+      case 3: return "(max-width: 768px) 100vw, 33vw";
+      default: return "(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 25vw";
+    }
+  }, [defaultVisibleItems]);
+
+  // Lightbox-модалка со слайдами
+  const renderLightbox = useMemo(() => (
+    <Lightbox
+      open={lightboxOpen}
+      close={() => setLightboxOpen(false)}
+      slides={items.map(item => ({ src: item.image, alt: item.title }))}
+      index={lightboxIndex}
+      on={{ view: ({ index }) => setLightboxIndex(index) }}
+      plugins={[Zoom, Thumbnails]}
+      carousel={{
+        finite: items.length <= 5,
+      }}
+    />
+  ), [lightboxOpen, lightboxIndex, items]);
+
+  // Рендер элементов в режиме слайдера через Embla
   const renderGalleryItems = useMemo(() => (
-    <ul className={styles['gallery-list']} role="list">
-      {items.map((item, idx) => (
-        <li
-          key={item.id}
-          className={styles['gallery-item']}
-          role="listitem"
-          style={{
-            height: visibleItems === mobileVisibleItems ? mobileItemHeight : itemHeight
-          }}
-        >
+    <div className={styles['embla']} ref={emblaRef}>
+      <div className={styles['embla__container']} style={{ gap: `${gap}px` }}>
+        {items.map((item, idx) => (
           <div
-            tabIndex={0}
-            role="button"
-            onClick={() => handleGalleryItemClick(idx)}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleGalleryItemClick(idx); }}
-            aria-label={`Открыть ${ariaLabelPrefix} ${item.title}`}
-            className={styles.fancyboxItem}
-            style={{ cursor: 'pointer' }}
+            key={item.id}
+            className={styles['embla__slide']}
+            style={{
+              height: visibleItems === mobileVisibleItems ? mobileItemHeight : itemHeight,
+              minWidth: `calc((100% - ${(visibleItems - 1) * gap}px) / ${visibleItems})`
+            }}
           >
-            <div className={styles.imageWrapper}>
+            <div
+              className={styles.imageWrapper}
+              tabIndex={0}
+              role="button"
+              onClick={() => handleGalleryItemClick(idx)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleGalleryItemClick(idx); }}
+              aria-label={`Открыть ${ariaLabelPrefix} ${item.title}`}
+              style={{ cursor: 'pointer' }}
+            >
               <MemoizedImage
                 src={item.image}
                 alt={item.title}
@@ -206,10 +164,10 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               />
             </div>
           </div>
-        </li>
-      ))}
-    </ul>
-  ), [items, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, getSizes, handleGalleryItemClick, ariaLabelPrefix]);
+        ))}
+      </div>
+    </div>
+  ), [items, emblaRef, handleGalleryItemClick, visibleItems, mobileVisibleItems, mobileItemHeight, itemHeight, gap, ariaLabelPrefix, getSizes]);
 
   // Рендер элементов в режиме сетки
   const renderGridItems = useMemo(() => (
@@ -221,25 +179,23 @@ const GallerySection: React.FC<GallerySectionProps> = ({
           className={styles.gridItem}
         >
           <div
+            className={styles.imageWrapper}
             tabIndex={0}
             role="button"
             onClick={() => handleGalleryItemClick(idx)}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleGalleryItemClick(idx); }}
             aria-label={`Открыть ${ariaLabelPrefix} ${item.title}`}
-            className={styles.fancyboxItem}
             style={{ cursor: 'pointer' }}
           >
-            <div className={styles.imageWrapper}>
-              <MemoizedImage
-                src={item.image}
-                alt={item.title}
-                fill
-                sizes="(max-width: 768px) 50vw, 33vw"
-                className={styles.gridImage}
-                loading="lazy"
-                quality={75}
-              />
-            </div>
+            <MemoizedImage
+              src={item.image}
+              alt={item.title}
+              fill
+              sizes="(max-width: 768px) 50vw, 33vw"
+              className={styles.gridImage}
+              loading="lazy"
+              quality={75}
+            />
           </div>
         </li>
       ))}
@@ -262,33 +218,22 @@ const GallerySection: React.FC<GallerySectionProps> = ({
         </h2>
         {displayMode === 'slider' ? (
           <div className={styles['gallery-wrapper']}>
+            {/* Кнопка "назад" */}
             <NavButton
               variant="arrow-left"
               ariaLabel={`Предыдущий ${ariaLabelPrefix}`}
-              onClick={goLeft}
+              onClick={scrollPrev}
               disabled={!canGoLeft}
             />
             <div className={styles['gallery-container']}>
-              <div
-                ref={galleryBaseRef}
-                className={styles['gallery-base']}
-                role="list"
-                style={{
-                  '--visible-items': visibleItems,
-                  transform: getTransform(),
-                  transition: isDragging ? 'none' : 'transform 0.3s ease',
-                } as React.CSSProperties}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-              >
-                {renderGalleryItems}
-              </div>
+              {/* EMBLA SLIDER */}
+              {renderGalleryItems}
             </div>
+            {/* Кнопка "вперёд" */}
             <NavButton
               variant="arrow-right"
               ariaLabel={`Следующий ${ariaLabelPrefix}`}
-              onClick={goRight}
+              onClick={scrollNext}
               disabled={!canGoRight}
             />
           </div>

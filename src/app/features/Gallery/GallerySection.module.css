@@ -28,56 +28,6 @@
     flex-grow: 1;
 }
 
-/* Базовая обертка для слайдов */
-.gallery-base {
-    width: 100%;
-}
-
-/* Список элементов галереи */
-.gallery-list {
-    display: flex;
-    scroll-snap-type: x mandatory; /* Привязка к точкам прокрутки */
-    padding: 1rem 0;
-    scrollbar-width: none; /* Скрываем скроллбар в Firefox */
-    min-width: 100%;
-    box-sizing: border-box;
-    gap: 2%; /* Отступ между элементами */
-}
-
-/* Скрываем скроллбар в Chrome */
-.gallery-list::-webkit-scrollbar,
-.gallery-container::-webkit-scrollbar {
-    display: none;
-}
-
-/* Стили для элемента галереи */
-.gallery-item {
-    flex: 0 0 calc(100% / var(--visible-items) - (var(--visible-items) - 1) * 2% / var(--visible-items));
-    position: relative;
-    scroll-snap-align: start; /* Привязка к началу элемента */
-    transition: transform var(--transition-normal);
-    border-radius: 8px;
-    overflow: hidden;
-    isolation: isolate; /* Создаем новый контекст наложения */
-    transform: translateZ(0); /* Аппаратное ускорение */
-    cursor: pointer;
-}
-
-/* Обертка для изображения */
-.gallery-item > div {
-    border-radius: 8px;
-    overflow: hidden;
-    height: 100%;
-}
-
-/* Стили для изображения */
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--transition-normal);
-}
-
 /* Заголовок галереи */
 .galleryTitle {
     padding-left: 20px;
@@ -114,27 +64,25 @@
     width: 100%;
     height: 100%;
 }
-  
-/* Контейнер для модальной галереи */
-.modalGalleryContainer {
-    display: flex;
-    height: 100%;
-    will-change: transform; /* Оптимизация производительности */
-}
 
-/* Обертка для изображения в модальном окне */
-.modalImageWrapper {
-    flex-shrink: 0;
-    height: 100%;
+/* Embla стили */
+.embla {
+    overflow: hidden;
+    width: 100%;
+}
+.embla__container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    box-sizing: border-box;
+  }
+
+.embla__slide {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 /* Адаптивность для планшетов */
 @media (min-width: 768px) and (max-width: 1023px) {
+
     .galleryTitle {
         padding-left: 20px;
     }
@@ -146,6 +94,8 @@
 
 /* Адаптивность для телефонов */
 @media (max-width: 768px) {
+    
+    .embla__slide { flex: 0 0 100%; } /* 1 на мобиле */
   
     /* Скрываем кнопки навигации в галерее */
     .navButton {
@@ -159,15 +109,11 @@
     .gallery-container {
       margin: 0;
     }
-  }
-
+}
 
 /* Hover эффекты только для десктопа */
 @media (min-width: 1024px) {
-    .gallery-item:hover {
-        transform: scale(1.05); /* Увеличение при наведении */
-    }
-    
+
     .gridItem:hover {
         transform: scale(1.03); /* Меньшее увеличение для сетки */
     }
