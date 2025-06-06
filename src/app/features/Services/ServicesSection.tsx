@@ -63,7 +63,7 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
         <h2 id="services-title" className={styles.servicesTitle}>Мои услуги</h2>
         <div className={styles['services-wrapper']}>
           <div className={styles['carousel-container']}>
-            <div className={styles['services-carousel']} role="list">
+            <div className={styles['services-carousel']} >
               {services.map((service, index) => (
                 <article 
                   key={service.id} 

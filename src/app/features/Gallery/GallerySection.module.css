@@ -114,6 +114,11 @@
     .gallery-container {
       margin: 0;
     }
+
+    .galleryTitle {
+        padding-left: 0;
+        text-align: center;
+    }
 }
 
 /* Hover эффекты только для десктопа */

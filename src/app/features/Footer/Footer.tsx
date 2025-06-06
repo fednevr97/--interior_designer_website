@@ -56,7 +56,12 @@ const Footer = () => {
         </div>
         {/* Блок с копирайтом */}
         <div className={styles.footer__copyright}>
-          <p className={styles.footer__copyrightText}>&copy; 2025 Мой Сайт. Все права защищены.</p>
+          <p className={styles.footer__copyrightText}>
+            &copy; 2025 Шептицкая Дарья.{' '}
+            <a href="/privacy-policy" className={styles.footer__copyrightLink}>
+              Все права защищены
+            </a>
+          </p>
         </div>
       </div>
     </footer>
