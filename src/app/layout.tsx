@@ -52,6 +52,19 @@ export default function RootLayout({
     "@type": "ProfessionalService",
     "name": "Дизайнер интерьера Шептицкая Дарья",
     "url": "https://interior-designer-website-git-main-ruslans-projects-3bb2167d.vercel.app/",
+    "image": "https://interior-designer-website-inky.vercel.app/assets/Photo.webp",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Токарева, 3",
+      "addressLocality": "Севастополь",
+      "addressCountry": "Россия"
+    },
+    "telephone": "+7 (978) 662 37 81",
+    "email": "me@sheptitskaja.ru",
+    "sameAs": [
+      "https://vk.ru/id14565500",
+      "https://t.me/dariy1988"
+    ]
   };
 
   return (
@@ -61,14 +74,22 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Манифест для PWA */}
         <link rel="manifest" href="/site.webmanifest" />
-      </head>
-      <body className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased`}>
+        {/* Канонический адрес */}
+        <link rel="canonical" href="https://interior-designer-website-inky.vercel.app/" />
+        {/* Open Graph разметка */}
+        <meta property="og:title" content="Дизайнер интерьера | Шептицкая Дарья" />
+        <meta property="og:description" content="Авторские дизайн-проекты интерьеров под ключ" />
+        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:type" content="website" />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
         {/* Структурированные данные для поисковых систем */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          className="hidden"
         />
+      </head>
+      <body className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased`}>
         {/* Шапка сайта */}
         <Header />
         {/* Основной контент */}

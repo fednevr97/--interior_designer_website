@@ -260,6 +260,20 @@
   margin: 20px 0;
 }
 
+.modal__policyText {
+  color: var(--light-text-color); /* Белый цвет текста */
+}
+
+.modal__policyLink {
+  color: var(--light-text-color); /* Белый цвет ссылки */
+  text-decoration: underline; /* Подчеркивание для ссылки */
+  transition: opacity 0.3s ease; /* Плавное изменение прозрачности */
+}
+
+.modal__policyLink:hover {
+  opacity: 0.8; /* Небольшое затемнение при наведении */
+}
+
 /* Анимация появления/исчезновения тултипа */
 @keyframes fadeInOut {
   0% {

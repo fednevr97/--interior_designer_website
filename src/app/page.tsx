@@ -11,7 +11,7 @@ export default async function Home() {
   const documentation = await getDocumentation();
   return (
     <>
-      <HeroSection id="home" imageSrc='/assets/5WbDAuO7qL.webp' />
+      <HeroSection id="home" imageSrc='/assets/5WbDAuO7qL (1).webp' />
       <AboutSection id="about" />
       <Portfolio id="portfolio" items={projects}  />
       <ServicesSection id="services" />

@@ -21,18 +21,18 @@ export default function ArticleCard({ article }: { article: Article }) {
       </div>
       {/* Контейнер для контента */}
       <div className={styles.content}>
-        {/* Секция с тегами */}
-        <div className={styles.tags}>
+        {/* Заголовок статьи */}
+        <h2 className={styles.title}>{article.meta.title}</h2>
+        {/* Отрывок текста */}
+        <p className={styles.excerpt}>{article.meta.excerpt}</p>
+                {/* Секция с тегами */}
+                <div className={styles.tags}>
           {article.meta.tags?.map(tag => (
             <span key={tag} className={styles.tag}>
               {tag}
             </span>
           ))}
         </div>
-        {/* Заголовок статьи */}
-        <h2 className={styles.title}>{article.meta.title}</h2>
-        {/* Отрывок текста */}
-        <p className={styles.excerpt}>{article.meta.excerpt}</p>
         {/* Дата публикации */}
         <time className={styles.date}>
           {new Date(article.meta.date).toLocaleDateString('ru-RU')}

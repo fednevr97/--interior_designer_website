@@ -2,7 +2,7 @@
 .container {
   width: 100%;
   margin: 0 auto;
-  padding: 0 60px; 
+  max-width: 1200px;
 }
 
 /* Стили для шапки статьи */
@@ -27,6 +27,7 @@
 /* Контейнер для тегов */
 .tags {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;

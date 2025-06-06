@@ -162,7 +162,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                 fill
                 sizes={getSizes()}
                 style={{
-                  objectFit:"cover"
+                  objectFit:"cover",
                 }}
                 quality={75}
               />

@@ -107,7 +107,7 @@ const ModalForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       window.grecaptcha.ready(() => {
         try {
           window.grecaptcha?.render('recaptcha-container', {
-            sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', // Тестовый ключ
+            sitekey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '', // Тестовый ключ
             callback: handleCaptchaVerified, // Колбек при успехе
             'expired-callback': handleCaptchaExpired, // Колбек при истечении
             'error-callback': handleCaptchaExpired, // Колбек при ошибке

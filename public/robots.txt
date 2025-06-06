@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Запрет индексации служебных страниц (при необходимости)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+
+# Явно указываем важные страницы для поисковых систем (этот блок не обязателен, но помогает явно показать структуру сайта)
+Allow: /about
+Allow: /portfolio
+Allow: /services
+Allow: /documentation
+
+Sitemap: https://interior-designer-website-inky.vercel.app/sitemap.xml
