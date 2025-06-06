@@ -2,7 +2,7 @@
   border-radius: 8px;          /*  Скругление углов */
   overflow: hidden;            /*  Скрываем выходящий за пределы контент */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /*  Тень карточки */
-  transition: transform var(--transition-normal);;  /*  Плавная анимация трансформации */
+  transition: transform var(--transition-normal);  /*  Плавная анимация трансформации */
   background: white;           /*  Белый фон */
 }
 

@@ -26,27 +26,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   const blurDataURL = 'data:image/svg+xml;base64,...';
 
   return (
-    <section 
+    <section
       id={id}
-      className={`${styles.hero} ${className || ''}`}
-      aria-label="Главный баннер"
+      className={[styles.hero, className].filter(Boolean).join(' ')}
     >
       <div className={styles.imageContainer}>
         {/* Скелетон для состояния загрузки */}
-        {!isLoaded && <div className={styles.skeleton} />}
-        
-        {/* Основное изображение с оптимизацией */}
+        <div
+          className={styles.skeleton}
+          style={{ opacity: isLoaded ? 0 : 1, pointerEvents: isLoaded ? 'none' : 'auto' }}
+          aria-hidden="true"
+        />
         <Image
           src={imageSrc}
           alt={imageAlt}
           fill
           priority
-          quality={75} // Оптимизация качества (по умолчанию 75)
-          className={`${styles.heroImage} ${!isLoaded ? styles.hidden : ''}`}
-          sizes="(max-width: 768px) 100vw, 100vw" // Адаптивные размеры
-          onLoad={() => setIsLoaded(true)} // Обработчик загрузки
-          placeholder="blur"     // Плейсхолдер при загрузке
-          blurDataURL={blurDataURL} // Данные для размытия
+          quality={75}
+          className={styles.heroImage}
+          sizes="(max-width: 768px) 100vw, 100vw"
+          onLoad={() => setIsLoaded(true)}
+          {...(blurDataURL ? { placeholder: 'blur', blurDataURL } : {})}
         />
       </div>
     </section>

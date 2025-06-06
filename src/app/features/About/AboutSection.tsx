@@ -1,17 +1,14 @@
-// AboutSection.tsx
 'use client'
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import styles from './AboutSection.module.css';
 
-// Интерфейс для пропсов компонента
 interface AboutSectionProps {
   id?: string;
   className?: string;
 }
 
-// Текст для секции "О нас"
 const ABOUT_TEXT = [
   "Приветствую Вас на моем сайте!",
   `Меня зовут Дарья. Я - дизайнер интерьера, который верит, что каждый проект — это не просто работа, а творческое путешествие, где Ваши мечты становятся реальностью. С каждым новым проектом я стремлюсь создать пространство, которое отражает индивидуальность и стиль своих владельцев.`,
@@ -23,17 +20,15 @@ const ABOUT_TEXT = [
 ];
 
 const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
-  // const [isLoaded, setIsLoaded] = useState(false);
-  
-  // Миниатюра для blur-эффекта при загрузке изображения
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const blurDataURL = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiIC8+PC9zdmc+';
-  
-  // Мемоизированное создание параграфов текста
+
   const paragraphs = useMemo(() => (
     ABOUT_TEXT.map((text, index) => (
-      <p key={`para-${index}`} className={styles.aboutParagraph}>
+      <p key={index} className={styles.aboutParagraph}>
         {text.split('\n').map((line, i) => (
-          <React.Fragment key={`line-${i}`}>
+          <React.Fragment key={i}>
             {line}
             {i < text.split('\n').length - 1 && <br />}
           </React.Fragment>
@@ -43,15 +38,15 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
   ), []);
 
   return (
-    <section 
-      id={id || "about"} 
-      className={`${styles.aboutSection} ${className || ''}`}
+    <section
+      id={id || "about"}
+      className={[styles.aboutSection, className].filter(Boolean).join(' ')}
       aria-labelledby="about-title"
     >
       <div className={styles.container}>
         <div className={styles.aboutContent}>
           <div className={styles.aboutImageWrapper}>
-            {/* Скелетон СЛОЕМ поверх картинки, а не вместо картинки */}
+            {!isLoaded && <div className={styles.skeleton} aria-hidden="true" />}
             <Image
               src="/assets/Photo.webp"
               alt="Фото Шептицкая Дарья"
@@ -62,10 +57,10 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
               placeholder="blur"
               blurDataURL={blurDataURL}
               priority
+              onLoad={() => setIsLoaded(true)}
             />
-            <div className={styles.skeleton} />
             <div className={styles.imageOverlayText}>
-            <h1>Дарья Шептицкая - дизайнер интерьера</h1>
+              <h1 id="about-title">Дарья Шептицкая - дизайнер интерьера</h1>
             </div>
           </div>
           <div className={styles.aboutText}>
