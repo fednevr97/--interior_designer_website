@@ -65,8 +65,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
             />
             <div className={styles.skeleton} />
             <div className={styles.imageOverlayText}>
-              <h3 id="about-title">Шептицкая Дарья</h3>
-              <p>Дизайнер интерьера</p>
+            <h1>Дарья Шептицкая - дизайнер интерьера</h1>
             </div>
           </div>
           <div className={styles.aboutText}>
