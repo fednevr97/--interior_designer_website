@@ -92,9 +92,9 @@ body, p {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Literata', serif;
-  font-weight: 700; /* Жирный для заголовков */
+  font-family: 'Cormorant Garamond', serif;
   font-style: normal;
+  font-weight: bold;
 }
 
 button {

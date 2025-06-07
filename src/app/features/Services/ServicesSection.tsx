@@ -64,7 +64,7 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
         <div className={styles['services-wrapper']}>
           <div className={styles['carousel-container']}>
             <div className={styles['services-carousel']} >
-              {services.map((service, index) => (
+              {services.map((service) => (
                 <article 
                   key={service.id} 
                   className={`${styles['service-item']} ${isMobile ? styles['mobile-view'] : ''}`} 
@@ -74,7 +74,6 @@ const Services: React.FC<ServicesProps> = ({ id = "services"}) => {
                       src={service.image} 
                       alt={service.title} 
                       fill
-                      priority={index < 3}
                       sizes={getSizes()}
                       className={styles['service-img']}
                       style={{

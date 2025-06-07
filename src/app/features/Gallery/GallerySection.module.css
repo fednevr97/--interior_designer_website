@@ -32,6 +32,7 @@
 .galleryTitle {
     padding-left: 20px;
     color: var(--primary-color);
+    font-size: clamp(2rem, 4vw, 3rem);
 }
 
 /* Обертка для изображения */
@@ -83,16 +84,8 @@
   transition: transform var(--transition-normal) ease;
 }
 
-.embla__slide:hover {
-    transform: scale(1.03);
-}
-
 /* Адаптивность для планшетов */
 @media (min-width: 768px) and (max-width: 1023px) {
-
-    .galleryTitle {
-        padding-left: 20px;
-    }
 
     .gridList {
         --grid-columns: 2; /* Две колонки на планшетах */
@@ -101,6 +94,10 @@
 
 /* Адаптивность для телефонов */
 @media (max-width: 768px) {
+
+    .galleryTitle{
+        padding-left: 0;
+    }
     
     .embla__slide { flex: 0 0 100%; } /* 1 на мобиле */
   
@@ -118,7 +115,6 @@
     }
 
     .galleryTitle {
-        padding-left: 0;
         text-align: center;
     }
 }
@@ -128,5 +124,9 @@
 
     .gridItem:hover {
         transform: scale(1.03); /* Меньшее увеличение для сетки */
+    }
+
+    .embla__slide:hover {
+        transform: scale(1.03);
     }
 }

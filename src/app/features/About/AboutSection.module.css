@@ -1,6 +1,6 @@
 /* Основная секция "О нас" */
 .aboutSection {
-  min-height: calc(100dvh - var(--header-height));
+  /* min-height: calc(100dvh - var(--header-height)); */
   scroll-margin-top: var(--header-height);
 }
 
@@ -14,7 +14,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: clamp(20px, 4vw, 40px);
-  min-height: calc(100dvh - var(--header-height));
+  /* min-height: calc(100dvh - var(--header-height)); */
 }
 
 /* Обертка для изображения */
@@ -67,7 +67,7 @@
 
 /* Стили для заголовка в наложении */
 .imageOverlayText h1 {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
   margin-bottom: 0.5em;
   font-weight: 600;
   color: var(--light-text-color);
@@ -75,7 +75,7 @@
 
 /* Стили для основного текста */
 .aboutParagraph {
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   line-height: 1.7;
   margin-bottom: clamp(15px, 2vw, 25px);
   color: #333;
@@ -105,6 +105,10 @@
   .aboutImageWrapper {
     position: relative;
     aspect-ratio: 3/4;
+  }
+
+  .aboutContent {
+    grid-template-columns: 1fr;
   }
   
 }

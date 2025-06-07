@@ -92,12 +92,14 @@
 /* Заголовок услуги */
 .service-content h3 {
   color: var(--primary-color);
+  font-size: clamp(1.5rem, 3vw, 2rem);
 }
 
 /* Описание услуги */
 .service-content p {
   color: #666;
   line-height: 1.6;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 /* Цена услуги */
@@ -110,16 +112,13 @@
 .servicesTitle {
   padding-left: 20px;
   color: var(--primary-color);
+  font-size: clamp(2rem, 4vw, 3rem);
 }
 
 /* Адаптивность для планшетов */
 @media (max-width: 1024px) {
   .service-image {
       height: 50%;
-  }
-
-  .servicesTitle {
-      padding-left: 20px;
   }
 
   .service-content {
@@ -130,14 +129,7 @@
       flex-direction: column;
       justify-content: space-between;
   }
-
-  .service-content h3 {
-      font-size: 1rem;
-  }
   
-  .service-content p {
-      font-size: 0.6rem;
-  }
 }
 
 /* Адаптивность для телефонов */
@@ -154,14 +146,6 @@
   
   .service-content {
       padding: 15px;
-  }
-  
-  .service-content h3 {
-      font-size: 1rem;
-  }
-  
-  .service-content p {
-      font-size: 0.7rem;
   }
 
   .services-carousel {

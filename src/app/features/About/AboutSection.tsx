@@ -56,7 +56,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ id, className }) => {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
               placeholder="blur"
               blurDataURL={blurDataURL}
-              priority
+              loading="eager"
               onLoad={() => setIsLoaded(true)}
             />
             <div className={styles.imageOverlayText}>

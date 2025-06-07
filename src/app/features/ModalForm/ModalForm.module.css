@@ -270,10 +270,6 @@
   transition: opacity var(--transition-normal) ease; /* Плавное изменение прозрачности */
 }
 
-.modal__policyLink:hover {
-  opacity: 0.8; /* Небольшое затемнение при наведении */
-}
-
 /* Анимация появления/исчезновения тултипа */
 @keyframes fadeInOut {
   0% {
@@ -334,5 +330,9 @@
   /* Эффект при наведении на кнопку отправки */
   .modal__submit:hover {
     transform: scale(1.05);
+  }
+
+  .modal__policyLink:hover {
+    opacity: 0.8; /* Небольшое затемнение при наведении */
   }
 }

@@ -158,7 +158,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               <MemoizedImage
                 src={item.image}
                 alt={item.title}
-                loading="eager"
                 fill
                 sizes={getSizes()}
                 style={{
@@ -197,7 +196,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
               fill
               sizes="(max-width: 768px) 50vw, 33vw"
               className={styles.gridImage}
-              loading="lazy"
               quality={75}
             />
           </div>
