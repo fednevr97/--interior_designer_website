@@ -8,9 +8,9 @@
 /* Стили для главного заголовка страницы */
 .portfolioPage h1 {
     color: var(--primary-color);  /* Цвет из переменных темы */
-    font-family: var(--font-secondary), var(--font-system);  /* Шрифт с запасным вариантом */
     font-size: 3rem;  /* Размер шрифта для десктопа */
     padding-bottom: 20px;  /* Отступ снизу */
+    text-align: center;
 }
 
 /* Стили для секции категории */

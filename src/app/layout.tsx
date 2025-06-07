@@ -1,24 +1,8 @@
 import type { Metadata } from "next";
-import { Montserrat, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import "../styles/fonts.css";
 import Footer from "./features/Footer/Footer";
 import Header from "./features/Header/Header";
-
-// Настройка шрифта Montserrat
-const montserrat = Montserrat({
-  variable: "--font-montserrat",  // CSS переменная для шрифта
-  subsets: ["latin", "cyrillic"], // Поддержка латиницы и кириллицы
-  weight: ["400", "600", "700"],  // Насыщенность шрифта
-  display: 'swap',                // Стратегия загрузки шрифта
-});
-
-// Настройка шрифта Cormorant Garamond
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",   // CSS переменная для шрифта
-  subsets: ["latin", "cyrillic"], // Поддержка латиницы и кириллицы
-  weight: ["400", "500", "600"],  // Насыщенность шрифта
-  display: 'swap',                // Стратегия загрузки шрифта
-});
 
 // Метаданные для SEO
 export const metadata: Metadata = {
@@ -89,7 +73,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased`}>
+      <body>
         {/* Шапка сайта */}
         <Header />
         {/* Основной контент */}

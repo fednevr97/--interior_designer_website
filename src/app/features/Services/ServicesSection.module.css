@@ -109,6 +109,7 @@
 /* Заголовок секции */
 .servicesTitle {
   padding-left: 20px;
+  color: var(--primary-color);
 }
 
 /* Адаптивность для планшетов */

@@ -2,7 +2,6 @@
 .side-menu {
   /* CSS переменные для настройки меню */
   --menu-width: 350px;           /* Ширина меню */
-  --transition-speed: 0.3s;      /* Скорость анимации */
   --overlay-opacity: 0.5;        /* Прозрачность фона */
   
   position: fixed;               /* Фиксированное позиционирование */
@@ -13,7 +12,7 @@
   background: rgba(104, 110, 87, 0.8); /* Полупрозрачный фон */
   z-index: 1000;                /* Высокий z-index для отображения поверх контента */
   transform: translateX(-100%);  /* Начальное положение за пределами экрана */
-  transition: all var(--transition-speed) ease; /* Плавная анимация */
+  transition: all var(--transition-normal) ease; /* Плавная анимация */
   will-change: transform;        /* Оптимизация производительности */
   box-sizing: border-box;
 }
@@ -30,7 +29,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* Распределение элементов по высоте */
-  transition: all var(--transition-speed) ease;
+  transition: all var(--transition-normal) ease;
 }
 
 /* Навигационная секция */
@@ -48,7 +47,7 @@
   border: none;
   cursor: pointer;
   color: #000;
-  transition: opacity 0.2s;
+  transition: opacity var(--transition-fast);
   width: 24px;
   height: 24px;
   display: flex;
@@ -89,7 +88,7 @@
   color: #000;
   font-size: 1.2rem;
   text-decoration: none;
-  transition: 0.2s;
+  transition: var(--transition-fast);
 }
 
 /* Анимация подчеркивания для ссылок */
@@ -101,7 +100,7 @@
   width: 0;
   height: 2px;
   background: currentColor;
-  transition: width 0.3s ease-out;
+  transition: width var(--transition-normal) ease-out;
 }
 
 /* Стили для логотипа */
@@ -139,7 +138,6 @@
   font-weight: 500;
   line-height: 1.4;
   color: #000;
-  font-family: var(--font-secondary);
   font-size: 18px;
 }
 
@@ -154,7 +152,7 @@
 .social-icon-wrapper {
   display: inline-block;
   color: #000;
-  transition: transform 0.2s;
+  transition: transform var(--transition-fast);
   width: 24px;
   height: 24px;
 }

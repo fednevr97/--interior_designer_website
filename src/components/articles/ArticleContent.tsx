@@ -48,7 +48,7 @@ export default function ArticleContent({ article }: { article: Article }) {
         </div>
         
         {/* Заголовок статьи */}
-        <h2 className={styles.title}>{article.meta.title}</h2>
+        <h1 className={styles.title}>{article.meta.title}</h1>
         {/* Дата публикации */}
         <time className={styles.date}>
           {new Date(article.meta.date).toLocaleDateString('ru-RU')}

@@ -56,7 +56,6 @@
   font-size: 0.9rem;
   line-height: 1.2;
   text-transform: uppercase;
-  font-family: var(--font-secondary);
   font-weight: 500;
   white-space: nowrap;
   color: var(--light-text-color);
@@ -80,6 +79,7 @@
   font-weight: 500;
   transition: all var(--transition-normal);
   outline: none;
+  font-family: 'Literata', serif;
 }
 
 .header__ctaBtn {

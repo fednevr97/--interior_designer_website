@@ -9,7 +9,6 @@
   .privacyPolicy h1 {
     color: var(--primary-color);
     margin-bottom: 2rem;
-    font-family: var(--font-secondary), var(--font-system);
   }
   
   .privacyPolicy h2 {

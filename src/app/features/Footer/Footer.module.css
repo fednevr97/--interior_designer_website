@@ -1,4 +1,3 @@
-/* Footer.module.css */
 /* Основной контейнер футера */
 .footer {
   flex-shrink: 0; /* Не сжимается */
@@ -19,7 +18,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   align-items: center;
-  box-shadow: var(--shadow-top);
   width: 100%;
   list-style: none;
   margin: 0;
@@ -57,7 +55,7 @@
 
 /* Метка информации */
 .footer__infoLabel {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--light-text-transparent);
 }
 
@@ -68,6 +66,7 @@
   font-size: 16px;
   transition: color var(--transition-fast);
   cursor: pointer;
+  font-family: 'Literata', serif;
 }
 
 /* Контейнер социальных ссылок */
@@ -109,7 +108,6 @@
 .footer__copyrightLink {
   color: var(--light-text-color); /* Белый цвет ссылки */
   text-decoration: none; /* Подчеркивание для ссылки */
-  transition: opacity 0.3s ease; /* Плавное изменение прозрачности */
 }
 
 /* Медиа-запросы для мобильных устройств */

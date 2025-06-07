@@ -31,6 +31,7 @@
 /* Заголовок галереи */
 .galleryTitle {
     padding-left: 20px;
+    color: var(--primary-color);
 }
 
 /* Обертка для изображения */
@@ -53,14 +54,14 @@
     border-radius: 8px;
     overflow: hidden;
     aspect-ratio: 1 / 1; /* Квадратное соотношение */
-    transition: transform 0.3s ease;
+    transition: transform var(--transition-normal) ease;
     cursor: pointer;
 }
-  
+
 /* Изображение в сетке */
 .gridImage {
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform var(--transition-normal) ease;
     width: 100%;
     height: 100%;
 }
@@ -72,13 +73,14 @@
 }
 .embla__container {
     display: flex;
+    padding: 20px 0;
   }
 
 .embla__slide {
   position: relative;
   border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-normal) ease;
 }
 
 .embla__slide:hover {
