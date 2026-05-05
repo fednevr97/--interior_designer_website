@@ -6,7 +6,7 @@
     font-weight: 400;
     cursor: pointer;
     height: 40px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     text-transform: uppercase;
