@@ -11,6 +11,29 @@ export async function POST(request: Request) {
     });
 
     const body = await request.json();
+
+    const captchaCheck = await fetch(
+        'https://smartcaptcha.yandexcloud.net/validate',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            secret: process.env.SMARTCAPTCHA_SECRET_KEY || '',
+            token: body.recaptchaToken,
+          }),
+        }
+    );
+
+    const captchaResult = await captchaCheck.json();
+
+    if (captchaResult.status !== 'ok') {
+      return NextResponse.json(
+          { error: 'Ошибка проверки капчи' },
+          { status: 400 }
+      );
+    }
     const { name, email, phone, message } = body;
 
     // Создаем транспортер

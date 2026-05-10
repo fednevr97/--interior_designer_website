@@ -2,31 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './ModalForm.module.css';
+import { SmartCaptcha } from '@yandex/smart-captcha';
 
-// Объявление типов для grecaptcha (Google reCAPTCHA)
-declare global {
-  interface Window {
-    grecaptcha?: {
-      // Метод для выполнения кода после загрузки reCAPTCHA
-      ready: (callback: () => void) => void;
-      // Метод для рендеринга reCAPTCHA
-      render: (
-        container: string | HTMLElement,
-        params: {
-          sitekey: string; // Ключ сайта
-          callback?: (token: string) => void; // Колбек при успешной проверке
-          'expired-callback'?: () => void; // Колбек при истечении токена
-          'error-callback'?: () => void; // Колбек при ошибке
-          hl?: string; // Язык виджета
-          theme?: 'light' | 'dark'; // Тема виджета
-          size?: 'normal' | 'compact' | 'invisible'; // Размер виджета
-        }
-      ) => void;
-      // Метод для сброса reCAPTCHA
-      reset: (widgetId?: number) => void;
-    };
-  }
-}
 
 // Интерфейс пропсов для модального окна
 interface ModalProps {
@@ -52,7 +29,6 @@ const ModalForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   // Состояния для reCAPTCHA
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false); // Флаг проверки
   const [showCaptchaError, setShowCaptchaError] = useState(false); // Ошибка капчи
-  const [isRecaptchaLoaded, setIsRecaptchaLoaded] = useState(false); // Загрузка скрипта
 
   // Состояния для управления отправкой формы
   const [isSubmitting, setIsSubmitting] = useState(false); // Флаг отправки
@@ -80,77 +56,6 @@ const ModalForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]); // Зависимость от пропса isOpen
 
-  // Обработчик успешной проверки reCAPTCHA
-  const handleCaptchaVerified = useCallback((token: string) => {
-    setIsCaptchaVerified(true);
-    setCaptchaToken(token); // Сохраняем полученный токен
-    setShowCaptchaError(false); // Сбрасываем ошибку
-  }, []);
-  
-  // Обработчик истечения или ошибки reCAPTCHA
-  const handleCaptchaExpired = useCallback(() => {
-    setIsCaptchaVerified(false);
-    setCaptchaToken(''); // Сбрасываем токен
-  }, []);
-
-  // Эффект для загрузки и инициализации reCAPTCHA
-  useEffect(() => {
-    if (!isOpen) return; // Не загружаем, если модалка закрыта
-
-    const loadRecaptcha = () => {
-      if (typeof window === 'undefined' || !window.grecaptcha) {
-        console.error('reCAPTCHA не доступен в window');
-        return;
-      }
-
-      // Инициализация reCAPTCHA после загрузки
-      window.grecaptcha.ready(() => {
-        try {
-          window.grecaptcha?.render('recaptcha-container', {
-            sitekey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '', // Тестовый ключ
-            callback: handleCaptchaVerified, // Колбек при успехе
-            'expired-callback': handleCaptchaExpired, // Колбек при истечении
-            'error-callback': handleCaptchaExpired, // Колбек при ошибке
-            hl: 'ru', // Язык - русский
-            theme: 'light', // Светлая тема
-            size: 'normal' // Стандартный размер
-          });
-          setIsRecaptchaLoaded(true); // Устанавливаем флаг загрузки
-        } catch (error) {
-          console.error('Ошибка инициализации reCAPTCHA:', error);
-        }
-      });
-    };
-
-    // Если reCAPTCHA уже загружен (например, при повторном открытии модалки)
-    if (window.grecaptcha) {
-      loadRecaptcha();
-      return;
-    }
-
-    // Динамическая загрузка скрипта reCAPTCHA
-    const script = document.createElement('script');
-    script.src = 'https://www.google.com/recaptcha/api.js?render=explicit&hl=ru';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      // Даем дополнительное время для инициализации
-      setTimeout(loadRecaptcha, 500);
-    };
-    script.onerror = () => {
-      console.error('Не удалось загрузить reCAPTCHA');
-    };
-
-    document.body.appendChild(script);
-
-    // Функция очистки при размонтировании
-    return () => {
-      if (script.parentNode) {
-        document.body.removeChild(script);
-      }
-      setIsRecaptchaLoaded(false);
-    };
-  }, [isOpen, handleCaptchaVerified, handleCaptchaExpired]);
 
   // Обработчик закрытия по клавише ESC
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -454,13 +359,23 @@ const ModalForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
               {/* Блок reCAPTCHA */}
               <div className={styles.modal__captcha}>
-                {!isRecaptchaLoaded && <div>Загрузка проверки...</div>}
-                <div id="recaptcha-container"></div>
-                  {showCaptchaError && (
-                  <p className={styles.modal__error}>
-                    Пожалуйста, подтвердите, что вы не робот
-                  </p>
-                  )}
+                <SmartCaptcha
+                    sitekey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY || ''}
+                    onSuccess={(token) => {
+                      setCaptchaToken(token);
+                      setIsCaptchaVerified(true);
+                      setShowCaptchaError(false);
+                    }}
+                    onNetworkError={() => {
+                      setIsCaptchaVerified(false);
+                    }}
+                />
+
+                {showCaptchaError && (
+                    <p className={styles.modal__error}>
+                      Пожалуйста, подтвердите, что вы не робот
+                    </p>
+                )}
               </div>
 
               {/* Блок отображения ошибок отправки формы */}
